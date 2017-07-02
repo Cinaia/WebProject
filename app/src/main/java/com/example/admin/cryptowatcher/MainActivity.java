@@ -39,7 +39,8 @@ public class MainActivity extends Activity {
     public static final String LTC = "ltc_usd";
     public static final String ETH= "eth_usd";
     public static final String NVC = "nvc_usd";
-  //  private static final String  = "";
+
+
     private static final String LAST = "last";
     private static final String HIGH = "high";
     private static final String LOW = "low";
@@ -77,9 +78,7 @@ public class MainActivity extends Activity {
 
     void parseToList(JSONObject obj,String pairName){
 
-
         try {
-
 
             float lastValue = Float.parseFloat(obj.getString(LAST));
             float highValue = Float.parseFloat(obj.getString(HIGH));
@@ -177,12 +176,6 @@ public class MainActivity extends Activity {
 
 
             }
-
-
-
-
-
         }
     }
-
 }
