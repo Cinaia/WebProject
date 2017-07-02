@@ -1,18 +1,21 @@
 package com.example.admin.cryptowatcher;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Alex on 01.07.2017.
  */
 
-public class Currencies {
+public class Currencies  {
 
     private String PAIR_NAME = null;
-    private Double LAST_BID = null;
-    private Double HIGH_BID = null;
-    private Double LOW_BID = null;
-    private Double AVG = null;
+    private Float LAST_BID = null;
+    private Float HIGH_BID = null;
+    private Float LOW_BID = null;
+    private Float AVG = null;
 
-    public Currencies(String name,Double last, double high, double low, double avg){
+    public Currencies(String name,float last, float high, float low, float avg){
         PAIR_NAME = name;
         LAST_BID = last;
         HIGH_BID = high;
@@ -20,20 +23,23 @@ public class Currencies {
         AVG = avg;
     }
 
+
+
     public String getPAIR_NAME(){
         return PAIR_NAME;
     }
-    public double getLAST_BID(){
+    public float getLAST_BID(){
         return  LAST_BID;
     }
-    public double getHIGH_BID(){
+    public float getHIGH_BID(){
         return  HIGH_BID;
     }
-    public double getLOW_BID(){
+    public float getLOW_BID(){
         return  LOW_BID;
     }
-    public double getAVG(){
+    public float getAVG(){
         return  AVG;
     }
+
 
 }

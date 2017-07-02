@@ -1,11 +1,13 @@
 package com.example.admin.cryptowatcher;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,18 +31,27 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.json.JSONObject.NULL;
+
 public class MainActivity extends Activity {
 
+    public static final String BTC = "btc_usd";
+    public static final String LTC = "ltc_usd";
+    public static final String ETH= "eth_usd";
+    public static final String NVC = "nvc_usd";
+  //  private static final String  = "";
     private static final String LAST = "last";
     private static final String HIGH = "high";
     private static final String LOW = "low";
     private static final String AVEREGE = "avg";
 
-    List<Currencies> API_COLLECTION = new ArrayList<>();
+    public static List<Currencies> API_COLLECTION = new ArrayList<>();//List for parsed data from API
 
     public static String LOG_TAG = "my_log";
+
     ImageView splashImageBtc;
     TextView statusField;
+
     private ProgressBar spinnerBar;
 
     @Override
@@ -64,9 +75,27 @@ public class MainActivity extends Activity {
     }
 
 
+    void parseToList(JSONObject obj,String pairName){
 
 
+        try {
 
+
+            float lastValue = Float.parseFloat(obj.getString(LAST));
+            float highValue = Float.parseFloat(obj.getString(HIGH));
+            float lowValue = Float.parseFloat(obj.getString(LOW));
+            float avgValue = Float.parseFloat(obj.getString(AVEREGE));
+
+            Currencies pair = new Currencies(pairName,lastValue,highValue,lowValue,avgValue);
+
+            API_COLLECTION.add(pair);
+
+        }catch (final JSONException e){
+
+        }
+
+
+    }
 
     private class ShowDialogAsyncTask extends AsyncTask<Void , Integer, String> {
 
@@ -85,10 +114,7 @@ public class MainActivity extends Activity {
         protected void onPreExecute() {
             super.onPreExecute();
 
-
             statusField.setText("Connecting..");
-
-
 
         }
 
@@ -98,7 +124,7 @@ public class MainActivity extends Activity {
 
 
             try {
-                URL url = new URL("https://btc-e.nz/api/3/ticker/btc_usd-btc_rur");
+                URL url = new URL("https://btc-e.nz/api/3/ticker/btc_usd-ltc_usd-eth_usd-nvc_usd");
 
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
@@ -121,84 +147,39 @@ public class MainActivity extends Activity {
             }
 
 
-
-
-
             return resultJson;
         }
-
-       /* @Override
-        protected void onProgressUpdate(Integer... values) {
-            super.onProgressUpdate(values);
-
-
-            statusField.setText("Progress: " + values[0]);
-
-            int imgAlphaValue = values[0]*2;
-
-            splashImageBtc.setImageAlpha(imgAlphaValue);
-
-
-        }*/
 
         @Override
         protected void onPostExecute(String strJson) {
             super.onPostExecute(strJson);
 
-           // statusField.setText("Parsing results");
-
-
-
-
-
             statusField.setText("Done!");
 
 
-
-
-
-
             Log.d(LOG_TAG, strJson);
-            //statusField.setText(strJson);
-            /*JSONObject dataJsonObj = null;
-            String secondName = "";
 
             try {
-                dataJsonObj = new JSONObject(strJson);
-                JSONArray friends = dataJsonObj.getJSONArray("friends");
+                JSONObject jsonObj = new JSONObject(strJson);
 
-                // 1. достаем инфо о втором друге - индекс 1
-                JSONObject secondFriend = friends.getJSONObject(1);
-                secondName = secondFriend.getString("name");
-                Log.d(LOG_TAG, "Второе имя: " + secondName);
 
-                // 2. перебираем и выводим контакты каждого друга
-                for (int i = 0; i < friends.length(); i++) {
-                    JSONObject friend = friends.getJSONObject(i);
+                parseToList(jsonObj.getJSONObject(BTC),BTC);
+                parseToList(jsonObj.getJSONObject(LTC),LTC);
+                parseToList(jsonObj.getJSONObject(ETH),ETH);
+                parseToList(jsonObj.getJSONObject(NVC),NVC);
+                Intent intent = new Intent(MainActivity.this,HomeActivity.class);
 
-                    JSONObject contacts = friend.getJSONObject("contacts");
+                startActivity(intent);
 
-                    String phone = contacts.getString("mobile");
-                    String email = contacts.getString("email");
-                    String skype = contacts.getString("skype");
+            } catch (final JSONException e) {
 
-                    Log.d(LOG_TAG, "phone: " + phone);
-                    Log.d(LOG_TAG, "email: " + email);
-                    Log.d(LOG_TAG, "skype: " + skype);
-                }
+                statusField.setText("Connection error!");
 
-            } catch (JSONException e) {
-                e.printStackTrace();
+
             }
-            */
 
 
 
-
-
-
-            Intent intent = new Intent(MainActivity.this,HomeActivity.class);
-            startActivity(intent);
 
 
         }
