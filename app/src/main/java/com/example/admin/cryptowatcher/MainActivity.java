@@ -41,10 +41,10 @@ public class MainActivity extends Activity {
     public static final String NVC = "nvc_usd";
 
 
-    private static final String LAST = "last";
-    private static final String HIGH = "high";
-    private static final String LOW = "low";
-    private static final String AVEREGE = "avg";
+    public static final String LAST = "last";
+    public static final String HIGH = "high";
+    public static final String LOW = "low";
+    public static final String AVEREGE = "avg";
 
     public static List<Currencies> API_COLLECTION = new ArrayList<>();//List for parsed data from API
 
@@ -67,6 +67,8 @@ public class MainActivity extends Activity {
 
         setContentView(R.layout.splash_screen);
 
+
+       // getActionBar().setTitle("Текущий курс");
         statusField = (TextView) findViewById(R.id.splashProccessText);
         splashImageBtc = (ImageView) findViewById(R.id.splashImage);
 
@@ -97,6 +99,7 @@ public class MainActivity extends Activity {
     }
 
     private class ShowDialogAsyncTask extends AsyncTask<Void , Integer, String> {
+
 
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
@@ -145,6 +148,22 @@ public class MainActivity extends Activity {
                 e.printStackTrace();
             }
 
+            try {
+                JSONObject jsonObj = new JSONObject(resultJson);
+
+
+                parseToList(jsonObj.getJSONObject(BTC),BTC);
+                parseToList(jsonObj.getJSONObject(LTC),LTC);
+                parseToList(jsonObj.getJSONObject(ETH),ETH);
+                parseToList(jsonObj.getJSONObject(NVC),NVC);
+
+
+            } catch (final JSONException e) {
+
+               // statusField.setText("Connection error!");
+
+
+            }
 
             return resultJson;
         }
@@ -155,27 +174,24 @@ public class MainActivity extends Activity {
 
             statusField.setText("Done!");
 
+            Intent intent = new Intent(MainActivity.this,HomeActivity.class);
+
+            startActivity(intent);
+
 
             Log.d(LOG_TAG, strJson);
 
-            try {
-                JSONObject jsonObj = new JSONObject(strJson);
-
-
-                parseToList(jsonObj.getJSONObject(BTC),BTC);
-                parseToList(jsonObj.getJSONObject(LTC),LTC);
-                parseToList(jsonObj.getJSONObject(ETH),ETH);
-                parseToList(jsonObj.getJSONObject(NVC),NVC);
-                Intent intent = new Intent(MainActivity.this,HomeActivity.class);
-
-                startActivity(intent);
-
-            } catch (final JSONException e) {
-
-                statusField.setText("Connection error!");
-
-
-            }
+            finish();
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 }
