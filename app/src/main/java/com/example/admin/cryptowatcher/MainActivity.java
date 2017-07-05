@@ -35,16 +35,17 @@ import static org.json.JSONObject.NULL;
 
 public class MainActivity extends Activity {
 
+    //json obj tags
     public static final String BTC = "btc_usd";
     public static final String LTC = "ltc_usd";
     public static final String ETH= "eth_usd";
     public static final String NVC = "nvc_usd";
 
-
+    //json values tags
     public static final String LAST = "last";
     public static final String HIGH = "high";
     public static final String LOW = "low";
-    public static final String AVEREGE = "avg";
+    public static final String AVERAGE = "avg";
 
     public static List<Currencies> API_COLLECTION = new ArrayList<>();//List for parsed data from API
 
@@ -53,7 +54,7 @@ public class MainActivity extends Activity {
     ImageView splashImageBtc;
     TextView statusField;
 
-    private ProgressBar spinnerBar;
+    //private ProgressBar spinnerBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +69,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.splash_screen);
 
 
-       // getActionBar().setTitle("Текущий курс");
+
         statusField = (TextView) findViewById(R.id.splashProccessText);
         splashImageBtc = (ImageView) findViewById(R.id.splashImage);
 
@@ -85,7 +86,7 @@ public class MainActivity extends Activity {
             float lastValue = Float.parseFloat(obj.getString(LAST));
             float highValue = Float.parseFloat(obj.getString(HIGH));
             float lowValue = Float.parseFloat(obj.getString(LOW));
-            float avgValue = Float.parseFloat(obj.getString(AVEREGE));
+            float avgValue = Float.parseFloat(obj.getString(AVERAGE));
 
             Currencies pair = new Currencies(pairName,lastValue,highValue,lowValue,avgValue);
 
@@ -105,12 +106,10 @@ public class MainActivity extends Activity {
         BufferedReader reader = null;
         String resultJson = "";
 
-        boolean isLoaded = false;
-        int i = 1;
+        //boolean isLoaded = false;
 
-        void setProgStatus(int alpha){
-            splashImageBtc.setImageAlpha(alpha);
-        }
+
+
 
         @Override
         protected void onPreExecute() {

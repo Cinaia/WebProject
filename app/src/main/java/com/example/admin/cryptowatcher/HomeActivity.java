@@ -24,14 +24,22 @@ import java.util.List;
 public class HomeActivity extends AppCompatActivity {
 
 
-
+    //******Init textView fields********
     TextView btc;
     TextView ltc;
     TextView eth;
     TextView nvc;
-    public ProgressDialog progDialog;
-    private static final String TAG = "my_tag_home";
-    boolean isFirstOpen = true;
+
+
+    //public ProgressDialog progDialog;
+
+
+    private static final String TAG = "my_tag_home";                                               //tag for logs
+
+
+    boolean isFirstOpen = true;                                                                    //checks if activity is opened of the first time
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,36 +52,64 @@ public class HomeActivity extends AppCompatActivity {
 
 
 
-        showRates();
+        showRates();                                                                               // push values from API_COLLECTION to textView fields
 
     }
 
-    private void showRates(){
+    private void showRates(){                                                                      //formatting and pushing values from API_COLLECTION to the text fields
         for (Currencies obj: MainActivity.API_COLLECTION){
-            if (obj.getPAIR_NAME() == MainActivity.BTC){
-                btc.setText( Float.toString(obj.getLAST_BID()) + " USD");
-            }else if (obj.getPAIR_NAME() == MainActivity.LTC){
-                ltc.setText(Float.toString(obj.getLAST_BID()) + " USD");
-            }else if (obj.getPAIR_NAME() == MainActivity.ETH){
-                eth.setText(Float.toString(obj.getLAST_BID()) + " USD");
-            }else if(obj.getPAIR_NAME() == MainActivity.NVC){
-                nvc.setText(Float.toString(obj.getLAST_BID()) + " USD");
+            if (obj.getPAIR_NAME().equals(MainActivity.BTC)){
+                btc.setText(String.format("%s USD", Float.toString(obj.getLAST_BID())));
+            }else if (obj.getPAIR_NAME().equals(MainActivity.LTC)){
+                ltc.setText(String.format("%s USD", Float.toString(obj.getLAST_BID())));
+            }else if (obj.getPAIR_NAME().equals(MainActivity.ETH)){
+                eth.setText(String.format("%s USD", Float.toString(obj.getLAST_BID())));
+            }else if(obj.getPAIR_NAME().equals(MainActivity.NVC)){
+                nvc.setText(String.format("%s USD", Float.toString(obj.getLAST_BID())));
             }
         }
     }
+
+
+    void parseToList(JSONObject obj, String pairName){                                             //API parsing and filling in the API_COLLECTION list
+
+        try {                                                                                      //extractin values from JSON file and push them to the API_COLLECTION
+
+            float lastValue = Float.parseFloat(obj.getString(MainActivity.LAST));
+            float highValue = Float.parseFloat(obj.getString(MainActivity.HIGH));
+            float lowValue = Float.parseFloat(obj.getString(MainActivity.LOW));
+            float avgValue = Float.parseFloat(obj.getString(MainActivity.AVERAGE));
+
+            Currencies pair = new Currencies(pairName,lastValue,highValue,lowValue,avgValue);
+
+            MainActivity.API_COLLECTION.add(pair);
+
+        }catch (final JSONException e){
+
+        }
+
+
+    }
+
     private class AsyncTaskRunner extends AsyncTask<Void , Integer, String> {
 
-        private String resp;
-        ProgressDialog mProgressDialog;
+
+        ProgressDialog mProgressDialog;     //progress dialog init for updating rates'values
+
+
+        //*******Url init block********
+
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
         String resultJson = "";
+
+
         @Override
         protected String doInBackground(Void... params) {
 
             try {
 
-                URL url = new URL("https://btc-e.nz/api/3/ticker/btc_usd-ltc_usd-eth_usd-nvc_usd");
+                URL url = new URL("https://btc-e.nz/api/3/ticker/btc_usd-ltc_usd-eth_usd-nvc_usd");//URL address for API
 
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
@@ -95,7 +131,9 @@ public class HomeActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            try {
+            try {                                                                                  //parsing API request result
+
+
                 JSONObject jsonObj = new JSONObject(resultJson);
 
 
@@ -107,11 +145,11 @@ public class HomeActivity extends AppCompatActivity {
 
             } catch (final JSONException e) {
 
-                // statusField.setText("Connection error!");
+               //add err handler
 
 
             }
-            SystemClock.sleep(1000);
+            //SystemClock.sleep(1000);
             return resultJson;
         }
 
@@ -119,20 +157,21 @@ public class HomeActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
 
-            showRates();
-            mProgressDialog.dismiss();
+            showRates();                                                                           //push values to textView fields
+
+            mProgressDialog.dismiss();                                                             //hide ProgressDialog
         }
 
 
         @Override
         protected void onPreExecute() {
 
-            MainActivity.API_COLLECTION.clear();
+            MainActivity.API_COLLECTION.clear();                                                   //clear previous values
 
 
             mProgressDialog = new ProgressDialog(
-                    HomeActivity.this,R.style.Theme_AppCompat_DayNight_Dialog);
-            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    HomeActivity.this,R.style.Theme_AppCompat_DayNight_Dialog);                    //set style for progressDialog
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);                        //set spinner
             mProgressDialog.setMessage("Загружаю. Подождите...");
 
             mProgressDialog.show();
@@ -141,39 +180,22 @@ public class HomeActivity extends AppCompatActivity {
 
 
     }
-    void parseToList(JSONObject obj, String pairName){
 
-        try {
-
-            float lastValue = Float.parseFloat(obj.getString(MainActivity.LAST));
-            float highValue = Float.parseFloat(obj.getString(MainActivity.HIGH));
-            float lowValue = Float.parseFloat(obj.getString(MainActivity.LOW));
-            float avgValue = Float.parseFloat(obj.getString(MainActivity.AVEREGE));
-
-            Currencies pair = new Currencies(pairName,lastValue,highValue,lowValue,avgValue);
-
-            MainActivity.API_COLLECTION.add(pair);
-
-        }catch (final JSONException e){
-
-        }
-
-
-    }
 
     @Override
     protected void onStart() {
 
         super.onStart();
-        if(isFirstOpen) {
+        if(isFirstOpen) {                                                                          //if activity is first created
 
             isFirstOpen = false;
-        } else {
+        } else {                                                                                   //if activity called again , update rate values
             new AsyncTaskRunner().execute();
         }
 
     }
 
+    //on back button pressed
     @Override
     public void onBackPressed() {
         new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
