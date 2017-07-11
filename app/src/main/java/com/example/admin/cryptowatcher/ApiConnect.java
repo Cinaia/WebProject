@@ -28,7 +28,8 @@ public class ApiConnect {
     public static final String HIGH = "high";
     public static final String LOW = "low";
     public static final String AVERAGE = "avg";
-
+    public static final String BUY = "buy";
+    public static final String SELL = "sell";
 
     public static String API_URL_1 = "https://www.btc-e.nz/api/3";
 
@@ -45,7 +46,8 @@ public class ApiConnect {
     BufferedReader reader = null;
     String resultJson = "";
 
-    public void ApiConnect(){
+    public void ApiConnect(){ //add url option to parameters
+                              //add boolean "Use proxy"
 
         try {
             URL url = new URL("https://btc-e.nz/api/3/ticker/btc_usd-ltc_usd-eth_usd-nvc_usd");
@@ -99,8 +101,10 @@ public class ApiConnect {
             float highValue = Float.parseFloat(obj.getString(HIGH));
             float lowValue = Float.parseFloat(obj.getString(LOW));
             float avgValue = Float.parseFloat(obj.getString(AVERAGE));
+            float buyPrice = Float.parseFloat(obj.getString(BUY));
+            float sellPrice = Float.parseFloat(obj.getString(SELL));
 
-            Currencies pair = new Currencies(pairName,lastValue,highValue,lowValue,avgValue);
+            Currencies pair = new Currencies(pairName,lastValue,highValue,lowValue,avgValue,buyPrice,sellPrice);
 
             API_COLLECTION.add(pair);
 

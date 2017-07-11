@@ -21,6 +21,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.admin.cryptowatcher.MainActivity.BUY;
+
 public class HomeActivity extends AppCompatActivity {
 
 
@@ -29,6 +31,7 @@ public class HomeActivity extends AppCompatActivity {
     TextView ltc;
     TextView eth;
     TextView nvc;
+
 
 
     //public ProgressDialog progDialog;
@@ -51,7 +54,7 @@ public class HomeActivity extends AppCompatActivity {
         nvc = (TextView)findViewById(R.id.nvcVal);
 
 
-
+        //set on click listener for textfields
         showRates();                                                                               // push values from API_COLLECTION to textView fields
 
     }
@@ -79,8 +82,10 @@ public class HomeActivity extends AppCompatActivity {
             float highValue = Float.parseFloat(obj.getString(MainActivity.HIGH));
             float lowValue = Float.parseFloat(obj.getString(MainActivity.LOW));
             float avgValue = Float.parseFloat(obj.getString(MainActivity.AVERAGE));
+            float buyPrice = Float.parseFloat(obj.getString(MainActivity.BUY));
+            float sellPrice = Float.parseFloat(obj.getString(MainActivity.SELL));
 
-            Currencies pair = new Currencies(pairName,lastValue,highValue,lowValue,avgValue);
+            Currencies pair = new Currencies(pairName,lastValue,highValue,lowValue,avgValue,buyPrice,sellPrice);
 
             MainActivity.API_COLLECTION.add(pair);
 
@@ -196,6 +201,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     //on back button pressed
+    //consider toast message instead of alertDialog!!
     @Override
     public void onBackPressed() {
         new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)

@@ -46,6 +46,8 @@ public class MainActivity extends Activity {
     public static final String HIGH = "high";
     public static final String LOW = "low";
     public static final String AVERAGE = "avg";
+    public static final String BUY = "buy";
+    public static final String SELL = "sell";
 
     public static List<Currencies> API_COLLECTION = new ArrayList<>();//List for parsed data from API
 
@@ -87,8 +89,10 @@ public class MainActivity extends Activity {
             float highValue = Float.parseFloat(obj.getString(HIGH));
             float lowValue = Float.parseFloat(obj.getString(LOW));
             float avgValue = Float.parseFloat(obj.getString(AVERAGE));
+            float buyPrice = Float.parseFloat(obj.getString(BUY));
+            float sellPrice = Float.parseFloat(obj.getString(SELL));
 
-            Currencies pair = new Currencies(pairName,lastValue,highValue,lowValue,avgValue);
+            Currencies pair = new Currencies(pairName,lastValue,highValue,lowValue,avgValue,buyPrice,sellPrice);
 
             API_COLLECTION.add(pair);
 
@@ -187,6 +191,8 @@ public class MainActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
+
+
     }
 
     @Override
