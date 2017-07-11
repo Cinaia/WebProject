@@ -2,12 +2,14 @@ package com.example.admin.cryptowatcher;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.SystemClock;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -22,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.admin.cryptowatcher.MainActivity.BUY;
+import static com.example.admin.cryptowatcher.R.id.textView;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -57,6 +60,16 @@ public class HomeActivity extends AppCompatActivity {
         //set on click listener for textfields
         showRates();                                                                               // push values from API_COLLECTION to textView fields
 
+        btc.setOnClickListener(new View.OnClickListener(){
+
+            public void onClick(View view){
+                String pairName = "btc";
+                Intent detailScreen = new Intent(HomeActivity.this, DetailActivity.class);
+                detailScreen.putExtra("pairName",pairName);
+                startActivity(detailScreen);
+            }
+
+        });
     }
 
     private void showRates(){                                                                      //formatting and pushing values from API_COLLECTION to the text fields
@@ -223,6 +236,14 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if(isFirstOpen) {                                                                          //if activity is first created
+
+            isFirstOpen = false;
+        } else {                                                                                   //if activity called again , update rate values
+            new AsyncTaskRunner().execute();
+        }
+
+
         Log.d(TAG, "MainActivity: onResume()");
     }
 

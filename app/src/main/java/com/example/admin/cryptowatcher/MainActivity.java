@@ -2,9 +2,11 @@ package com.example.admin.cryptowatcher;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.media.Image;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -12,6 +14,7 @@ import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -56,7 +59,7 @@ public class MainActivity extends Activity {
     ImageView splashImageBtc;
     TextView statusField;
 
-    //private ProgressBar spinnerBar;
+    ProgressBar spinnerBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,10 +77,14 @@ public class MainActivity extends Activity {
 
         statusField = (TextView) findViewById(R.id.splashProccessText);
         splashImageBtc = (ImageView) findViewById(R.id.splashImage);
+        spinnerBar = (ProgressBar) findViewById(R.id.progressBar);
+        SystemClock.sleep(500);
 
-        new ShowDialogAsyncTask().execute();
-
-
+        if(isNetworkConnected()){
+            new ShowDialogAsyncTask().execute();
+        }else{
+            statusField.setText("Connection failed!");
+        }
     }
 
 
@@ -103,6 +110,11 @@ public class MainActivity extends Activity {
 
     }
 
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null;
+    }
     private class ShowDialogAsyncTask extends AsyncTask<Void , Integer, String> {
 
 
@@ -177,9 +189,9 @@ public class MainActivity extends Activity {
 
             statusField.setText("Done!");
 
-            Intent intent = new Intent(MainActivity.this,HomeActivity.class);
+                Intent intent = new Intent(MainActivity.this, HomeActivity.class);
 
-            startActivity(intent);
+                startActivity(intent);
 
 
             Log.d(LOG_TAG, strJson);
