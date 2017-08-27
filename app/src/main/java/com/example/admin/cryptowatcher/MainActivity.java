@@ -38,19 +38,26 @@ import static org.json.JSONObject.NULL;
 
 public class MainActivity extends Activity {
 
+    public static final String API_URL = "https://api.coinmarketcap.com/v1/ticker/?limit=10";
+
+
+    public static final int BTC_ID = 0;
+    public static final int ETH_ID = 1;
+    public static final int BTCC_ID = 2;
+    public static final int LTC_ID = 4;
     //json obj tags
-    public static final String BTC = "btc_usd";
-    public static final String LTC = "ltc_usd";
-    public static final String ETH= "eth_usd";
-    public static final String NVC = "nvc_usd";
+    public static final String BTC = "bitcoin";
+    public static final String LTC = "litecoin";
+    public static final String ETH= "ethereum";
+    public static final String BTCC = "bitcoin-cash";
 
     //json values tags
-    public static final String LAST = "last";
-    public static final String HIGH = "high";
-    public static final String LOW = "low";
-    public static final String AVERAGE = "avg";
-    public static final String BUY = "buy";
-    public static final String SELL = "sell";
+    public static final String ID = "id";
+    public static final String ONE_HOUR_SHIFT = "percent_change_1h";
+    public static final String TWENTYFOUR_HOUR_SHIFT = "percent_change_24h";
+    public static final String DAY_VOLUME = "24h_volume_usd";
+    public static final String PRICE = "price_usd";
+
 
     public static List<Currencies> API_COLLECTION = new ArrayList<>();//List for parsed data from API
 
@@ -88,18 +95,19 @@ public class MainActivity extends Activity {
     }
 
 
-    void parseToList(JSONObject obj,String pairName){
+   public static void parseToList(JSONObject obj,String pairName){
 
         try {
+            Log.d(LOG_TAG, "parseToList is called for the " + pairName);
 
-            float lastValue = Float.parseFloat(obj.getString(LAST));
-            float highValue = Float.parseFloat(obj.getString(HIGH));
-            float lowValue = Float.parseFloat(obj.getString(LOW));
-            float avgValue = Float.parseFloat(obj.getString(AVERAGE));
-            float buyPrice = Float.parseFloat(obj.getString(BUY));
-            float sellPrice = Float.parseFloat(obj.getString(SELL));
+            float oneHourShift = Float.parseFloat(obj.getString(ONE_HOUR_SHIFT));
+            float twentyFourHourShift = Float.parseFloat(obj.getString(TWENTYFOUR_HOUR_SHIFT));
+            float dayVolume = Float.parseFloat(obj.getString(DAY_VOLUME));
+            float buyPrice = Float.parseFloat(obj.getString(PRICE));
 
-            Currencies pair = new Currencies(pairName,lastValue,highValue,lowValue,avgValue,buyPrice,sellPrice);
+            Log.d(LOG_TAG, obj.getString(PRICE));
+            Log.d(LOG_TAG,obj.getString(DAY_VOLUME));
+            Currencies pair = new Currencies(pairName,oneHourShift,twentyFourHourShift,dayVolume,buyPrice);//String name,float hourChange, float dayChange, float dayVolume, float currentPrice
 
             API_COLLECTION.add(pair);
 
@@ -124,9 +132,6 @@ public class MainActivity extends Activity {
 
         //boolean isLoaded = false;
 
-
-
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -141,7 +146,7 @@ public class MainActivity extends Activity {
 
 
             try {
-                URL url = new URL("https://btc-e.nz/api/3/ticker/btc_usd-ltc_usd-eth_usd-nvc_usd");
+                URL url = new URL(API_URL);
 
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
@@ -164,22 +169,19 @@ public class MainActivity extends Activity {
             }
 
             try {
-                JSONObject jsonObj = new JSONObject(resultJson);
+                JSONArray jsonArr = new JSONArray(resultJson);
 
-
-                parseToList(jsonObj.getJSONObject(BTC),BTC);
-                parseToList(jsonObj.getJSONObject(LTC),LTC);
-                parseToList(jsonObj.getJSONObject(ETH),ETH);
-                parseToList(jsonObj.getJSONObject(NVC),NVC);
+                parseToList(jsonArr.getJSONObject(BTC_ID),BTC);
+                parseToList(jsonArr.getJSONObject(LTC_ID),LTC);
+                parseToList(jsonArr.getJSONObject(ETH_ID),ETH);
+                parseToList(jsonArr.getJSONObject(BTCC_ID),BTCC);
 
 
             } catch (final JSONException e) {
 
                // statusField.setText("Connection error!");
 
-
             }
-
             return resultJson;
         }
 
@@ -193,9 +195,6 @@ public class MainActivity extends Activity {
 
                 startActivity(intent);
 
-
-            Log.d(LOG_TAG, strJson);
-
             finish();
         }
     }
@@ -203,7 +202,6 @@ public class MainActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-
 
     }
 

@@ -3,6 +3,7 @@ package com.example.admin.cryptowatcher;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.SystemClock;
 import android.support.v7.app.AlertDialog;
@@ -10,8 +11,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,7 +26,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.admin.cryptowatcher.MainActivity.BUY;
+import static com.example.admin.cryptowatcher.MainActivity.PRICE;
 import static com.example.admin.cryptowatcher.R.id.textView;
 
 public class HomeActivity extends AppCompatActivity {
@@ -75,39 +78,46 @@ public class HomeActivity extends AppCompatActivity {
     private void showRates(){                                                                      //formatting and pushing values from API_COLLECTION to the text fields
         for (Currencies obj: MainActivity.API_COLLECTION){
             if (obj.getPAIR_NAME().equals(MainActivity.BTC)){
-                btc.setText(String.format("%s USD", Float.toString(obj.getLAST_BID())));
+                btc.setText(String.format("%s USD", Float.toString(obj.getPRICE())));
+                if(obj.getHOUR_CHANGE() > 0){
+                    btc.setTextColor(Color.parseColor("#FF99cc00"));
+                    btc.append(",  +" + obj.getHOUR_CHANGE().toString() );
+                }else{
+                    btc.setTextColor(Color.parseColor("#FFFF4444"));
+                    btc.append(",  " + obj.getHOUR_CHANGE().toString() );
+                }
             }else if (obj.getPAIR_NAME().equals(MainActivity.LTC)){
-                ltc.setText(String.format("%s USD", Float.toString(obj.getLAST_BID())));
+                ltc.setText(String.format("%s USD", Float.toString(obj.getPRICE())));
+                if(obj.getHOUR_CHANGE() > 0){
+                    ltc.setTextColor(Color.parseColor("#FF99cc00"));
+                    ltc.append(",  +" + obj.getHOUR_CHANGE().toString() );
+                }else{
+                    ltc.setTextColor(Color.parseColor("#FFFF4444"));
+                    ltc.append(",  " + obj.getHOUR_CHANGE().toString() );
+                }
             }else if (obj.getPAIR_NAME().equals(MainActivity.ETH)){
-                eth.setText(String.format("%s USD", Float.toString(obj.getLAST_BID())));
-            }else if(obj.getPAIR_NAME().equals(MainActivity.NVC)){
-                nvc.setText(String.format("%s USD", Float.toString(obj.getLAST_BID())));
+                eth.setText(String.format("%s USD", Float.toString(obj.getPRICE())));
+                if(obj.getHOUR_CHANGE() > 0){
+                    eth.setTextColor(Color.parseColor("#FF99cc00"));
+                    eth.append(",  +" + obj.getHOUR_CHANGE().toString() );
+                }else{
+                    eth.setTextColor(Color.parseColor("#FFFF4444"));
+                    eth.append(",  " + obj.getHOUR_CHANGE().toString() );
+                }
+            }else if(obj.getPAIR_NAME().equals(MainActivity.BTCC)){
+                nvc.setText(String.format("%s USD", Float.toString(obj.getPRICE())));
+                if(obj.getHOUR_CHANGE() > 0){
+                    nvc.setTextColor(Color.parseColor("#FF99cc00"));
+                    nvc.append(",  +" + obj.getHOUR_CHANGE().toString() );
+                }else{
+                    nvc.setTextColor(Color.parseColor("#FFFF4444"));
+                    nvc.append(",    " + obj.getHOUR_CHANGE().toString() );
+                }
             }
         }
     }
 
 
-    void parseToList(JSONObject obj, String pairName){                                             //API parsing and filling in the API_COLLECTION list
-
-        try {                                                                                      //extractin values from JSON file and push them to the API_COLLECTION
-
-            float lastValue = Float.parseFloat(obj.getString(MainActivity.LAST));
-            float highValue = Float.parseFloat(obj.getString(MainActivity.HIGH));
-            float lowValue = Float.parseFloat(obj.getString(MainActivity.LOW));
-            float avgValue = Float.parseFloat(obj.getString(MainActivity.AVERAGE));
-            float buyPrice = Float.parseFloat(obj.getString(MainActivity.BUY));
-            float sellPrice = Float.parseFloat(obj.getString(MainActivity.SELL));
-
-            Currencies pair = new Currencies(pairName,lastValue,highValue,lowValue,avgValue,buyPrice,sellPrice);
-
-            MainActivity.API_COLLECTION.add(pair);
-
-        }catch (final JSONException e){
-
-        }
-
-
-    }
 
     private class AsyncTaskRunner extends AsyncTask<Void , Integer, String> {
 
@@ -127,7 +137,7 @@ public class HomeActivity extends AppCompatActivity {
 
             try {
 
-                URL url = new URL("https://btc-e.nz/api/3/ticker/btc_usd-ltc_usd-eth_usd-nvc_usd");//URL address for API
+                URL url = new URL(MainActivity.API_URL);//URL address for API
 
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
@@ -152,13 +162,13 @@ public class HomeActivity extends AppCompatActivity {
             try {                                                                                  //parsing API request result
 
 
-                JSONObject jsonObj = new JSONObject(resultJson);
+                JSONArray jsonArr = new JSONArray(resultJson);
 
 
-                parseToList(jsonObj.getJSONObject(MainActivity.BTC),MainActivity.BTC);
-                parseToList(jsonObj.getJSONObject(MainActivity.LTC),MainActivity.LTC);
-                parseToList(jsonObj.getJSONObject(MainActivity.ETH),MainActivity.ETH);
-                parseToList(jsonObj.getJSONObject(MainActivity.NVC),MainActivity.NVC);
+                MainActivity.parseToList(jsonArr.getJSONObject(MainActivity.BTC_ID),MainActivity.BTC);
+                MainActivity.parseToList(jsonArr.getJSONObject(MainActivity.LTC_ID),MainActivity.LTC);
+                MainActivity.parseToList(jsonArr.getJSONObject(MainActivity.ETH_ID),MainActivity.ETH);
+                MainActivity.parseToList(jsonArr.getJSONObject(MainActivity.BTCC_ID),MainActivity.BTCC);
 
 
             } catch (final JSONException e) {

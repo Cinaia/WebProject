@@ -2,4 +2,9 @@
     <string name="app_name">CryptoWatcher</string>
     <string name="_11">11</string>
     <string name="cryptowatcher">CryptoWatcher</string>
+    <string name="BTC_S">BTC</string>
+    <string name="LTC_S">LTC</string>
+    <string name="ETH_S">ETH</string>
+    <string name="NVC_S">NVC</string>
+    <string name="PPC_S">PPC</string>
 </resources>

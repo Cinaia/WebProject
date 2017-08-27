@@ -48,7 +48,7 @@ public class ApiConnect {
 
     public void ApiConnect(){ //add url option to parameters
                               //add boolean "Use proxy"
-
+/*
         try {
             URL url = new URL("https://btc-e.nz/api/3/ticker/btc_usd-ltc_usd-eth_usd-nvc_usd");
 
@@ -87,13 +87,13 @@ public class ApiConnect {
             // statusField.setText("Connection error!");
 
 
-        }
+        }*/
 
     }
 
 
 
-    void parseToList(JSONObject obj, String pairName){
+  /*  void parseToList(JSONObject obj, String pairName){
 
         try {
 
@@ -113,7 +113,7 @@ public class ApiConnect {
         }
 
 
-    }
+    }*/
 
 
 }
