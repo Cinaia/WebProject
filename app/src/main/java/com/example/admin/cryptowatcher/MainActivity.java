@@ -59,7 +59,7 @@ public class MainActivity extends Activity {
     public static final String PRICE = "price_usd";
 
 
-    public static List<Currencies> API_COLLECTION = new ArrayList<>();//List for parsed data from API
+    public static ArrayList<Currencies> API_COLLECTION = new ArrayList<>();//List for parsed data from API
 
     public static String LOG_TAG = "my_log";
 

@@ -11,7 +11,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -39,87 +41,48 @@ public class HomeActivity extends AppCompatActivity {
     TextView nvc;
 
 
-
-    //public ProgressDialog progDialog;
-
+    listAdapter listAdapter;
 
     private static final String TAG = "my_tag_home";                                               //tag for logs
 
-
     boolean isFirstOpen = true;                                                                    //checks if activity is opened of the first time
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_screen);
 
-        btc = (TextView)findViewById(R.id.btcVal);
-        ltc =(TextView)findViewById(R.id.ltcVal);
-        eth = (TextView)findViewById(R.id.ethVal);
-        nvc = (TextView)findViewById(R.id.nvcVal);
+        listAdapter = new listAdapter(this, MainActivity.API_COLLECTION);
 
+        // настраиваем список
+        ListView lvMain = (ListView) findViewById(R.id.homeList);
 
-        //set on click listener for textfields
-        showRates();                                                                               // push values from API_COLLECTION to textView fields
+        lvMain.setAdapter(listAdapter);
+        lvMain.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-        btc.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-            public void onClick(View view){
-                String pairName = "btc";
+                String pairName = MainActivity.API_COLLECTION.get(position).getPAIR_NAME();
+                Log.d(TAG, pairName + " - got this name bitch");
                 Intent detailScreen = new Intent(HomeActivity.this, DetailActivity.class);
-                detailScreen.putExtra("pairName",pairName);
+                detailScreen.putExtra("pairName", pairName);
                 startActivity(detailScreen);
-            }
 
+            }
         });
-    }
-
-    private void showRates(){                                                                      //formatting and pushing values from API_COLLECTION to the text fields
-        for (Currencies obj: MainActivity.API_COLLECTION){
-            if (obj.getPAIR_NAME().equals(MainActivity.BTC)){
-                btc.setText(String.format("%s USD", Float.toString(obj.getPRICE())));
-                if(obj.getHOUR_CHANGE() > 0){
-                    btc.setTextColor(Color.parseColor("#FF99cc00"));
-                    btc.append(",  +" + obj.getHOUR_CHANGE().toString() );
-                }else{
-                    btc.setTextColor(Color.parseColor("#FFFF4444"));
-                    btc.append(",  " + obj.getHOUR_CHANGE().toString() );
-                }
-            }else if (obj.getPAIR_NAME().equals(MainActivity.LTC)){
-                ltc.setText(String.format("%s USD", Float.toString(obj.getPRICE())));
-                if(obj.getHOUR_CHANGE() > 0){
-                    ltc.setTextColor(Color.parseColor("#FF99cc00"));
-                    ltc.append(",  +" + obj.getHOUR_CHANGE().toString() );
-                }else{
-                    ltc.setTextColor(Color.parseColor("#FFFF4444"));
-                    ltc.append(",  " + obj.getHOUR_CHANGE().toString() );
-                }
-            }else if (obj.getPAIR_NAME().equals(MainActivity.ETH)){
-                eth.setText(String.format("%s USD", Float.toString(obj.getPRICE())));
-                if(obj.getHOUR_CHANGE() > 0){
-                    eth.setTextColor(Color.parseColor("#FF99cc00"));
-                    eth.append(",  +" + obj.getHOUR_CHANGE().toString() );
-                }else{
-                    eth.setTextColor(Color.parseColor("#FFFF4444"));
-                    eth.append(",  " + obj.getHOUR_CHANGE().toString() );
-                }
-            }else if(obj.getPAIR_NAME().equals(MainActivity.BTCC)){
-                nvc.setText(String.format("%s USD", Float.toString(obj.getPRICE())));
-                if(obj.getHOUR_CHANGE() > 0){
-                    nvc.setTextColor(Color.parseColor("#FF99cc00"));
-                    nvc.append(",  +" + obj.getHOUR_CHANGE().toString() );
-                }else{
-                    nvc.setTextColor(Color.parseColor("#FFFF4444"));
-                    nvc.append(",    " + obj.getHOUR_CHANGE().toString() );
-                }
-            }
-        }
+      //  pushValues();
     }
 
 
+    void pushValues() {
 
-    private class AsyncTaskRunner extends AsyncTask<Void , Integer, String> {
+
+
+
+    }
+
+    private class AsyncTaskRunner extends AsyncTask<Void, Integer, String> {
 
 
         ProgressDialog mProgressDialog;     //progress dialog init for updating rates'values
@@ -165,15 +128,15 @@ public class HomeActivity extends AppCompatActivity {
                 JSONArray jsonArr = new JSONArray(resultJson);
 
 
-                MainActivity.parseToList(jsonArr.getJSONObject(MainActivity.BTC_ID),MainActivity.BTC);
-                MainActivity.parseToList(jsonArr.getJSONObject(MainActivity.LTC_ID),MainActivity.LTC);
-                MainActivity.parseToList(jsonArr.getJSONObject(MainActivity.ETH_ID),MainActivity.ETH);
-                MainActivity.parseToList(jsonArr.getJSONObject(MainActivity.BTCC_ID),MainActivity.BTCC);
+                MainActivity.parseToList(jsonArr.getJSONObject(MainActivity.BTC_ID), MainActivity.BTC);
+                MainActivity.parseToList(jsonArr.getJSONObject(MainActivity.LTC_ID), MainActivity.LTC);
+                MainActivity.parseToList(jsonArr.getJSONObject(MainActivity.ETH_ID), MainActivity.ETH);
+                MainActivity.parseToList(jsonArr.getJSONObject(MainActivity.BTCC_ID), MainActivity.BTCC);
 
 
             } catch (final JSONException e) {
 
-               //add err handler
+                //add err handler
 
 
             }
@@ -185,8 +148,8 @@ public class HomeActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
 
-            showRates();                                                                           //push values to textView fields
-
+            // showRates();                                                                           //push values to textView fields
+            pushValues();
             mProgressDialog.dismiss();                                                             //hide ProgressDialog
         }
 
@@ -196,25 +159,21 @@ public class HomeActivity extends AppCompatActivity {
 
             MainActivity.API_COLLECTION.clear();                                                   //clear previous values
 
-
             mProgressDialog = new ProgressDialog(
-                    HomeActivity.this,R.style.Theme_AppCompat_DayNight_Dialog);                    //set style for progressDialog
+                    HomeActivity.this, R.style.Theme_AppCompat_DayNight_Dialog);                    //set style for progressDialog
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);                        //set spinner
             mProgressDialog.setMessage("Загружаю. Подождите...");
 
             mProgressDialog.show();
 
         }
-
-
     }
-
 
     @Override
     protected void onStart() {
 
         super.onStart();
-        if(isFirstOpen) {                                                                          //if activity is first created
+        if (isFirstOpen) {                                                                          //if activity is first created
 
             isFirstOpen = false;
         } else {                                                                                   //if activity called again , update rate values
@@ -231,8 +190,7 @@ public class HomeActivity extends AppCompatActivity {
                 .setIcon(R.mipmap.logo)
                 .setTitle("Выход")
                 .setMessage("Покинуть приложение?")
-                .setPositiveButton("Да", new DialogInterface.OnClickListener()
-                {
+                .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         finish();
@@ -246,11 +204,12 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(isFirstOpen) {                                                                          //if activity is first created
+        if (isFirstOpen) {                                                                          //if activity is first created
 
             isFirstOpen = false;
         } else {                                                                                   //if activity called again , update rate values
             new AsyncTaskRunner().execute();
+
         }
 
 
@@ -268,12 +227,12 @@ public class HomeActivity extends AppCompatActivity {
         super.onStop();
         Log.d(TAG, "MainActivity: onStop()");
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "MainActivity: onDestroy()");
-    }
-
 }
+  //  @Override
+  //  protected void onDestroy() {
+  //      super.onDestroy();
+   //     Log.d(TAG, "MainActivity: onDestroy()");
+   // }
+
+
 
