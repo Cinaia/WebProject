@@ -57,14 +57,14 @@ public class listAdapter extends BaseAdapter {
         ((TextView) view.findViewById(R.id.priceVal)).setText(pair.getPRICE().toString() + " USD");
 
         if(pair.getHOUR_CHANGE() > 0) {
-            ((TextView) view.findViewById(R.id.priceShift)).setText("+" + pair.getHOUR_CHANGE());
+            ((TextView) view.findViewById(R.id.priceShift)).setText("+" + pair.getHOUR_CHANGE() + "%");
             ((TextView) view.findViewById(R.id.priceShift)).setTextColor(Color.parseColor("#FF99cc00"));
         }else{
-            ((TextView) view.findViewById(R.id.priceShift)).setText("" + pair.getHOUR_CHANGE());
+            ((TextView) view.findViewById(R.id.priceShift)).setText("" + pair.getHOUR_CHANGE() + "%");
             ((TextView) view.findViewById(R.id.priceShift)).setTextColor(Color.parseColor("#FFFF4444"));
         }
 
-        ((TextView) view.findViewById(R.id.pairName)).setText(pair.getPAIR_NAME());
+        ((TextView) view.findViewById(R.id.pairName)).setText(pair.getABBR());
 
 
         return view;

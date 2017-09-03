@@ -71,6 +71,7 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
+        Log.d(TAG,"onCreate() is called");
       //  pushValues();
     }
 
@@ -172,14 +173,15 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
 
-        super.onStart();
+       super.onStart();
+        /*
         if (isFirstOpen) {                                                                          //if activity is first created
 
             isFirstOpen = false;
         } else {                                                                                   //if activity called again , update rate values
             new AsyncTaskRunner().execute();
         }
-
+            Log.d(TAG,"HomeActivity:onStart() " + isFirstOpen);*/
     }
 
     //on back button pressed
@@ -213,19 +215,19 @@ public class HomeActivity extends AppCompatActivity {
         }
 
 
-        Log.d(TAG, "MainActivity: onResume()");
+        Log.d(TAG, "HomeActivity: onResume()" + isFirstOpen);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d(TAG, "MainActivity: onPause()");
+        Log.d(TAG, "HomeActivity: onPause()" + isFirstOpen);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.d(TAG, "MainActivity: onStop()");
+        Log.d(TAG, "HomeActivity: onStop()" + isFirstOpen);
     }
 }
   //  @Override

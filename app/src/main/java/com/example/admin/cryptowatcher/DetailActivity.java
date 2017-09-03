@@ -35,7 +35,7 @@ public class DetailActivity extends AppCompatActivity {
         for (Currencies obj: MainActivity.API_COLLECTION){
             if (obj.getPAIR_NAME().equals(inte)){
                 Log.d(TAG,"Found match!");
-                volume.setText("" + obj.getDAY_VOL());
+                volume.setText("" + (long)obj.getDAY_VOL());
                 price.setText("" + obj.getPRICE());
             }
         }

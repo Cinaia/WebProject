@@ -14,19 +14,20 @@ public class Currencies  {
     private Float DAY_CHANGE = null;
     private Float DAY_VOL = null;
     private Float PRICE = null;
+    private String ABBR = null;
 
-
-    public Currencies(String name,float hourChange, float dayChange, float dayVolume, float currentPrice){
+    public Currencies(String name,float hourChange, float dayChange, float dayVolume, float currentPrice, String shortName){
         PAIR_NAME = name;
         HOUR_CHANGE = hourChange;
         DAY_CHANGE = dayChange;
         DAY_VOL = dayVolume;
         PRICE = currentPrice;
+        ABBR = shortName;
 
     }
 
 
-
+    public String getABBR() {return  ABBR;}
     public String getPAIR_NAME(){return PAIR_NAME;}
     public Float getPRICE() {
         return PRICE;

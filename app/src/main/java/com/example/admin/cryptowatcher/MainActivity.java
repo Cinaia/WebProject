@@ -57,6 +57,7 @@ public class MainActivity extends Activity {
     public static final String TWENTYFOUR_HOUR_SHIFT = "percent_change_24h";
     public static final String DAY_VOLUME = "24h_volume_usd";
     public static final String PRICE = "price_usd";
+    public static final String SYMBOL = "symbol";
 
 
     public static ArrayList<Currencies> API_COLLECTION = new ArrayList<>();//List for parsed data from API
@@ -104,10 +105,11 @@ public class MainActivity extends Activity {
             float twentyFourHourShift = Float.parseFloat(obj.getString(TWENTYFOUR_HOUR_SHIFT));
             float dayVolume = Float.parseFloat(obj.getString(DAY_VOLUME));
             float buyPrice = Float.parseFloat(obj.getString(PRICE));
+            String symbol = obj.getString(SYMBOL);
 
             Log.d(LOG_TAG, obj.getString(PRICE));
             Log.d(LOG_TAG,obj.getString(DAY_VOLUME));
-            Currencies pair = new Currencies(pairName,oneHourShift,twentyFourHourShift,dayVolume,buyPrice);//String name,float hourChange, float dayChange, float dayVolume, float currentPrice
+            Currencies pair = new Currencies(pairName,oneHourShift,twentyFourHourShift,dayVolume,buyPrice,symbol);//String name,float hourChange, float dayChange, float dayVolume, float currentPrice
 
             API_COLLECTION.add(pair);
 
