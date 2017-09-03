@@ -18,6 +18,8 @@
         android:gravity="center"
 
         android:text="000"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="24sp"
         android:textStyle="bold" />
 
 
