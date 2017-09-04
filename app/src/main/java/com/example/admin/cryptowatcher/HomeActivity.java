@@ -33,14 +33,6 @@ import static com.example.admin.cryptowatcher.R.id.textView;
 
 public class HomeActivity extends AppCompatActivity {
 
-
-    //******Init textView fields********
-    TextView btc;
-    TextView ltc;
-    TextView eth;
-    TextView nvc;
-
-
     listAdapter listAdapter;
 
     private static final String TAG = "my_tag_home";                                               //tag for logs
@@ -129,15 +121,17 @@ public class HomeActivity extends AppCompatActivity {
                 JSONArray jsonArr = new JSONArray(resultJson);
 
 
-                MainActivity.parseToList(jsonArr.getJSONObject(MainActivity.BTC_ID), MainActivity.BTC);
-                MainActivity.parseToList(jsonArr.getJSONObject(MainActivity.LTC_ID), MainActivity.LTC);
-                MainActivity.parseToList(jsonArr.getJSONObject(MainActivity.ETH_ID), MainActivity.ETH);
-                MainActivity.parseToList(jsonArr.getJSONObject(MainActivity.BTCC_ID), MainActivity.BTCC);
-
-
-            } catch (final JSONException e) {
-
-                //add err handler
+                MainActivity.parseToList(jsonArr.getJSONObject(MainActivity.BTC_ID),MainActivity.BTC);
+                MainActivity.parseToList(jsonArr.getJSONObject(MainActivity.LTC_ID),MainActivity.LTC);
+                MainActivity.parseToList(jsonArr.getJSONObject(MainActivity.ETH_ID),MainActivity.ETH);
+                MainActivity.parseToList(jsonArr.getJSONObject(MainActivity.BTCC_ID),MainActivity.BTCC);
+                MainActivity.parseToList(jsonArr.getJSONObject(MainActivity.ETHC_ID),MainActivity.ETHC);
+                MainActivity.parseToList(jsonArr.getJSONObject(MainActivity.DASH_ID),MainActivity.DASH);
+                MainActivity.parseToList(jsonArr.getJSONObject(MainActivity.ZEC_ID),MainActivity.ZEC);
+                MainActivity.parseToList(jsonArr.getJSONObject(MainActivity.XPR_ID),MainActivity.XPR);
+                MainActivity.parseToList(jsonArr.getJSONObject(MainActivity.XMR_ID),MainActivity.XMR);
+            } catch (final JSONException e){
+                //add err handle
 
 
             }

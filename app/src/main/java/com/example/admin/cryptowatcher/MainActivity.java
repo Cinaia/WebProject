@@ -38,19 +38,28 @@ import static org.json.JSONObject.NULL;
 
 public class MainActivity extends Activity {
 
-    public static final String API_URL = "https://api.coinmarketcap.com/v1/ticker/?limit=10";
+    public static final String API_URL = "https://api.coinmarketcap.com/v1/ticker/?limit=20";
 
 
     public static final int BTC_ID = 0;
     public static final int ETH_ID = 1;
     public static final int BTCC_ID = 2;
+    public static final int XPR_ID = 3;
     public static final int LTC_ID = 4;
+    public static final int XMR_ID = 8;
+    public static final int ETHC_ID = 9;
+    public static final int DASH_ID = 6;
+    public static final int ZEC_ID = 16;
     //json obj tags
     public static final String BTC = "bitcoin";
     public static final String LTC = "litecoin";
     public static final String ETH= "ethereum";
     public static final String BTCC = "bitcoin-cash";
-
+    public static final String ETHC = "ethereum-classic";
+    public static final String DASH = "dash";
+    public static final String ZEC = "zcash";
+    public static final String XPR = "ripple";
+    public static final String XMR = "monero";
     //json values tags
     public static final String ID = "id";
     public static final String ONE_HOUR_SHIFT = "percent_change_1h";
@@ -177,6 +186,12 @@ public class MainActivity extends Activity {
                 parseToList(jsonArr.getJSONObject(LTC_ID),LTC);
                 parseToList(jsonArr.getJSONObject(ETH_ID),ETH);
                 parseToList(jsonArr.getJSONObject(BTCC_ID),BTCC);
+                parseToList(jsonArr.getJSONObject(ETHC_ID),ETHC);
+                parseToList(jsonArr.getJSONObject(DASH_ID),DASH);
+                parseToList(jsonArr.getJSONObject(ZEC_ID),ZEC);
+                parseToList(jsonArr.getJSONObject(XPR_ID),XPR);
+                parseToList(jsonArr.getJSONObject(XMR_ID),XMR);
+
 
 
             } catch (final JSONException e) {
