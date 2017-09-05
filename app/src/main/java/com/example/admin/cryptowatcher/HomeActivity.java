@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.admin.cryptowatcher.MainActivity.PRICE;
-import static com.example.admin.cryptowatcher.R.id.textView;
+import static com.example.admin.cryptowatcher.R.id.textView1;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -63,7 +63,7 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
-        Log.d(TAG,"onCreate() is called");
+        //Log.d(TAG,MainActivity.API_COLLECTION.get(2).getPAIR_NAME());
       //  pushValues();
     }
 
@@ -108,7 +108,7 @@ public class HomeActivity extends AppCompatActivity {
                 while ((line = reader.readLine()) != null) {
                     buffer.append(line);
                 }
-
+                Log.d(TAG,"got info");
                 resultJson = buffer.toString();
 
             } catch (Exception e) {
@@ -120,16 +120,10 @@ public class HomeActivity extends AppCompatActivity {
 
                 JSONArray jsonArr = new JSONArray(resultJson);
 
+                for(int i = 0; i < MainActivity.LIMIT; i++){
+                    MainActivity.parseToList(jsonArr.getJSONObject(i));
+                }
 
-                MainActivity.parseToList(jsonArr.getJSONObject(MainActivity.BTC_ID),MainActivity.BTC);
-                MainActivity.parseToList(jsonArr.getJSONObject(MainActivity.LTC_ID),MainActivity.LTC);
-                MainActivity.parseToList(jsonArr.getJSONObject(MainActivity.ETH_ID),MainActivity.ETH);
-                MainActivity.parseToList(jsonArr.getJSONObject(MainActivity.BTCC_ID),MainActivity.BTCC);
-                MainActivity.parseToList(jsonArr.getJSONObject(MainActivity.ETHC_ID),MainActivity.ETHC);
-                MainActivity.parseToList(jsonArr.getJSONObject(MainActivity.DASH_ID),MainActivity.DASH);
-                MainActivity.parseToList(jsonArr.getJSONObject(MainActivity.ZEC_ID),MainActivity.ZEC);
-                MainActivity.parseToList(jsonArr.getJSONObject(MainActivity.XPR_ID),MainActivity.XPR);
-                MainActivity.parseToList(jsonArr.getJSONObject(MainActivity.XMR_ID),MainActivity.XMR);
             } catch (final JSONException e){
                 //add err handle
 
@@ -190,6 +184,7 @@ public class HomeActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         finish();
+                        System.exit(0);
                     }
 
                 })
@@ -205,10 +200,7 @@ public class HomeActivity extends AppCompatActivity {
             isFirstOpen = false;
         } else {                                                                                   //if activity called again , update rate values
             new AsyncTaskRunner().execute();
-
         }
-
-
         Log.d(TAG, "HomeActivity: onResume()" + isFirstOpen);
     }
 
@@ -218,17 +210,18 @@ public class HomeActivity extends AppCompatActivity {
         Log.d(TAG, "HomeActivity: onPause()" + isFirstOpen);
     }
 
+    public void onDestroy() {
+        super.onDestroy();
+
+    }
+
     @Override
     protected void onStop() {
         super.onStop();
         Log.d(TAG, "HomeActivity: onStop()" + isFirstOpen);
     }
 }
-  //  @Override
-  //  protected void onDestroy() {
-  //      super.onDestroy();
-   //     Log.d(TAG, "MainActivity: onDestroy()");
-   // }
+
 
 
 

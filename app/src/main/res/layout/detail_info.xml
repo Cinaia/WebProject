@@ -7,195 +7,212 @@
     android:layout_height="match_parent"
 
     android:background="@color/colorPrimary"
-    tools:layout_editor_absoluteY="0dp"
+    tools:layout_editor_absoluteY="81dp"
     tools:layout_editor_absoluteX="0dp"
     tools:context=".DetailActivity">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/dayDetailVal"
+        android:layout_width="wrap_content"
+        android:layout_height="26dp"
+        android:text="45.3554"
+        android:textColor="@android:color/holo_green_light"
+        tools:layout_constraintTop_creator="1"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="57dp"
+        app:layout_constraintTop_toBottomOf="@+id/pairNameText"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="@+id/dayDetailText" />
+
+    <TextView
+        android:id="@+id/weekDetailText"
+        android:layout_width="95dp"
+        android:layout_height="0dp"
+        android:layout_column="1"
+        android:layout_row="2"
+        android:text="За неделю"
+        android:textColor="@android:color/background_light"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toBottomOf="@+id/dayDetailText"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/dayDetailText" />
+
+    <TextView
+        android:id="@+id/dayDetailText"
+        android:layout_width="75dp"
+        android:layout_height="25dp"
+        android:text="За день"
+        android:textColor="@android:color/background_light"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toTopOf="@+id/dayDetailVal"
+        android:layout_marginStart="135dp"
+        android:layout_marginEnd="133dp"
+        app:layout_constraintRight_toRightOf="@+id/pairNameText"
+        android:layout_marginTop="22dp"
+        app:layout_constraintTop_toBottomOf="@+id/pairNameText"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintLeft_toLeftOf="@+id/hourDetailText" />
+
+    <TextView
+        android:id="@+id/btcPriceText"
+        android:layout_width="126dp"
+        android:layout_height="21dp"
+        android:layout_column="1"
+        android:layout_row="6"
+        android:text="Цена в биткоинах:"
+        android:textColor="@android:color/holo_green_light"
+        android:textSize="14sp"
+        tools:layout_constraintRight_creator="1"
+        android:layout_marginStart="59dp"
+        android:layout_marginEnd="58dp"
+        app:layout_constraintRight_toRightOf="@+id/dayDetailText"
+        app:layout_constraintBaseline_toBaselineOf="@+id/btcPriceVal"
+        tools:layout_constraintBaseline_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <TextView
+        android:id="@+id/weekDetailVal"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:text="44.314"
+        android:textColor="@android:color/holo_green_light"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        android:layout_marginStart="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/dayDetailVal"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="@+id/weekDetailText"
+        app:layout_constraintTop_toTopOf="@+id/dayDetailVal" />
+
+    <TextView
+        android:id="@+id/volumeDetailText"
+        android:layout_width="0dp"
+        android:layout_height="23dp"
+        android:layout_column="0"
+        android:layout_row="1"
+        android:text="Капитализация: "
+        android:textColor="@android:color/holo_green_light"
+        android:textSize="14sp"
+        app:layout_constraintRight_toLeftOf="@+id/volumeDetailVal"
+        tools:layout_constraintRight_creator="1"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/volumeDetailVal"
+        tools:layout_constraintBaseline_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="@+id/imageView2" />
+
+    <TextView
+        android:id="@+id/hourDetailText"
+        android:layout_width="76dp"
+        android:layout_height="0dp"
+        android:text="За час"
+        android:textColor="@android:color/background_light"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        android:layout_marginStart="33dp"
+        app:layout_constraintBottom_toBottomOf="@+id/dayDetailText"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/dayDetailText" />
+
+    <TextView
+        android:id="@+id/volumeDetailVal"
+        android:layout_width="wrap_content"
+        android:layout_height="19dp"
+        android:text="1278943"
+        android:textColor="@android:color/background_light"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toTopOf="@+id/imageView2"
+        android:layout_marginTop="108dp"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="107dp"
+        app:layout_constraintLeft_toLeftOf="@+id/btcPriceVal"
+        app:layout_constraintTop_toTopOf="@+id/dayDetailText" />
+
+    <TextView
+        android:id="@+id/btcPriceVal"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:text="44.6554"
+        android:textColor="@android:color/background_light"
+        tools:layout_constraintTop_creator="1"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="13dp"
+        app:layout_constraintTop_toBottomOf="@+id/volumeDetailText"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toRightOf="@+id/btcPriceText" />
+
+    <TextView
+        android:id="@+id/hourDetailVal"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:text="43.5442"
+        android:textColor="@android:color/holo_green_light"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toBottomOf="@+id/dayDetailVal"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="@+id/hourDetailText"
+        app:layout_constraintTop_toTopOf="@+id/dayDetailVal" />
+
+    <TextView
+        android:id="@+id/utcTimeText"
+        android:layout_width="wrap_content"
+        android:layout_height="26dp"
+        android:layout_marginBottom="29dp"
+        android:layout_marginTop="35dp"
+        android:text="Информация за "
+        android:textColor="@android:color/holo_orange_light"
+        app:layout_constraintBottom_toTopOf="@+id/imageView2"
+        app:layout_constraintLeft_toRightOf="@+id/btcPriceText"
+        app:layout_constraintRight_toRightOf="@+id/btcPriceText"
+        app:layout_constraintTop_toTopOf="@+id/btcPriceText"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1" />
+
+    <ImageView
+        android:id="@+id/imageView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="High"
-        android:textColor="@android:color/background_light"
-        android:layout_marginStart="27dp"
+        android:layout_column="1"
+        android:layout_row="3"
+        android:alpha="0.3"
+        app:srcCompat="@mipmap/logo"
         tools:layout_constraintTop_creator="1"
-        android:layout_marginTop="16dp"
+        tools:layout_constraintRight_creator="1"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="287dp"
         tools:layout_constraintLeft_creator="1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
+        android:id="@+id/pairNameText"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Low"
-        android:textColor="@android:color/background_light"
-        tools:layout_constraintTop_creator="1"
-        android:layout_marginTop="12dp"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        tools:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="@+id/textView" />
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="16dp"
-        android:text="45.3554"
-        android:textColor="@android:color/holo_green_light"
-        app:layout_constraintLeft_toRightOf="@+id/textView"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintTop_creator="1" />
-
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="43.5442"
-        android:textColor="@android:color/holo_green_light"
-        tools:layout_constraintTop_creator="1"
-        android:layout_marginStart="1dp"
-        android:layout_marginTop="12dp"
-        app:layout_constraintTop_toBottomOf="@+id/textView3"
-        tools:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="@+id/textView3" />
-
-    <TextView
-        android:id="@+id/textView6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Averge"
-        android:textColor="@android:color/background_light"
-        android:layout_marginStart="66dp"
-        android:layout_marginEnd="67dp"
-        app:layout_constraintRight_toLeftOf="@+id/textView8"
+        android:gravity="center"
+        android:text="Bitcoin"
+        android:textColor="@android:color/holo_orange_light"
+        android:textSize="24sp"
         tools:layout_constraintTop_creator="1"
         tools:layout_constraintRight_creator="1"
-        android:layout_marginTop="16dp"
-        tools:layout_constraintLeft_creator="1"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/textView3"
-        app:layout_constraintHorizontal_bias="1.0" />
-
-    <TextView
-        android:id="@+id/textView7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Volume"
-        android:textColor="@android:color/background_light"
-        tools:layout_constraintTop_creator="1"
-        android:layout_marginTop="12dp"
-        app:layout_constraintTop_toBottomOf="@+id/textView6"
-        tools:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="@+id/textView6" />
-
-    <TextView
-        android:id="@+id/textView8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="44.314"
-        android:textColor="@android:color/holo_green_light"
-        android:layout_marginEnd="37dp"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_constraintRight_creator="1"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginRight="43dp" />
-
-    <TextView
-        android:id="@+id/textView9"
-        android:layout_width="102dp"
-        android:layout_height="15dp"
-        android:text="1278943"
-        android:textColor="@android:color/holo_green_light"
-        app:layout_constraintLeft_toRightOf="@+id/textView7"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/textView8"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/textView11"
-        app:layout_constraintHorizontal_bias="0.68"
-        app:layout_constraintVertical_bias="0.074" />
-
-    <TextView
-        android:id="@+id/textView10"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Buy"
-        android:textColor="@android:color/holo_green_light"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
-        app:layout_constraintBottom_toTopOf="@+id/textView12"
-        android:layout_marginEnd="9dp"
-        app:layout_constraintRight_toRightOf="@+id/textView12"
-        android:layout_marginBottom="11dp" />
-
-    <TextView
-        android:id="@+id/textView11"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="11dp"
-        android:layout_marginLeft="9dp"
-        android:layout_marginStart="9dp"
-        android:text="Sell"
-        android:textColor="@android:color/holo_red_light"
-        app:layout_constraintBottom_toTopOf="@+id/textView13"
-        app:layout_constraintLeft_toLeftOf="@+id/textView13"
-        tools:layout_constraintBottom_creator="1"
-        tools:layout_constraintLeft_creator="1" />
-
-    <TextView
-        android:id="@+id/textView12"
-        android:layout_width="52dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="56dp"
-        android:text="44.6554"
-        android:textColor="@android:color/background_light"
-        app:layout_constraintBottom_toBottomOf="@+id/textView13"
+        android:layout_marginTop="2dp"
+        tools:layout_constraintLeft_creator="1"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView13"
-        tools:layout_constraintBottom_creator="1"
-        tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintTop_creator="1" />
-
-    <TextView
-        android:id="@+id/textView13"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="46.1324"
-        android:textColor="@android:color/background_light"
-        android:layout_marginEnd="36dp"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_constraintRight_creator="1"
-        android:layout_marginStart="37dp"
-        app:layout_constraintRight_toRightOf="@+id/textView8"
-        android:layout_marginTop="145dp"
-        tools:layout_constraintLeft_creator="1"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/textView6"
-        app:layout_constraintHorizontal_bias="0.616" />
-
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="232dp"
-        android:layout_height="239dp"
-        android:alpha="0.3"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.568"
-        app:srcCompat="@mipmap/logo"
-        tools:layout_constraintBottom_creator="1"
-        tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintTop_creator="1" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

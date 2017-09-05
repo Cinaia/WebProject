@@ -65,7 +65,7 @@ public class listAdapter extends BaseAdapter {
         }
 
         ((TextView) view.findViewById(R.id.pairName)).setText(pair.getABBR());
-
+        ((TextView) view.findViewById(R.id.nameTextView)).setText(pair.getPAIR_NAME());
 
         return view;
     }

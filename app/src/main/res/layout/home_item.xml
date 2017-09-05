@@ -1,47 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/textView1"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
+    android:layout_height="wrap_content"
     android:background="@color/colorPrimary"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:weightSum="1">
 
 
-    <TextView
-        android:id="@+id/pairName"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="20dp"
         android:layout_weight="0"
-        android:background="@color/colorPrimary"
+        android:orientation="horizontal">
 
-        android:gravity="center"
+        <TextView
+            android:id="@+id/pairName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
 
-        android:text="000"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="24sp"
-        android:textStyle="bold" />
+            android:layout_marginTop="5dp"
 
+            android:layout_weight="1"
+            android:background="@layout/rounded_view"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="000"
+            android:textColor="@android:color/background_light"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/priceVal"
+        <TextView
+            android:id="@+id/priceVal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="123"
+            android:textColor="@android:color/background_light"
+            android:textSize="18sp"></TextView>
+
+        <TextView
+            android:id="@+id/priceShift"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+
+            android:elevation="0dp"
+            android:gravity="center"
+            android:text="456"></TextView>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:orientation="horizontal">
 
-        android:gravity="center"
-        android:text="123"
-        android:textColor="@android:color/background_light"
-        android:textSize="20sp"
-        android:layout_weight="0.77"></TextView>
-
-    <TextView
-        android:id="@+id/priceShift"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="center"
-
-        android:elevation="0dp"
-        android:text="456"></TextView>
+        <TextView
+            android:id="@+id/nameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:layout_weight="1"
+            android:text="TextView"
+            android:textColor="@android:color/darker_gray" />
+    </LinearLayout>
 
 
 </LinearLayout>

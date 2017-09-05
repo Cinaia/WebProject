@@ -38,36 +38,23 @@ import static org.json.JSONObject.NULL;
 
 public class MainActivity extends Activity {
 
+    public static final int LIMIT = 20;
+    public static final String CURRENCY = "USD";
     public static final String API_URL = "https://api.coinmarketcap.com/v1/ticker/?limit=20";
 
 
-    public static final int BTC_ID = 0;
-    public static final int ETH_ID = 1;
-    public static final int BTCC_ID = 2;
-    public static final int XPR_ID = 3;
-    public static final int LTC_ID = 4;
-    public static final int XMR_ID = 8;
-    public static final int ETHC_ID = 9;
-    public static final int DASH_ID = 6;
-    public static final int ZEC_ID = 16;
-    //json obj tags
-    public static final String BTC = "bitcoin";
-    public static final String LTC = "litecoin";
-    public static final String ETH= "ethereum";
-    public static final String BTCC = "bitcoin-cash";
-    public static final String ETHC = "ethereum-classic";
-    public static final String DASH = "dash";
-    public static final String ZEC = "zcash";
-    public static final String XPR = "ripple";
-    public static final String XMR = "monero";
     //json values tags
     public static final String ID = "id";
+    public static final String NAME = "name";
+    public static final String PRICE_BTC = "price_btc";
+    public static final String MARKET_CAP_USD = "market_cap_usd";
     public static final String ONE_HOUR_SHIFT = "percent_change_1h";
     public static final String TWENTYFOUR_HOUR_SHIFT = "percent_change_24h";
+    public static final String WEEK_CHANGE = "percent_change_7d";
     public static final String DAY_VOLUME = "24h_volume_usd";
     public static final String PRICE = "price_usd";
     public static final String SYMBOL = "symbol";
-
+    public static final String UTC_TIME = "last_updated";
 
     public static ArrayList<Currencies> API_COLLECTION = new ArrayList<>();//List for parsed data from API
 
@@ -90,7 +77,7 @@ public class MainActivity extends Activity {
 
         setContentView(R.layout.splash_screen);
 
-
+        Log.d("eredd", "onCreate method is called");
 
         statusField = (TextView) findViewById(R.id.splashProccessText);
         splashImageBtc = (ImageView) findViewById(R.id.splashImage);
@@ -105,25 +92,33 @@ public class MainActivity extends Activity {
     }
 
 
-   public static void parseToList(JSONObject obj,String pairName){
+   public static void parseToList(JSONObject obj){
 
         try {
-            Log.d(LOG_TAG, "parseToList is called for the " + pairName);
+
 
             float oneHourShift = Float.parseFloat(obj.getString(ONE_HOUR_SHIFT));
             float twentyFourHourShift = Float.parseFloat(obj.getString(TWENTYFOUR_HOUR_SHIFT));
             float dayVolume = Float.parseFloat(obj.getString(DAY_VOLUME));
             float buyPrice = Float.parseFloat(obj.getString(PRICE));
+            double btcPrice = Double.parseDouble(obj.getString(PRICE_BTC));
+            float weekChange = Float.parseFloat(obj.getString(WEEK_CHANGE));
+            long marketCap = (obj.getLong(MARKET_CAP_USD));
+            long utcTime = (obj.getLong(UTC_TIME));
             String symbol = obj.getString(SYMBOL);
+            String pairName = obj.getString(ID);
 
-            Log.d(LOG_TAG, obj.getString(PRICE));
-            Log.d(LOG_TAG,obj.getString(DAY_VOLUME));
-            Currencies pair = new Currencies(pairName,oneHourShift,twentyFourHourShift,dayVolume,buyPrice,symbol);//String name,float hourChange, float dayChange, float dayVolume, float currentPrice
+
+
+            Log.d(LOG_TAG, obj.getString(DAY_VOLUME));
+            Currencies pair = new Currencies(pairName,oneHourShift,twentyFourHourShift,dayVolume,
+                    buyPrice,symbol,btcPrice,marketCap,weekChange,utcTime);//String name,float hourChange, float dayChange, float dayVolume, float currentPrice,
+           // String shortName,float btcPrice, long marketCap , float weekChange, String utcTime
 
             API_COLLECTION.add(pair);
 
         }catch (final JSONException e){
-
+            Log.d("eredd", e.toString());
         }
 
 
@@ -131,7 +126,7 @@ public class MainActivity extends Activity {
 
     private boolean isNetworkConnected() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-
+        Log.d("eredd", "isConnected method is called");
         return cm.getActiveNetworkInfo() != null;
     }
     private class ShowDialogAsyncTask extends AsyncTask<Void , Integer, String> {
@@ -182,17 +177,10 @@ public class MainActivity extends Activity {
             try {
                 JSONArray jsonArr = new JSONArray(resultJson);
 
-                parseToList(jsonArr.getJSONObject(BTC_ID),BTC);
-                parseToList(jsonArr.getJSONObject(LTC_ID),LTC);
-                parseToList(jsonArr.getJSONObject(ETH_ID),ETH);
-                parseToList(jsonArr.getJSONObject(BTCC_ID),BTCC);
-                parseToList(jsonArr.getJSONObject(ETHC_ID),ETHC);
-                parseToList(jsonArr.getJSONObject(DASH_ID),DASH);
-                parseToList(jsonArr.getJSONObject(ZEC_ID),ZEC);
-                parseToList(jsonArr.getJSONObject(XPR_ID),XPR);
-                parseToList(jsonArr.getJSONObject(XMR_ID),XMR);
-
-
+                Log.d("eredd", "parseeeee");
+                for(int i = 0; i < LIMIT; i++){
+                    parseToList(jsonArr.getJSONObject(i));
+                }
 
             } catch (final JSONException e) {
 
