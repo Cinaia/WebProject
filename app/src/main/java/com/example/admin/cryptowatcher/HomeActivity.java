@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,6 +45,9 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_screen);
 
+        //if(isFirstOpen == false){
+          //  new AsyncTaskRunner().execute();
+        //}
         listAdapter = new listAdapter(this, MainActivity.API_COLLECTION);
 
         // настраиваем список
@@ -63,8 +67,7 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
-        //Log.d(TAG,MainActivity.API_COLLECTION.get(2).getPAIR_NAME());
-      //  pushValues();
+
     }
 
 
@@ -139,6 +142,7 @@ public class HomeActivity extends AppCompatActivity {
 
             // showRates();                                                                           //push values to textView fields
             pushValues();
+            SystemClock.sleep(500);
             mProgressDialog.dismiss();                                                             //hide ProgressDialog
         }
 
@@ -153,7 +157,10 @@ public class HomeActivity extends AppCompatActivity {
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);                        //set spinner
             mProgressDialog.setMessage("Загружаю. Подождите...");
 
+
             mProgressDialog.show();
+
+
 
         }
     }
@@ -162,15 +169,10 @@ public class HomeActivity extends AppCompatActivity {
     protected void onStart() {
 
        super.onStart();
-        /*
-        if (isFirstOpen) {                                                                          //if activity is first created
+        Log.d(TAG,"onStart is called");
 
-            isFirstOpen = false;
-        } else {                                                                                   //if activity called again , update rate values
-            new AsyncTaskRunner().execute();
-        }
-            Log.d(TAG,"HomeActivity:onStart() " + isFirstOpen);*/
     }
+
 
     //on back button pressed
     //consider toast message instead of alertDialog!!
@@ -195,31 +197,33 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (isFirstOpen) {                                                                          //if activity is first created
-
-            isFirstOpen = false;
-        } else {                                                                                   //if activity called again , update rate values
+                     if(isFirstOpen){
+                          isFirstOpen = false;                          //if activity called again , update rate values
+                     }
             new AsyncTaskRunner().execute();
-        }
+
         Log.d(TAG, "HomeActivity: onResume()" + isFirstOpen);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+
         Log.d(TAG, "HomeActivity: onPause()" + isFirstOpen);
-    }
-
-    public void onDestroy() {
-        super.onDestroy();
-
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+
         Log.d(TAG, "HomeActivity: onStop()" + isFirstOpen);
     }
+    public void onDestroy() {
+        super.onDestroy();
+
+    }
+
+
 }
 
 

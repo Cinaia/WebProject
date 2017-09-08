@@ -35,6 +35,8 @@ public class DetailActivity extends AppCompatActivity {
     TextView btcPriceVal;
     TextView utcTimeVal;
     TextView pairNameText;
+    TextView priceVal;
+
 
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -51,6 +53,8 @@ public class DetailActivity extends AppCompatActivity {
         btcPriceVal = (TextView) findViewById(R.id.btcPriceVal);
         utcTimeVal = (TextView) findViewById(R.id.utcTimeText);
         pairNameText = (TextView) findViewById(R.id.pairNameText);
+        priceVal = (TextView) findViewById(R.id.priceVal);
+
         Intent intent = getIntent();
         String inte = intent.getStringExtra("pairName");
         Log.d(TAG, inte);
@@ -86,14 +90,16 @@ public class DetailActivity extends AppCompatActivity {
                     weekDetailVal.setText("" + obj.getWEEK_CHANGE() + "%");
                     weekDetailVal.setTextColor(Color.parseColor("#FFFF4444"));
                 }
-                
+
+                priceVal.setText(obj.getPRICE() + " USD");
+
                 volumeDetailVal.setText("" + obj.getMARKET_CAP_USD() + " USD");
                 btcPriceVal.setText("" + obj.getPRICE_BTC() + " BTC");
 
                 Date date = new Date(obj.getUTC_TIME() * 1000);
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String formattedDate = sdf.format(date);
-                utcTimeVal.setText("Данные за " + formattedDate);
+                utcTimeVal.setText(formattedDate);
             }
         }
     }
