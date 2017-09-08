@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_column="1"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="24dp"
+        android:layout_marginRight="8dp"
         android:layout_marginTop="9dp"
         android:layout_row="2"
         android:text="За неделю"
@@ -52,14 +52,15 @@
         android:textSize="18sp"
         android:layout_marginTop="9dp"
         app:layout_constraintTop_toBottomOf="@+id/pairNameText"
-        android:layout_marginRight="165dp"
+        android:layout_marginRight="43dp"
         app:layout_constraintRight_toRightOf="@+id/pairNameText"
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="@+id/pairNameText"
         app:layout_constraintHorizontal_bias="0.58"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/priceVal"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        android:layout_marginStart="8dp" />
 
     <TextView
         android:id="@+id/btcPriceText"
@@ -80,7 +81,8 @@
         android:layout_marginRight="8dp"
         app:layout_constraintHorizontal_bias="0.0"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/utcTimeText" />
+        app:layout_constraintBottom_toTopOf="@+id/utcTimeText"
+        app:layout_constraintVertical_bias="0.5" />
 
     <TextView
         android:id="@+id/weekDetailVal"
@@ -107,7 +109,6 @@
         android:layout_width="wrap_content"
         android:layout_height="24dp"
         android:layout_column="0"
-        android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         android:layout_row="1"
@@ -141,7 +142,6 @@
         android:layout_height="19dp"
         android:text="1278943"
         android:textColor="@android:color/background_light"
-        android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
@@ -161,7 +161,8 @@
         app:layout_constraintBottom_toTopOf="@+id/utcTimeText"
 
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/volumeDetailVal" />
+        app:layout_constraintTop_toBottomOf="@+id/volumeDetailVal"
+        android:layout_marginEnd="8dp" />
 
     <TextView
         android:id="@+id/hourDetailVal"
@@ -189,12 +190,13 @@
         android:layout_height="26dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="43dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="43dp"
         android:layout_marginTop="8dp"
+        android:alpha="1"
         android:text="Информация за "
-        android:textColor="?android:attr/colorControlNormal"
+        android:textColor="?attr/colorBackgroundFloating"
         app:layout_constraintBottom_toTopOf="@+id/imageView2"
         app:layout_constraintHorizontal_bias="0.427"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -218,11 +220,13 @@
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@+id/pairNameText"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="1.0"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
 
     <TextView
         android:id="@+id/pairNameText"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
@@ -244,7 +248,7 @@
 
     <TextView
         android:id="@+id/priceVal"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
