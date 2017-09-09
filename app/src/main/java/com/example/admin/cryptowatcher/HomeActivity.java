@@ -6,9 +6,11 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.SystemClock;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -37,6 +39,7 @@ public class HomeActivity extends AppCompatActivity {
     listAdapter listAdapter;
 
     private static final String TAG = "my_tag_home";                                               //tag for logs
+    private SwipeRefreshLayout swipeContainer;
 
     boolean isFirstOpen = true;                                                                    //checks if activity is opened of the first time
 
@@ -45,9 +48,23 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_screen);
 
-        //if(isFirstOpen == false){
-          //  new AsyncTaskRunner().execute();
-        //}
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+        toolbar.setTitle("Текущий курс");
+
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
+        swipeContainer.setDistanceToTriggerSync(200);
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new AsyncTaskRunner(false).execute();
+            }
+        });
+
+
         listAdapter = new listAdapter(this, MainActivity.API_COLLECTION);
 
         // настраиваем список
@@ -78,6 +95,7 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
+
     private class AsyncTaskRunner extends AsyncTask<Void, Integer, String> {
 
 
@@ -89,6 +107,12 @@ public class HomeActivity extends AppCompatActivity {
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
         String resultJson = "";
+        private boolean showProgressDialog = true;
+
+        public AsyncTaskRunner(boolean showLoading) {
+            super();
+            showProgressDialog = showLoading;
+        }
 
 
         @Override
@@ -140,10 +164,12 @@ public class HomeActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
 
-            // showRates();                                                                           //push values to textView fields
-            pushValues();
-            SystemClock.sleep(500);
-            mProgressDialog.dismiss();                                                             //hide ProgressDialog
+                                                                                 //push values to textView fields
+            if(showProgressDialog) {
+                SystemClock.sleep(500);
+                mProgressDialog.dismiss();
+            }
+            swipeContainer.setRefreshing(false);
         }
 
 
@@ -151,15 +177,15 @@ public class HomeActivity extends AppCompatActivity {
         protected void onPreExecute() {
 
             MainActivity.API_COLLECTION.clear();                                                   //clear previous values
+            if(showProgressDialog) {
+                mProgressDialog = new ProgressDialog(
+                        HomeActivity.this, R.style.Theme_AppCompat_DayNight_Dialog);                    //set style for progressDialog
+                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);                        //set spinner
+                mProgressDialog.setMessage("Загружаю. Подождите...");
 
-            mProgressDialog = new ProgressDialog(
-                    HomeActivity.this, R.style.Theme_AppCompat_DayNight_Dialog);                    //set style for progressDialog
-            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);                        //set spinner
-            mProgressDialog.setMessage("Загружаю. Подождите...");
 
-
-            mProgressDialog.show();
-
+                mProgressDialog.show();
+            }
 
 
         }
@@ -200,7 +226,7 @@ public class HomeActivity extends AppCompatActivity {
                      if(isFirstOpen){
                           isFirstOpen = false;                          //if activity called again , update rate values
                      }
-            new AsyncTaskRunner().execute();
+            new AsyncTaskRunner(true).execute();
 
         Log.d(TAG, "HomeActivity: onResume()" + isFirstOpen);
     }

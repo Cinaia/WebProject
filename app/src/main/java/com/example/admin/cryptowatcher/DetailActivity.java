@@ -10,9 +10,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -43,8 +46,22 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        requestWindowFeature(Window.FEATURE_ACTION_BAR);
+        //requestWindowFeature(Window.FEATURE_LEFT_ICON);
+       // requestWindowFeature(Window.FEATURE_ACTION_BAR);
         setContentView(R.layout.detail_info);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+        toolbar.setTitle("List Activity");
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                onBackPressed();// возврат на предыдущий activity
+            }
+        });
 
         hourDetailVal = (TextView) findViewById(R.id.hourDetailVal);
         dayDetailVal = (TextView) findViewById(R.id.dayDetailVal);
@@ -92,6 +109,7 @@ public class DetailActivity extends AppCompatActivity {
                 }
 
                 priceVal.setText(obj.getPRICE() + " USD");
+
 
                 volumeDetailVal.setText("" + obj.getMARKET_CAP_USD() + " USD");
                 btcPriceVal.setText("" + obj.getPRICE_BTC() + " BTC");
