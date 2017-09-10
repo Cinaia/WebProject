@@ -15,12 +15,8 @@
         android:id="@+id/toolbar"
         layout="@layout/toolbar"
 
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginTop="0dp"
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/pairNameText"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -81,23 +77,24 @@
     <TextView
         android:id="@+id/btcPriceText"
         android:layout_width="wrap_content"
-        android:layout_height="23dp"
+        android:layout_height="31dp"
         android:layout_column="1"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:layout_row="6"
         android:text="Цена в биткоинах:"
         android:textColor="?android:attr/textColorSecondaryInverse"
         android:textSize="14sp"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/volumeDetailText"
-        app:layout_constraintRight_toLeftOf="@+id/btcPriceVal"
-        android:layout_marginRight="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/utcTimeText"
         app:layout_constraintHorizontal_bias="0.0"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/utcTimeText" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/btcPriceVal"
+        app:layout_constraintTop_toBottomOf="@+id/volumeDetailText"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/weekDetailVal"
@@ -122,7 +119,7 @@
     <TextView
         android:id="@+id/volumeDetailText"
         android:layout_width="wrap_content"
-        android:layout_height="24dp"
+        android:layout_height="0dp"
         android:layout_column="0"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
@@ -154,7 +151,7 @@
     <TextView
         android:id="@+id/volumeDetailVal"
         android:layout_width="wrap_content"
-        android:layout_height="19dp"
+        android:layout_height="0dp"
         android:text="1278943"
         android:textColor="@android:color/background_light"
         android:layout_marginEnd="8dp"
@@ -166,18 +163,19 @@
     <TextView
         android:id="@+id/btcPriceVal"
         android:layout_width="wrap_content"
-        android:layout_height="17dp"
+        android:layout_height="wrap_content"
 
         android:layout_marginBottom="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="16dp"
         android:text="44.655"
+
         android:textColor="@android:color/background_light"
 
         app:layout_constraintBottom_toTopOf="@+id/utcTimeText"
-
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/volumeDetailVal"
-        android:layout_marginEnd="8dp" />
+        app:layout_constraintVertical_bias="0.129" />
 
 
     <TextView
@@ -202,8 +200,8 @@
 
     <TextView
         android:id="@+id/utcTimeText"
-        android:layout_width="wrap_content"
-        android:layout_height="26dp"
+        android:layout_width="111dp"
+        android:layout_height="37dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="43dp"
@@ -214,31 +212,35 @@
         android:text="Информация за "
         android:textColor="?attr/colorBackgroundFloating"
         app:layout_constraintBottom_toTopOf="@+id/imageView2"
-        app:layout_constraintHorizontal_bias="0.427"
+        app:layout_constraintHorizontal_bias="0.412"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/priceVal"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="1.0"
+        tools:layout_editor_absoluteY="329dp"
+        tools:layout_editor_absoluteX="123dp" />
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="374dp"
-        android:layout_height="215dp"
+        android:layout_width="256dp"
+        android:layout_height="185dp"
         android:layout_column="1"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:layout_row="3"
         android:alpha="0.3"
-        app:srcCompat="@mipmap/logo"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pairNameText"
         app:layout_constraintVertical_bias="1.0"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp" />
+        app:srcCompat="@mipmap/logo"
+        tools:layout_editor_absoluteY="374dp"
+        tools:layout_editor_absoluteX="52dp" />
 
     <TextView
         android:id="@+id/pairNameText"

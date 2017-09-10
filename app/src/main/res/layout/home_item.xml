@@ -14,15 +14,14 @@
         android:layout_weight="0"
         android:orientation="horizontal">
 
+
         <TextView
             android:id="@+id/pairName"
-            android:layout_width="wrap_content"
-
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
 
-            android:layout_gravity="left|center"
             android:layout_marginLeft="10dp"
-            android:layout_weight="1"
+            android:layout_weight="0.2"
             android:background="@layout/rounded_view"
             android:gravity="center"
             android:paddingLeft="10dp"
@@ -38,7 +37,7 @@
             android:layout_height="wrap_content"
 
             android:layout_gravity="center_horizontal|center"
-            android:layout_weight="1"
+            android:layout_weight="0.6"
             android:gravity="center"
             android:text="123"
             android:textColor="@android:color/background_light"
@@ -50,10 +49,14 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right|center"
 
-            android:layout_weight="1"
+            android:layout_marginRight="10dp"
+            android:layout_weight="0.2"
             android:elevation="0dp"
-            android:gravity="center"
+            android:gravity="right"
             android:text="456"></TextView>
+
+
+
 
     </LinearLayout>
 

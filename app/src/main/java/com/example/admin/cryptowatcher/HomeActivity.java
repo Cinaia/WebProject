@@ -50,34 +50,23 @@ public class HomeActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        Log.d("Fuck","onCreate is called");
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         toolbar.setTitle("Текущий курс");
 
-        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
-        swipeContainer.setDistanceToTriggerSync(200);
-        // Setup refresh listener which triggers new data loading
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new AsyncTaskRunner(false).execute();
-            }
-        });
-
-
         listAdapter = new listAdapter(this, MainActivity.API_COLLECTION);
 
-        // настраиваем список
+
         ListView lvMain = (ListView) findViewById(R.id.homeList);
 
         lvMain.setAdapter(listAdapter);
+
         lvMain.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 String pairName = MainActivity.API_COLLECTION.get(position).getPAIR_NAME();
-                Log.d(TAG, pairName + " - got this name bitch");
                 Intent detailScreen = new Intent(HomeActivity.this, DetailActivity.class);
                 detailScreen.putExtra("pairName", pairName);
                 startActivity(detailScreen);
@@ -85,12 +74,15 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-    }
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
+        swipeContainer.setDistanceToTriggerSync(200);
 
-
-    void pushValues() {
-
-
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new AsyncTaskRunner(false).execute();
+            }
+        });
 
 
     }
@@ -135,28 +127,27 @@ public class HomeActivity extends AppCompatActivity {
                 while ((line = reader.readLine()) != null) {
                     buffer.append(line);
                 }
-                Log.d(TAG,"got info");
+                Log.d("Fuck","data from API has been obtained");
                 resultJson = buffer.toString();
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
             try {                                                                                  //parsing API request result
-
 
                 JSONArray jsonArr = new JSONArray(resultJson);
 
                 for(int i = 0; i < MainActivity.LIMIT; i++){
                     MainActivity.parseToList(jsonArr.getJSONObject(i));
+                    Log.d("Fuck","parseToList is called from AsyncTask");
                 }
 
             } catch (final JSONException e){
-                //add err handle
 
+                Log.d("Fuck","Json exceptipon catched");
 
             }
-            //SystemClock.sleep(1000);
+
             return resultJson;
         }
 
@@ -164,19 +155,23 @@ public class HomeActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
 
-                                                                                 //push values to textView fields
+
+            Log.d("Fuck","onPostExecute is called from AsyncTask");
             if(showProgressDialog) {
                 SystemClock.sleep(500);
                 mProgressDialog.dismiss();
             }
             swipeContainer.setRefreshing(false);
+            listAdapter.notifyDataSetChanged();
         }
 
 
         @Override
         protected void onPreExecute() {
+            Log.d("Fuck","onPreExecute is called from AsyncTask");
+            MainActivity.API_COLLECTION.clear();
 
-            MainActivity.API_COLLECTION.clear();                                                   //clear previous values
+
             if(showProgressDialog) {
                 mProgressDialog = new ProgressDialog(
                         HomeActivity.this, R.style.Theme_AppCompat_DayNight_Dialog);                    //set style for progressDialog
@@ -223,12 +218,10 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-                     if(isFirstOpen){
-                          isFirstOpen = false;                          //if activity called again , update rate values
-                     }
+
             new AsyncTaskRunner(true).execute();
 
-        Log.d(TAG, "HomeActivity: onResume()" + isFirstOpen);
+        Log.d("Fuck","onResume is called ");
     }
 
     @Override
@@ -246,6 +239,7 @@ public class HomeActivity extends AppCompatActivity {
     }
     public void onDestroy() {
         super.onDestroy();
+
 
     }
 

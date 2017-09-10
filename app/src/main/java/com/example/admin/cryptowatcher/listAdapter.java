@@ -52,8 +52,7 @@ public class listAdapter extends BaseAdapter {
 
         Currencies pair = getPair(position);
 
-        // заполняем View в пункте списка данными из товаров: наименование, цена
-        // и картинка
+
         ((TextView) view.findViewById(R.id.priceVal)).setText(pair.getPRICE().toString() + " USD");
 
         if(pair.getHOUR_CHANGE() > 0) {
