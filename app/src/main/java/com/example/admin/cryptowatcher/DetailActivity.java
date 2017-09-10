@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.icu.text.NumberFormat;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.TimeZone;
 import android.os.Build;
@@ -22,6 +23,7 @@ import org.w3c.dom.Text;
 import java.sql.Time;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by Alex on 11.07.2017.
@@ -111,7 +113,7 @@ public class DetailActivity extends AppCompatActivity {
                 priceVal.setText(obj.getPRICE() + " USD");
 
 
-                volumeDetailVal.setText("" + obj.getMARKET_CAP_USD() + " USD");
+                volumeDetailVal.setText("" + NumberFormat.getNumberInstance(Locale.US).format(obj.getMARKET_CAP_USD()) + " USD");
                 btcPriceVal.setText("" + obj.getPRICE_BTC() + " BTC");
 
                 Date date = new Date(obj.getUTC_TIME() * 1000);
