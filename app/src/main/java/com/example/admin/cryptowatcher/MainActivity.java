@@ -177,7 +177,7 @@ public class MainActivity extends Activity {
             try {
                 JSONArray jsonArr = new JSONArray(resultJson);
 
-                Log.d("eredd", "parseeeee");
+
                 for(int i = 0; i < LIMIT; i++){
                     parseToList(jsonArr.getJSONObject(i));
                 }

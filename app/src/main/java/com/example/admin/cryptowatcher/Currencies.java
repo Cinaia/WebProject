@@ -20,6 +20,7 @@ public class Currencies  {
     private Float WEEK_CHANGE = null;
     private long UTC_TIME;
 
+
     public Currencies(String name,float hourChange, float dayChange, float dayVolume, float currentPrice,
                       String shortName,double btcPrice, long marketCap , float weekChange, long utcTime){
         PAIR_NAME = name;

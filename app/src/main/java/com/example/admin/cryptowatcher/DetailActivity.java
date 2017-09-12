@@ -2,11 +2,17 @@ package com.example.admin.cryptowatcher;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.icu.text.DateFormat;
+import android.icu.text.DateFormatSymbols;
+import android.icu.text.DateIntervalFormat;
 import android.icu.text.NumberFormat;
 import android.icu.text.SimpleDateFormat;
+import android.icu.util.Calendar;
 import android.icu.util.TimeZone;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -18,10 +24,25 @@ import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jjoe64.graphview.DefaultLabelFormatter;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.sql.Time;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -32,7 +53,10 @@ import java.util.Locale;
 public class DetailActivity extends AppCompatActivity {
 
     boolean isFirstOpen = true;
+
+    public static ArrayList<CurrencyHist> HISTORICAL_DATA = new ArrayList<>();
     private static final String TAG = "my_deta";
+
     TextView hourDetailVal;
     TextView dayDetailVal;
     TextView weekDetailVal;
@@ -42,6 +66,24 @@ public class DetailActivity extends AppCompatActivity {
     TextView pairNameText;
     TextView priceVal;
 
+    public String BASE_URL = null;
+    public static  String fsym = null;//show this currency
+    public String tsym = "USD";//in this value
+    public String limitPeriod = "30";//period of time to gather data
+    public String aggregate = "1";// interval
+    public String market = "CCCAGG";// take values from
+    public static String ttt = null;
+    public static final String ARRAY_TAG = "Data";
+
+    private static final String timeMark = "time";//json tag for utc time
+    private static final String priceMark = "close";//json tag for price
+
+    public GraphView graph;
+
+
+    /**
+     * calendar to avoid creating new date objects
+     */
 
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -65,6 +107,7 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
 
+
         hourDetailVal = (TextView) findViewById(R.id.hourDetailVal);
         dayDetailVal = (TextView) findViewById(R.id.dayDetailVal);
         weekDetailVal = (TextView) findViewById(R.id.weekDetailVal);
@@ -73,6 +116,20 @@ public class DetailActivity extends AppCompatActivity {
         utcTimeVal = (TextView) findViewById(R.id.utcTimeText);
         pairNameText = (TextView) findViewById(R.id.pairNameText);
         priceVal = (TextView) findViewById(R.id.priceVal);
+        GraphView graph = (GraphView) findViewById(R.id.graph);
+
+
+        //https://api.coindesk.com/v1/bpi/historical/close.json?start=2017-09-04&end=2017-09-11
+        //https://poloniex.com/public?command=returnChartData&currencyPair=USDT_XRP&start=1499999999&end=1505154320&period=14400
+
+
+
+
+
+
+
+
+
 
         Intent intent = getIntent();
         String inte = intent.getStringExtra("pairName");
@@ -81,8 +138,12 @@ public class DetailActivity extends AppCompatActivity {
         
         for (Currencies obj: MainActivity.API_COLLECTION){
             if (obj.getPAIR_NAME().equals(inte)){
-                Log.d(TAG,"Found match!");
 
+
+
+               fsym = obj.getABBR().toUpperCase();
+                Log.d("Graph" , fsym);
+                new getDataAsync(fsym).execute();
 
                 pairNameText.setText(obj.getPAIR_NAME().toUpperCase());
 
@@ -120,9 +181,153 @@ public class DetailActivity extends AppCompatActivity {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String formattedDate = sdf.format(date);
                 utcTimeVal.setText(formattedDate);
+
+               // Log.d("Graph", HISTORICAL_DATA.get(0).getCloseValue() + "");
+
             }
         }
+
+              //  Log.d("Graph", HISTORICAL_DATA.get(0).getCloseValue() + "");
+              /*  */
+
+
     }
+
+    public void initializeLineGraphView() {
+
+
+
+
+    }
+    public static void parseHistory(JSONObject object) throws JSONException {
+
+        long utcTime = (object.getLong(timeMark));
+
+        float priceAt = Float.parseFloat(object.getString(priceMark));
+
+
+        CurrencyHist temp = new CurrencyHist(utcTime,priceAt);
+        HISTORICAL_DATA.add(temp);
+
+    }
+    private class getDataAsync extends AsyncTask<Void , Integer, String> {
+
+        private String fsymAsync = null;
+        GraphView graph = (GraphView) findViewById(R.id.graph);
+        public getDataAsync(String pairName) {
+            super();
+            fsymAsync = pairName;
+        }
+
+        HttpURLConnection urlConnection = null;
+        BufferedReader reader = null;
+        String resultJson = "";
+
+        //boolean isLoaded = false;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            HISTORICAL_DATA.clear();
+            BASE_URL = "https://min-api.cryptocompare.com/data/histoday?fsym=" + fsymAsync + "&tsym=" + tsym + "&limit="+ limitPeriod +"&aggregate="+ aggregate + "&e=" + market;
+
+        }
+
+
+        @Override
+        protected String doInBackground(Void... params) {
+
+            try {
+
+                URL url = new URL(BASE_URL);
+
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("GET");
+                urlConnection.connect();
+
+                InputStream inputStream = urlConnection.getInputStream();
+                StringBuffer buffer = new StringBuffer();
+
+                reader = new BufferedReader(new InputStreamReader(inputStream));
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    buffer.append(line);
+                }
+
+                resultJson = buffer.toString();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return resultJson;
+
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.N)
+        @Override
+        protected void onPostExecute(String strJson) {
+            super.onPostExecute(strJson);
+
+            try {
+                JSONObject histObj = new JSONObject(strJson);
+                JSONArray jsonArr = histObj.getJSONArray(ARRAY_TAG);
+
+                int l = Integer.parseInt(limitPeriod);
+                Log.d("Graph", fsymAsync);
+                for(int i = 0; i < l +1; i++){
+                       parseHistory(jsonArr.getJSONObject(i));
+                }
+
+            } catch (final JSONException e) {
+
+            }
+
+            for(CurrencyHist obj : HISTORICAL_DATA){
+                Log.d("Graph", obj.getUtcTime() + " : " + obj.getCloseValue() + "");
+            }
+            LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
+
+
+                    new DataPoint((int)HISTORICAL_DATA.get(0).getUtcTime(), HISTORICAL_DATA.get(0).getCloseValue())
+
+            });
+            for(int i = 1; i < HISTORICAL_DATA.size();i++){
+
+
+                Date date = new Date(HISTORICAL_DATA.get(i).getUtcTime());
+                date.setTime(HISTORICAL_DATA.get(i).getUtcTime());
+
+                DataPoint kek = new DataPoint(date, HISTORICAL_DATA.get(i).getCloseValue());
+                series.appendData(kek,false,HISTORICAL_DATA.size());
+            }
+            series.setDrawDataPoints(true);
+            series.setDataPointsRadius(5);
+            series.setThickness(3);
+            //graph.setTitle("Недельный график");
+            // graph.getGridLabelRenderer().setHumanRounding(false);
+            graph.getViewport().setMinX((int)HISTORICAL_DATA.get(0).getUtcTime());
+            Log.d("Graph1" , HISTORICAL_DATA.size() +"");
+            graph.getViewport().setMaxX((int)HISTORICAL_DATA.get(HISTORICAL_DATA.size()-1).getUtcTime());
+            graph.getViewport().setScrollable(true);
+            graph.getViewport().setScalable(true);
+            graph.getViewport().setXAxisBoundsManual(true);
+            graph.getGridLabelRenderer().setHorizontalLabelsAngle(88);
+            graph.getGridLabelRenderer().setTextSize(27.3f);
+            graph.getGridLabelRenderer().setNumHorizontalLabels(HISTORICAL_DATA.size()/2);
+            graph.getGridLabelRenderer().setNumVerticalLabels(7);
+
+            graph.setHorizontalScrollBarEnabled(true);
+            graph.addSeries(series);
+
+
+
+
+            graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(getApplicationContext()));
+        }
+    }
+
 
     @Override
     protected void onStart() {
