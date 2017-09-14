@@ -5,9 +5,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.icu.math.BigDecimal;
 import android.icu.text.DateFormat;
 import android.icu.text.DateFormatSymbols;
 import android.icu.text.DateIntervalFormat;
+import android.icu.text.DecimalFormat;
 import android.icu.text.NumberFormat;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
@@ -26,6 +28,7 @@ import android.widget.Toast;
 
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.LegendRenderer;
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -222,7 +225,7 @@ public class DetailActivity extends AppCompatActivity {
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
         String resultJson = "";
-
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
         //boolean isLoaded = false;
 
         @Override
@@ -287,44 +290,93 @@ public class DetailActivity extends AppCompatActivity {
             for(CurrencyHist obj : HISTORICAL_DATA){
                 Log.d("Graph", obj.getUtcTime() + " : " + obj.getCloseValue() + "");
             }
+
+
             LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
 
 
-                    new DataPoint((int)HISTORICAL_DATA.get(0).getUtcTime(), HISTORICAL_DATA.get(0).getCloseValue())
+                    new DataPoint(HISTORICAL_DATA.get(0).getUtcTime(), HISTORICAL_DATA.get(0).getCloseValue())//(int)HISTORICAL_DATA.get(0).getUtcTime()
 
             });
             for(int i = 1; i < HISTORICAL_DATA.size();i++){
 
 
-                Date date = new Date(HISTORICAL_DATA.get(i).getUtcTime());
-                date.setTime(HISTORICAL_DATA.get(i).getUtcTime());
 
-                DataPoint kek = new DataPoint(date, HISTORICAL_DATA.get(i).getCloseValue());
+                //Date date = new Date(HISTORICAL_DATA.get(i).getUtcTime());
+
+               // date.setTime(HISTORICAL_DATA.get(i).getUtcTime());
+
+               Log.d("time1",HISTORICAL_DATA.get(i).getUtcTime() + "");
+
+                DataPoint kek = new DataPoint(HISTORICAL_DATA.get(i).getUtcTime(), HISTORICAL_DATA.get(i).getCloseValue());
                 series.appendData(kek,false,HISTORICAL_DATA.size());
             }
+
             series.setDrawDataPoints(true);
             series.setDataPointsRadius(5);
             series.setThickness(3);
-            //graph.setTitle("Недельный график");
+
+
+            graph.setTitle("Месячный график");
+
             // graph.getGridLabelRenderer().setHumanRounding(false);
+
             graph.getViewport().setMinX((int)HISTORICAL_DATA.get(0).getUtcTime());
-            Log.d("Graph1" , HISTORICAL_DATA.size() +"");
+
             graph.getViewport().setMaxX((int)HISTORICAL_DATA.get(HISTORICAL_DATA.size()-1).getUtcTime());
+
+            double minY =  HISTORICAL_DATA.get(0).getCloseValue() - (HISTORICAL_DATA.get(0).getCloseValue()/100)*20;
+            graph.getViewport().setMinY(minY);
+
             graph.getViewport().setScrollable(true);
             graph.getViewport().setScalable(true);
             graph.getViewport().setXAxisBoundsManual(true);
-            graph.getGridLabelRenderer().setHorizontalLabelsAngle(88);
-            graph.getGridLabelRenderer().setTextSize(27.3f);
             graph.getGridLabelRenderer().setNumHorizontalLabels(HISTORICAL_DATA.size()/2);
             graph.getGridLabelRenderer().setNumVerticalLabels(7);
+            graph.getGridLabelRenderer().setHorizontalLabelsAngle(90);
+            graph.getGridLabelRenderer().setTextSize(27.3f);
+            graph.getGridLabelRenderer().setHighlightZeroLines(true);
+
+
+            //graph.getGridLabelRenderer().setLabelsSpace(30);
+           // graph.getGridLabelRenderer().setHorizontalAxisTitle("Дата");
+            //graph.getGridLabelRenderer().setVerticalAxisTitle("$");
+
 
             graph.setHorizontalScrollBarEnabled(true);
+
             graph.addSeries(series);
 
 
 
+            graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter(){
 
-            graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(getApplicationContext()));
+
+
+
+                @Override
+                public String formatLabel(double value, boolean isValueX){
+
+                    if(isValueX){
+
+                        value = (long)value;
+                        Date date = new Date((long) (value * 1000));
+                        SimpleDateFormat sdf = new SimpleDateFormat("MMM-dd");
+                        String formattedDate = "      " + sdf.format(date);
+
+                        return formattedDate;
+                    }else{
+                        Log.d("time4", value + "");
+                        return super.formatLabel(value, isValueX);
+                    }
+                }
+
+
+
+            });
+
+
+           //graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(getApplicationContext()));
         }
     }
 
