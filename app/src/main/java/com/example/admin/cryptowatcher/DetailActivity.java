@@ -28,6 +28,8 @@ import android.widget.Toast;
 
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.GridLabelRenderer;
+import com.jjoe64.graphview.LabelFormatter;
 import com.jjoe64.graphview.LegendRenderer;
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
@@ -81,12 +83,9 @@ public class DetailActivity extends AppCompatActivity {
     private static final String timeMark = "time";//json tag for utc time
     private static final String priceMark = "close";//json tag for price
 
-    public GraphView graph;
+   // public GraphView graph;
 
 
-    /**
-     * calendar to avoid creating new date objects
-     */
 
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -119,18 +118,7 @@ public class DetailActivity extends AppCompatActivity {
         utcTimeVal = (TextView) findViewById(R.id.utcTimeText);
         pairNameText = (TextView) findViewById(R.id.pairNameText);
         priceVal = (TextView) findViewById(R.id.priceVal);
-        GraphView graph = (GraphView) findViewById(R.id.graph);
-
-
-        //https://api.coindesk.com/v1/bpi/historical/close.json?start=2017-09-04&end=2017-09-11
-        //https://poloniex.com/public?command=returnChartData&currencyPair=USDT_XRP&start=1499999999&end=1505154320&period=14400
-
-
-
-
-
-
-
+        //GraphView graph = (GraphView) findViewById(R.id.graph);
 
 
 
@@ -144,9 +132,10 @@ public class DetailActivity extends AppCompatActivity {
 
 
 
-               fsym = obj.getABBR().toUpperCase();
-                Log.d("Graph" , fsym);
-                new getDataAsync(fsym).execute();
+                fsym = obj.getABBR().toUpperCase();
+
+
+                new getDataAsync(fsym,1).execute();//second param means: 1- monthly graph, 2 - weekly; 3- daily
 
                 pairNameText.setText(obj.getPAIR_NAME().toUpperCase());
 
@@ -178,30 +167,117 @@ public class DetailActivity extends AppCompatActivity {
 
 
                 volumeDetailVal.setText("" + NumberFormat.getNumberInstance(Locale.US).format(obj.getMARKET_CAP_USD()) + " USD");
-                btcPriceVal.setText("" + obj.getPRICE_BTC() + " BTC");
+
+
+
+                btcPriceVal.setText("" + String.format("%.12f", obj.getPRICE_BTC()) + " BTC");
 
                 Date date = new Date(obj.getUTC_TIME() * 1000);
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String formattedDate = sdf.format(date);
                 utcTimeVal.setText(formattedDate);
 
-               // Log.d("Graph", HISTORICAL_DATA.get(0).getCloseValue() + "");
-
             }
         }
 
-              //  Log.d("Graph", HISTORICAL_DATA.get(0).getCloseValue() + "");
-              /*  */
+    }
 
+    public void initializeLineGraphView(GraphView graph, int periodOfTime) {
+
+        final int pot = periodOfTime;
+        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
+
+
+                new DataPoint(HISTORICAL_DATA.get(0).getUtcTime(), HISTORICAL_DATA.get(0).getCloseValue())//(int)HISTORICAL_DATA.get(0).getUtcTime()
+
+        });
+        for(int i = 1; i < HISTORICAL_DATA.size(); i++){
+
+            DataPoint kek = new DataPoint(HISTORICAL_DATA.get(i).getUtcTime(), HISTORICAL_DATA.get(i).getCloseValue());
+            series.appendData(kek,false,HISTORICAL_DATA.size());
+        }
+
+        series.setDrawDataPoints(true);
+        series.setDataPointsRadius(6);
+        series.setThickness(3);
+        series.setColor(Color.parseColor("#FF99cc00"));
+        series.setTitle(fsym + "/USD");
+
+        graph.getLegendRenderer().setBackgroundColor(Color.parseColor("#3C3D44"));
+        graph.getLegendRenderer().setTextSize(23f);
+        graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+        graph.getLegendRenderer().setVisible(true);
+       // graph.setTitle("Месячный график");
+
+        // graph.getGridLabelRenderer().setHumanRounding(false);
+
+        graph.getViewport().setMinX((int)HISTORICAL_DATA.get(0).getUtcTime());
+
+        graph.getViewport().setMaxX((int)HISTORICAL_DATA.get(HISTORICAL_DATA.size()-1).getUtcTime());
+
+        double minY =  HISTORICAL_DATA.get(0).getCloseValue() - (HISTORICAL_DATA.get(0).getCloseValue()/100)*20;
+        graph.getViewport().setMinY(minY);
+
+        graph.getViewport().setScrollable(true);
+        graph.getViewport().setScalable(true);
+        graph.getViewport().setXAxisBoundsManual(true);
+        if(pot ==2){
+              graph.getGridLabelRenderer().setNumHorizontalLabels(HISTORICAL_DATA.size());
+        }else graph.getGridLabelRenderer().setNumHorizontalLabels(HISTORICAL_DATA.size()/2 );
+       // graph.getGridLabelRenderer().setNumVerticalLabels(9);
+        graph.getGridLabelRenderer().setHorizontalLabelsAngle(50);
+
+        graph.getGridLabelRenderer().setHorizontalLabelsColor(Color.parseColor("#FFFFFF"));
+        graph.getGridLabelRenderer().setTextSize(20.3f);
+        graph.getGridLabelRenderer().setHighlightZeroLines(true);
+        graph.getViewport().setBackgroundColor(Color.parseColor("#44454A"));
+
+        graph.getGridLabelRenderer().setGridColor(Color.parseColor("#505665"));//move to COLORS.XML
+        graph.getGridLabelRenderer().setLabelsSpace(10);
+        graph.getViewport().setDrawBorder(true);
+
+        graph.setHorizontalScrollBarEnabled(true);
+
+        graph.addSeries(series);
+
+
+
+        graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter(){
+
+            @Override
+            public String formatLabel(double value, boolean isValueX){
+
+                String dateFormat = "";
+
+                switch (pot){
+                    case 1: dateFormat = "MM-dd"; break;
+                    case 2: dateFormat = "EEE"; break;
+                    case 3: dateFormat = "HH-mm"; break;
+                    default: dateFormat = "MM-dd"; break;
+                }
+                if(isValueX){
+
+                    java.util.TimeZone tz = java.util.TimeZone.getDefault();
+                    int offset = tz.getOffset(new Date(0).getTime());
+                    value = (long)value;
+                    Date date =  new Date((long) (value * 1000) + offset + 1500000 );
+
+
+                    java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(dateFormat);
+
+                    String formattedDate = sdf.format(date);
+
+                    return formattedDate;
+                }else{
+                    Log.d("time4", value + "");
+                    return super.formatLabel(value, isValueX);
+                }
+            }
+
+        });
 
     }
 
-    public void initializeLineGraphView() {
-
-
-
-
-    }
     public static void parseHistory(JSONObject object) throws JSONException {
 
         long utcTime = (object.getLong(timeMark));
@@ -215,24 +291,45 @@ public class DetailActivity extends AppCompatActivity {
     }
     private class getDataAsync extends AsyncTask<Void , Integer, String> {
 
-        private String fsymAsync = null;
-        GraphView graph = (GraphView) findViewById(R.id.graph);
-        public getDataAsync(String pairName) {
+        private String fsymAsync = null;//pairName
+        private  int timePeriod = 1;//amount of hours or days for API call
+
+        GraphView graphAsync = (GraphView) findViewById(R.id.graph);
+        public getDataAsync(String pairName, int period) {
             super();
             fsymAsync = pairName;
+            timePeriod = period;
         }
+
 
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
         String resultJson = "";
-        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
-        //boolean isLoaded = false;
+
+
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+
+            //graphAsync.setVisibility(0);
             HISTORICAL_DATA.clear();
-            BASE_URL = "https://min-api.cryptocompare.com/data/histoday?fsym=" + fsymAsync + "&tsym=" + tsym + "&limit="+ limitPeriod +"&aggregate="+ aggregate + "&e=" + market;
+
+           if(timePeriod ==1 ){
+               limitPeriod = "30";
+               BASE_URL = "https://min-api.cryptocompare.com/data/histoday?fsym=" + fsymAsync + "&tsym=" + tsym
+                       + "&limit="+ limitPeriod +"&aggregate="+ aggregate + "&e=" + market;
+
+           } else if(timePeriod == 2 ){
+                limitPeriod = "7";
+               BASE_URL = "https://min-api.cryptocompare.com/data/histoday?fsym=" + fsymAsync + "&tsym=" + tsym
+                       + "&limit="+ limitPeriod +"&aggregate="+ aggregate + "&e=" + market;
+
+           }else if(timePeriod == 3){
+               limitPeriod = "24";
+              BASE_URL =  "https://min-api.cryptocompare.com/data/histohour?fsym=" + fsymAsync + "&tsym=" + tsym
+                      + "&limit="+ limitPeriod +"&aggregate="+ aggregate + "&e=" + market;
+            }
 
         }
 
@@ -278,7 +375,7 @@ public class DetailActivity extends AppCompatActivity {
                 JSONArray jsonArr = histObj.getJSONArray(ARRAY_TAG);
 
                 int l = Integer.parseInt(limitPeriod);
-                Log.d("Graph", fsymAsync);
+
                 for(int i = 0; i < l +1; i++){
                        parseHistory(jsonArr.getJSONObject(i));
                 }
@@ -292,91 +389,9 @@ public class DetailActivity extends AppCompatActivity {
             }
 
 
-            LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
+            initializeLineGraphView(graphAsync,timePeriod);
 
 
-                    new DataPoint(HISTORICAL_DATA.get(0).getUtcTime(), HISTORICAL_DATA.get(0).getCloseValue())//(int)HISTORICAL_DATA.get(0).getUtcTime()
-
-            });
-            for(int i = 1; i < HISTORICAL_DATA.size();i++){
-
-
-
-                //Date date = new Date(HISTORICAL_DATA.get(i).getUtcTime());
-
-               // date.setTime(HISTORICAL_DATA.get(i).getUtcTime());
-
-               Log.d("time1",HISTORICAL_DATA.get(i).getUtcTime() + "");
-
-                DataPoint kek = new DataPoint(HISTORICAL_DATA.get(i).getUtcTime(), HISTORICAL_DATA.get(i).getCloseValue());
-                series.appendData(kek,false,HISTORICAL_DATA.size());
-            }
-
-            series.setDrawDataPoints(true);
-            series.setDataPointsRadius(5);
-            series.setThickness(3);
-
-
-            graph.setTitle("Месячный график");
-
-            // graph.getGridLabelRenderer().setHumanRounding(false);
-
-            graph.getViewport().setMinX((int)HISTORICAL_DATA.get(0).getUtcTime());
-
-            graph.getViewport().setMaxX((int)HISTORICAL_DATA.get(HISTORICAL_DATA.size()-1).getUtcTime());
-
-            double minY =  HISTORICAL_DATA.get(0).getCloseValue() - (HISTORICAL_DATA.get(0).getCloseValue()/100)*20;
-            graph.getViewport().setMinY(minY);
-
-            graph.getViewport().setScrollable(true);
-            graph.getViewport().setScalable(true);
-            graph.getViewport().setXAxisBoundsManual(true);
-            graph.getGridLabelRenderer().setNumHorizontalLabels(HISTORICAL_DATA.size()/2);
-            graph.getGridLabelRenderer().setNumVerticalLabels(7);
-            graph.getGridLabelRenderer().setHorizontalLabelsAngle(90);
-            graph.getGridLabelRenderer().setTextSize(27.3f);
-            graph.getGridLabelRenderer().setHighlightZeroLines(true);
-
-
-            //graph.getGridLabelRenderer().setLabelsSpace(30);
-           // graph.getGridLabelRenderer().setHorizontalAxisTitle("Дата");
-            //graph.getGridLabelRenderer().setVerticalAxisTitle("$");
-
-
-            graph.setHorizontalScrollBarEnabled(true);
-
-            graph.addSeries(series);
-
-
-
-            graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter(){
-
-
-
-
-                @Override
-                public String formatLabel(double value, boolean isValueX){
-
-                    if(isValueX){
-
-                        value = (long)value;
-                        Date date = new Date((long) (value * 1000));
-                        SimpleDateFormat sdf = new SimpleDateFormat("MMM-dd");
-                        String formattedDate = "      " + sdf.format(date);
-
-                        return formattedDate;
-                    }else{
-                        Log.d("time4", value + "");
-                        return super.formatLabel(value, isValueX);
-                    }
-                }
-
-
-
-            });
-
-
-           //graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(getApplicationContext()));
         }
     }
 

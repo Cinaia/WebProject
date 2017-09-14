@@ -5,4 +5,5 @@
     <color name="colorAccent">#FF4081</color>
     <color name="background_material_light">#fafafa</color>
     <color name="toolbarColor">#38393d</color>
+    <color name="gridColor">#2e354b</color>
 </resources>
