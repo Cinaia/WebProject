@@ -142,9 +142,8 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
 
 
                 fsym = obj.getABBR().toUpperCase();
-                pairNameRecieved = fsym;
 
-              //  new getDataAsync(fsym,1).execute();//second param means: 1- monthly graph, 2 - weekly; 3- daily
+                pairNameRecieved = fsym; //set the pair symbol name
 
                 pairNameText.setText(obj.getPAIR_NAME().toUpperCase());
 
@@ -174,12 +173,9 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
 
                 priceVal.setText(obj.getPRICE() + " USD");
 
-
                 volumeDetailVal.setText("" + NumberFormat.getNumberInstance(Locale.US).format(obj.getMARKET_CAP_USD()) + " USD");
 
-
-
-                btcPriceVal.setText("" + String.format("%.12f", obj.getPRICE_BTC()) + " BTC");
+                btcPriceVal.setText("" + String.format("%.10f", obj.getPRICE_BTC()) + " BTC");
 
 
 
@@ -190,7 +186,7 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
     @Override
     public void onItemSelected(AdapterView<?> parent,View view,int position , long id){
     TextView spinnerDialogText = (TextView) view;
-        //if(position == 0) position = 1;
+
        new getDataAsync(pairNameRecieved.toUpperCase(),position + 1).execute();
         Log.d("pairNameTest", position + "pos");
         Log.d("pairNameTest", id + "id");
@@ -198,12 +194,14 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-        new getDataAsync(pairNameRecieved.toUpperCase(),1).execute();
+        Toast.makeText(this, "nothing selected", Toast.LENGTH_SHORT).show();
     }
 
     public void initializeLineGraphView(GraphView graph, int periodOfTime) {
         try {
             graph.removeAllSeries();
+            graph.refreshDrawableState();
+
             final int pot = periodOfTime;
             LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[]{
 
@@ -224,7 +222,7 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
             series.setTitle(fsym + "/USD");
 
             graph.getLegendRenderer().setBackgroundColor(Color.parseColor("#3C3D44"));
-            graph.getLegendRenderer().setTextSize(23f);
+            graph.getLegendRenderer().setTextSize(20f);
             graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
             graph.getLegendRenderer().setVisible(true);
             // graph.setTitle("Месячный график");
@@ -232,9 +230,9 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
             // graph.getGridLabelRenderer().setHumanRounding(false);
 
             graph.getViewport().setMinX((int) HISTORICAL_DATA.get(0).getUtcTime());
-
+            Log.d("GraphX", ((int) HISTORICAL_DATA.get(0).getUtcTime()) + "");
             graph.getViewport().setMaxX((int) HISTORICAL_DATA.get(HISTORICAL_DATA.size() - 1).getUtcTime());
-
+            Log.d("GraphX",  ((int) HISTORICAL_DATA.get(HISTORICAL_DATA.size() - 1).getUtcTime()) + "");
             double minY = HISTORICAL_DATA.get(0).getCloseValue() - (HISTORICAL_DATA.get(0).getCloseValue() / 100) * 20;
             graph.getViewport().setMinY(minY);
 
@@ -244,7 +242,7 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
             if (pot == 2) {
                 graph.getGridLabelRenderer().setNumHorizontalLabels(HISTORICAL_DATA.size());
             } else graph.getGridLabelRenderer().setNumHorizontalLabels(HISTORICAL_DATA.size() / 2);
-            // graph.getGridLabelRenderer().setNumVerticalLabels(9);
+            //graph.getGridLabelRenderer().setNumVerticalLabels(9);
             graph.getGridLabelRenderer().setHorizontalLabelsAngle(50);
 
             graph.getGridLabelRenderer().setHorizontalLabelsColor(Color.parseColor("#FFFFFF"));
@@ -268,10 +266,10 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
                     String dateFormat = "";
 
                     switch (pot){
-                        case 1: dateFormat = "MM-dd"; break;
+                        case 1: dateFormat = "MM.dd"; break;
                         case 2: dateFormat = "EEE"; break;
-                        case 3: dateFormat = "HH-mm"; break;
-                        default: dateFormat = "MM-dd"; break;
+                        case 3: dateFormat = "HH:mm"; break;
+                        default: dateFormat = "MM.dd"; break;
                     }
                     if(isValueX){
 

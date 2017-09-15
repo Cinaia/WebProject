@@ -21,7 +21,7 @@
 
 
         </activity>
-        <activity android:name=".DetailActivity" android:label="Детали" >
+        <activity android:name=".DetailActivity" android:label="Детали" android:configChanges="orientation|keyboardHidden|screenSize">
 
         </activity>
     </application>

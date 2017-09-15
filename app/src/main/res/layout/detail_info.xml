@@ -280,7 +280,7 @@
 
         <Spinner
             android:id="@+id/spinnerGraph"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="20dp"
             android:layout_marginBottom="8dp"
             android:layout_marginLeft="8dp"
@@ -299,7 +299,9 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/priceVal"
-            app:layout_constraintVertical_bias="1.0" /><![CDATA[
+            app:layout_constraintVertical_bias="1.0"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp" /><![CDATA[
 
 
 
