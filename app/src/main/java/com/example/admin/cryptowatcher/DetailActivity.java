@@ -23,6 +23,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,12 +53,13 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Alex on 11.07.2017.
  */
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     boolean isFirstOpen = true;
 
@@ -84,9 +88,10 @@ public class DetailActivity extends AppCompatActivity {
     private static final String priceMark = "close";//json tag for price
 
    // public GraphView graph;
-
-
-
+    TextView spinnerCutomItem;
+    Spinner spinnerDialogGraph;
+    ArrayAdapter spinnerOptions;
+    private String pairNameRecieved = null;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,27 +120,31 @@ public class DetailActivity extends AppCompatActivity {
         weekDetailVal = (TextView) findViewById(R.id.weekDetailVal);
         volumeDetailVal = (TextView) findViewById(R.id.volumeDetailVal);
         btcPriceVal = (TextView) findViewById(R.id.btcPriceVal);
-        utcTimeVal = (TextView) findViewById(R.id.utcTimeText);
         pairNameText = (TextView) findViewById(R.id.pairNameText);
         priceVal = (TextView) findViewById(R.id.priceVal);
-        //GraphView graph = (GraphView) findViewById(R.id.graph);
 
-
+        spinnerCutomItem = (TextView) findViewById(R.id.spinnerItemText);
+        spinnerOptions = ArrayAdapter.createFromResource(this,R.array.graph_spinner_options,R.layout.support_simple_spinner_dropdown_item);
+        spinnerDialogGraph = (Spinner) findViewById(R.id.spinnerGraph);
+        spinnerDialogGraph.setAdapter(spinnerOptions);
+        spinnerDialogGraph.setOnItemSelectedListener(DetailActivity.this);
 
         Intent intent = getIntent();
-        String inte = intent.getStringExtra("pairName");
-        Log.d(TAG, inte);
+        String pairNameData = intent.getStringExtra("pairName");
+
+
+
 
         
         for (Currencies obj: MainActivity.API_COLLECTION){
-            if (obj.getPAIR_NAME().equals(inte)){
+            if (obj.getPAIR_NAME().equals(pairNameData)){
 
 
 
                 fsym = obj.getABBR().toUpperCase();
+                pairNameRecieved = fsym;
 
-
-                new getDataAsync(fsym,1).execute();//second param means: 1- monthly graph, 2 - weekly; 3- daily
+              //  new getDataAsync(fsym,1).execute();//second param means: 1- monthly graph, 2 - weekly; 3- daily
 
                 pairNameText.setText(obj.getPAIR_NAME().toUpperCase());
 
@@ -172,109 +181,124 @@ public class DetailActivity extends AppCompatActivity {
 
                 btcPriceVal.setText("" + String.format("%.12f", obj.getPRICE_BTC()) + " BTC");
 
-                Date date = new Date(obj.getUTC_TIME() * 1000);
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                String formattedDate = sdf.format(date);
-                utcTimeVal.setText(formattedDate);
+
 
             }
         }
 
     }
+    @Override
+    public void onItemSelected(AdapterView<?> parent,View view,int position , long id){
+    TextView spinnerDialogText = (TextView) view;
+        //if(position == 0) position = 1;
+       new getDataAsync(pairNameRecieved.toUpperCase(),position + 1).execute();
+        Log.d("pairNameTest", position + "pos");
+        Log.d("pairNameTest", id + "id");
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        new getDataAsync(pairNameRecieved.toUpperCase(),1).execute();
+    }
 
     public void initializeLineGraphView(GraphView graph, int periodOfTime) {
-
-        final int pot = periodOfTime;
-        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
-
-
-                new DataPoint(HISTORICAL_DATA.get(0).getUtcTime(), HISTORICAL_DATA.get(0).getCloseValue())//(int)HISTORICAL_DATA.get(0).getUtcTime()
-
-        });
-        for(int i = 1; i < HISTORICAL_DATA.size(); i++){
-
-            DataPoint kek = new DataPoint(HISTORICAL_DATA.get(i).getUtcTime(), HISTORICAL_DATA.get(i).getCloseValue());
-            series.appendData(kek,false,HISTORICAL_DATA.size());
-        }
-
-        series.setDrawDataPoints(true);
-        series.setDataPointsRadius(6);
-        series.setThickness(3);
-        series.setColor(Color.parseColor("#FF99cc00"));
-        series.setTitle(fsym + "/USD");
-
-        graph.getLegendRenderer().setBackgroundColor(Color.parseColor("#3C3D44"));
-        graph.getLegendRenderer().setTextSize(23f);
-        graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
-        graph.getLegendRenderer().setVisible(true);
-       // graph.setTitle("Месячный график");
-
-        // graph.getGridLabelRenderer().setHumanRounding(false);
-
-        graph.getViewport().setMinX((int)HISTORICAL_DATA.get(0).getUtcTime());
-
-        graph.getViewport().setMaxX((int)HISTORICAL_DATA.get(HISTORICAL_DATA.size()-1).getUtcTime());
-
-        double minY =  HISTORICAL_DATA.get(0).getCloseValue() - (HISTORICAL_DATA.get(0).getCloseValue()/100)*20;
-        graph.getViewport().setMinY(minY);
-
-        graph.getViewport().setScrollable(true);
-        graph.getViewport().setScalable(true);
-        graph.getViewport().setXAxisBoundsManual(true);
-        if(pot ==2){
-              graph.getGridLabelRenderer().setNumHorizontalLabels(HISTORICAL_DATA.size());
-        }else graph.getGridLabelRenderer().setNumHorizontalLabels(HISTORICAL_DATA.size()/2 );
-       // graph.getGridLabelRenderer().setNumVerticalLabels(9);
-        graph.getGridLabelRenderer().setHorizontalLabelsAngle(50);
-
-        graph.getGridLabelRenderer().setHorizontalLabelsColor(Color.parseColor("#FFFFFF"));
-        graph.getGridLabelRenderer().setTextSize(20.3f);
-        graph.getGridLabelRenderer().setHighlightZeroLines(true);
-        graph.getViewport().setBackgroundColor(Color.parseColor("#44454A"));
-
-        graph.getGridLabelRenderer().setGridColor(Color.parseColor("#505665"));//move to COLORS.XML
-        graph.getGridLabelRenderer().setLabelsSpace(10);
-        graph.getViewport().setDrawBorder(true);
-
-        graph.setHorizontalScrollBarEnabled(true);
-
-        graph.addSeries(series);
+        try {
+            graph.removeAllSeries();
+            final int pot = periodOfTime;
+            LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[]{
 
 
+                    new DataPoint(HISTORICAL_DATA.get(0).getUtcTime(), HISTORICAL_DATA.get(0).getCloseValue())//(int)HISTORICAL_DATA.get(0).getUtcTime()
 
-        graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter(){
+            });
+            for (int i = 1; i < HISTORICAL_DATA.size(); i++) {
 
-            @Override
-            public String formatLabel(double value, boolean isValueX){
-
-                String dateFormat = "";
-
-                switch (pot){
-                    case 1: dateFormat = "MM-dd"; break;
-                    case 2: dateFormat = "EEE"; break;
-                    case 3: dateFormat = "HH-mm"; break;
-                    default: dateFormat = "MM-dd"; break;
-                }
-                if(isValueX){
-
-                    java.util.TimeZone tz = java.util.TimeZone.getDefault();
-                    int offset = tz.getOffset(new Date(0).getTime());
-                    value = (long)value;
-                    Date date =  new Date((long) (value * 1000) + offset + 1500000 );
-
-
-                    java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(dateFormat);
-
-                    String formattedDate = sdf.format(date);
-
-                    return formattedDate;
-                }else{
-                    Log.d("time4", value + "");
-                    return super.formatLabel(value, isValueX);
-                }
+                DataPoint kek = new DataPoint(HISTORICAL_DATA.get(i).getUtcTime(), HISTORICAL_DATA.get(i).getCloseValue());
+                series.appendData(kek, false, HISTORICAL_DATA.size());
             }
 
-        });
+            series.setDrawDataPoints(true);
+            series.setDataPointsRadius(6);
+            series.setThickness(3);
+            series.setColor(Color.parseColor("#FF99cc00"));
+            series.setTitle(fsym + "/USD");
+
+            graph.getLegendRenderer().setBackgroundColor(Color.parseColor("#3C3D44"));
+            graph.getLegendRenderer().setTextSize(23f);
+            graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+            graph.getLegendRenderer().setVisible(true);
+            // graph.setTitle("Месячный график");
+
+            // graph.getGridLabelRenderer().setHumanRounding(false);
+
+            graph.getViewport().setMinX((int) HISTORICAL_DATA.get(0).getUtcTime());
+
+            graph.getViewport().setMaxX((int) HISTORICAL_DATA.get(HISTORICAL_DATA.size() - 1).getUtcTime());
+
+            double minY = HISTORICAL_DATA.get(0).getCloseValue() - (HISTORICAL_DATA.get(0).getCloseValue() / 100) * 20;
+            graph.getViewport().setMinY(minY);
+
+            graph.getViewport().setScrollable(true);
+            graph.getViewport().setScalable(true);
+            graph.getViewport().setXAxisBoundsManual(true);
+            if (pot == 2) {
+                graph.getGridLabelRenderer().setNumHorizontalLabels(HISTORICAL_DATA.size());
+            } else graph.getGridLabelRenderer().setNumHorizontalLabels(HISTORICAL_DATA.size() / 2);
+            // graph.getGridLabelRenderer().setNumVerticalLabels(9);
+            graph.getGridLabelRenderer().setHorizontalLabelsAngle(50);
+
+            graph.getGridLabelRenderer().setHorizontalLabelsColor(Color.parseColor("#FFFFFF"));
+            graph.getGridLabelRenderer().setTextSize(20.3f);
+            graph.getGridLabelRenderer().setHighlightZeroLines(true);
+            graph.getViewport().setBackgroundColor(Color.parseColor("#44454A"));
+
+            graph.getGridLabelRenderer().setGridColor(Color.parseColor("#505665"));//move to COLORS.XML
+            graph.getGridLabelRenderer().setLabelsSpace(10);
+            graph.getViewport().setDrawBorder(true);
+
+            graph.setHorizontalScrollBarEnabled(true);
+
+            graph.addSeries(series);
+
+            graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter(){
+
+                @Override
+                public String formatLabel(double value, boolean isValueX){
+
+                    String dateFormat = "";
+
+                    switch (pot){
+                        case 1: dateFormat = "MM-dd"; break;
+                        case 2: dateFormat = "EEE"; break;
+                        case 3: dateFormat = "HH-mm"; break;
+                        default: dateFormat = "MM-dd"; break;
+                    }
+                    if(isValueX){
+
+                        java.util.TimeZone tz = java.util.TimeZone.getDefault();
+                        int offset = tz.getOffset(new Date(0).getTime());
+                        value = (long)value;
+                        Date date =  new Date((long) (value * 1000) + offset + 1500000 );
+
+
+                        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(dateFormat);
+
+                        String formattedDate = sdf.format(date);
+
+                        return formattedDate;
+                    }else{
+                        Log.d("time4", value + "");
+                        return super.formatLabel(value, isValueX);
+                    }
+                }
+
+            });
+
+        }catch (IndexOutOfBoundsException e){
+
+        }
+
+
 
     }
 

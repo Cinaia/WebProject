@@ -80,7 +80,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_column="1"
-            android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
@@ -88,11 +87,13 @@
             android:text="Цена в биткоинах:"
             android:textColor="?android:attr/textColorSecondaryInverse"
             android:textSize="14sp"
-            app:layout_constraintBottom_toTopOf="@+id/utcTimeText"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="@+id/volumeDetailText"
             app:layout_constraintRight_toLeftOf="@+id/btcPriceVal"
-            app:layout_constraintTop_toBottomOf="@+id/volumeDetailText" />
+            app:layout_constraintTop_toBottomOf="@+id/volumeDetailText"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline3"
+            app:layout_constraintVertical_bias="0.146" />
 
         <TextView
             android:id="@+id/weekDetailVal"
@@ -185,17 +186,6 @@
             app:layout_constraintRight_toRightOf="@+id/hourDetailText" />
 
         <TextView
-            android:id="@+id/utcTimeText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="44dp"
-            android:alpha="1"
-            android:text="Информация за "
-            android:textColor="?attr/colorBackgroundFloating"
-            app:layout_constraintBottom_toTopOf="@+id/guideline3"
-            app:layout_constraintLeft_toLeftOf="@+id/btcPriceText" />
-
-        <TextView
             android:id="@+id/pairNameText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -219,11 +209,11 @@
 
         <com.jjoe64.graphview.GraphView
             android:id="@+id/graph"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="200dp"
             android:layout_marginBottom="16dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginLeft="0dp"
+            android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
@@ -286,7 +276,30 @@
             app:layout_constraintGuide_begin="640dp"
             android:orientation="horizontal"
             tools:layout_editor_absoluteY="665dp"
-            tools:layout_editor_absoluteX="0dp" /><![CDATA[
+            tools:layout_editor_absoluteX="0dp" />
+
+        <Spinner
+            android:id="@+id/spinnerGraph"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:alpha="0.7"
+            android:animateLayoutChanges="?android:attr/windowClipToOutline"
+            android:background="@android:color/darker_gray"
+
+            android:popupBackground="@color/colorPrimaryDark"
+            android:spinnerMode="dialog"
+            android:textAlignment="center"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@+id/guideline3"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/priceVal"
+            app:layout_constraintVertical_bias="1.0" /><![CDATA[
 
 
 
