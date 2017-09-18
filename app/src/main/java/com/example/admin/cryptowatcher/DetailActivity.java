@@ -59,6 +59,7 @@ import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Alex on 11.07.2017.
+ * H--C means that smth needs to get hardcoded!!!
  */
 
 public class DetailActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -78,6 +79,7 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
     TextView priceVal;
     TextView graphErrorText;
     ImageView graphErrorImg;
+
     public static final String GET_REPSONSE = "Response";
     public String BASE_URL = null;
     public static  String fsym = null;//show this currency
@@ -92,7 +94,6 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
     private static final String priceMark = "close";//json tag for price
 
     GraphView graphAsync;
-    TextView spinnerCutomItem;
     Spinner spinnerDialogGraph;
     ArrayAdapter spinnerOptions;
     private String pairNameRecieved = null;
@@ -101,23 +102,23 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //requestWindowFeature(Window.FEATURE_LEFT_ICON);
-       // requestWindowFeature(Window.FEATURE_ACTION_BAR);
         setContentView(R.layout.detail_info);
-
+        //make toolbar grate again
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
-        toolbar.setTitle("List Activity");
+        toolbar.setTitle("List Activity");//H--C
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v){
                 onBackPressed();// возврат на предыдущий activity
             }
         });
 
+        //yep , setting a bunch of elements from the layout
         graphErrorText = (TextView) findViewById(R.id.graphErrorText);
         hourDetailVal = (TextView) findViewById(R.id.hourDetailVal);
         dayDetailVal = (TextView) findViewById(R.id.dayDetailVal);
@@ -128,62 +129,56 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
         priceVal = (TextView) findViewById(R.id.priceVal);
 
         graphErrorImg = (ImageView) findViewById(R.id.graphErrorImg);
-       // spinnerCutomItem = (TextView) findViewById(R.id.spinnerItemText);
         spinnerOptions = ArrayAdapter.createFromResource(this,R.array.graph_spinner_options,R.layout.spinner_item);
         spinnerDialogGraph = (Spinner) findViewById(R.id.spinnerGraph);
         spinnerDialogGraph.setAdapter(spinnerOptions);
-        //spinnerDialogGraph.setPopupBackgroundDrawable(Drawable.createFromPath("@drawable/btc.png"));
+
         spinnerDialogGraph.setOnItemSelectedListener(DetailActivity.this);
-       graphAsync = (GraphView) findViewById(R.id.graph);
+        graphAsync = (GraphView) findViewById(R.id.graph);
+
+        //getting data from previous activity
         Intent intent = getIntent();
         String pairNameData = intent.getStringExtra("pairName");
 
-
-
-
         
-        for (Currencies obj: MainActivity.API_COLLECTION){
+        for (Currencies obj: MainActivity.API_COLLECTION){ //passing through data array and finding our needed currency pair
             if (obj.getPAIR_NAME().equals(pairNameData)){
-
-
 
                 fsym = obj.getABBR().toUpperCase();
 
                 pairNameRecieved = fsym; //set the pair symbol name
 
-                pairNameText.setText(obj.getPAIR_NAME().toUpperCase());
+                pairNameText.setText(obj.getPAIR_NAME().toUpperCase());//API loves Upper-case
 
                 if(obj.getHOUR_CHANGE() > 0) {
                     hourDetailVal.setText("+" + obj.getHOUR_CHANGE() + "%");
-                    hourDetailVal.setTextColor(Color.parseColor("#FF99cc00"));
+                    hourDetailVal.setTextColor(Color.parseColor("#FF99cc00"));//H--C
                 }else{
                     hourDetailVal.setText("" + obj.getHOUR_CHANGE() + "%");
-                    hourDetailVal.setTextColor(Color.parseColor("#FFFF4444"));
+                    hourDetailVal.setTextColor(Color.parseColor("#FFFF4444"));//H--C
                 }
 
                 if(obj.getDAY_CHANGE() > 0) {
                     dayDetailVal.setText("+" + obj.getDAY_CHANGE() + "%");
-                    dayDetailVal.setTextColor(Color.parseColor("#FF99cc00"));
+                    dayDetailVal.setTextColor(Color.parseColor("#FF99cc00"));//H--C
                 }else{
                     dayDetailVal.setText("" + obj.getDAY_CHANGE() + "%");
-                    dayDetailVal.setTextColor(Color.parseColor("#FFFF4444"));
+                    dayDetailVal.setTextColor(Color.parseColor("#FFFF4444"));//H--C
                 }
 
                 if(obj.getWEEK_CHANGE() > 0) {
                     weekDetailVal.setText("+" + obj.getWEEK_CHANGE() + "%");
-                    weekDetailVal.setTextColor(Color.parseColor("#FF99cc00"));
+                    weekDetailVal.setTextColor(Color.parseColor("#FF99cc00"));//H--C
                 }else{
                     weekDetailVal.setText("" + obj.getWEEK_CHANGE() + "%");
-                    weekDetailVal.setTextColor(Color.parseColor("#FFFF4444"));
+                    weekDetailVal.setTextColor(Color.parseColor("#FFFF4444"));//H--C
                 }
 
-                priceVal.setText(obj.getPRICE() + " USD");
+                priceVal.setText(obj.getPRICE() + " USD");//H--C
 
-                volumeDetailVal.setText("" + NumberFormat.getNumberInstance(Locale.US).format(obj.getMARKET_CAP_USD()) + " USD");
+                volumeDetailVal.setText("" + NumberFormat.getNumberInstance(Locale.US).format(obj.getMARKET_CAP_USD()) + " USD");//H--C
 
-                btcPriceVal.setText("" + String.format("%.10f", obj.getPRICE_BTC()) + " BTC");
-
-
+                btcPriceVal.setText("" + String.format("%.10f", obj.getPRICE_BTC()) + " BTC");//H--C
 
             }
         }
@@ -210,8 +205,9 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
                 graph.refreshDrawableState();
 
                 final int pot = periodOfTime;
-                LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[]{
 
+                //this could be written better
+                LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[]{
 
                         new DataPoint(HISTORICAL_DATA.get(0).getUtcTime(), HISTORICAL_DATA.get(0).getCloseValue())//(int)HISTORICAL_DATA.get(0).getUtcTime()
 
@@ -225,23 +221,22 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
                 series.setDrawDataPoints(true);
                 series.setDataPointsRadius(6);
                 series.setThickness(3);
-                series.setColor(Color.parseColor("#FF99cc00"));
-                series.setTitle(fsym + "/USD");
+                series.setColor(Color.parseColor("#FF99cc00"));//H--C
+                series.setTitle(fsym + "/USD");//H--C
 
-                graph.getLegendRenderer().setBackgroundColor(Color.parseColor("#3C3D44"));
+                graph.getLegendRenderer().setBackgroundColor(Color.parseColor("#3C3D44"));//H--C
                 graph.getLegendRenderer().setTextSize(20f);
                 graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
                 graph.getLegendRenderer().setVisible(true);
-                // graph.setTitle("Месячный график");
 
-                // graph.getGridLabelRenderer().setHumanRounding(false);
-
+                //set graph's MIN and MAX values on both axis
                 graph.getViewport().setMinX((int) HISTORICAL_DATA.get(0).getUtcTime());
                 Log.d("GraphX", ((int) HISTORICAL_DATA.get(0).getUtcTime()) + "");
                 graph.getViewport().setMaxX((int) HISTORICAL_DATA.get(HISTORICAL_DATA.size() - 1).getUtcTime());
                 Log.d("GraphX", ((int) HISTORICAL_DATA.get(HISTORICAL_DATA.size() - 1).getUtcTime()) + "");
                 double minY = HISTORICAL_DATA.get(0).getCloseValue() - (HISTORICAL_DATA.get(0).getCloseValue() / 100) * 20;
                 graph.getViewport().setMinY(minY);
+
 
                 graph.getViewport().setScrollable(true);
                 graph.getViewport().setScalable(true);
@@ -250,15 +245,15 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
                     graph.getGridLabelRenderer().setNumHorizontalLabels(HISTORICAL_DATA.size());
                 } else
                     graph.getGridLabelRenderer().setNumHorizontalLabels(HISTORICAL_DATA.size() / 2);
-                //graph.getGridLabelRenderer().setNumVerticalLabels(9);
+
                 graph.getGridLabelRenderer().setHorizontalLabelsAngle(50);
 
-                graph.getGridLabelRenderer().setHorizontalLabelsColor(Color.parseColor("#FFFFFF"));
+                graph.getGridLabelRenderer().setHorizontalLabelsColor(Color.parseColor("#FFFFFF"));//H--C
                 graph.getGridLabelRenderer().setTextSize(20.3f);
                 graph.getGridLabelRenderer().setHighlightZeroLines(true);
-                graph.getViewport().setBackgroundColor(Color.parseColor("#44454A"));
+                graph.getViewport().setBackgroundColor(Color.parseColor("#44454A"));//H--C
 
-                graph.getGridLabelRenderer().setGridColor(Color.parseColor("#505665"));//move to COLORS.XML
+                graph.getGridLabelRenderer().setGridColor(Color.parseColor("#505665"));//H--C
                 graph.getGridLabelRenderer().setLabelsSpace(10);
                 graph.getViewport().setDrawBorder(true);
 
@@ -294,7 +289,6 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
                             value = (long) value;
                             Date date = new Date((long) (value * 1000) + offset + 1500000);
 
-
                             java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(dateFormat);
 
                             String formattedDate = sdf.format(date);
@@ -309,10 +303,10 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
                 });
 
             } catch (IndexOutOfBoundsException e) {
-                graphAsync.setVisibility(View.INVISIBLE);
-                graphErrorImg.setVisibility(View.VISIBLE);
-                graphErrorText.setVisibility(View.VISIBLE);
-                spinnerDialogGraph.setVisibility(View.INVISIBLE);
+                 graphAsync.setVisibility(View.INVISIBLE);
+                 graphErrorImg.setVisibility(View.VISIBLE);
+                 graphErrorText.setVisibility(View.VISIBLE);
+                 spinnerDialogGraph.setVisibility(View.INVISIBLE);
             }
 
         }
@@ -330,7 +324,6 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
         long utcTime = (object.getLong(timeMark));
 
         float priceAt = Float.parseFloat(object.getString(priceMark));
-
 
         CurrencyHist temp = new CurrencyHist(utcTime,priceAt);
         HISTORICAL_DATA.add(temp);
@@ -359,9 +352,9 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
         protected void onPreExecute() {
             super.onPreExecute();
 
-            //graphAsync.setVisibility(0);
-            HISTORICAL_DATA.clear();
+            HISTORICAL_DATA.clear(); //clear previous data for the new graph
 
+            //from requests for the API
            if(timePeriod ==1 ){
                limitPeriod = "30";
                BASE_URL = "https://min-api.cryptocompare.com/data/histoday?fsym=" + fsymAsync + "&tsym=" + tsym
@@ -416,27 +409,26 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
         @Override
         protected void onPostExecute(String strJson) {
             super.onPostExecute(strJson);
-                String rspn = null;
-           // Log.d(TAG, strJson + "1");
+
+            String rspn = null;//server response Success/Error
             try {
 
                     JSONObject histObj = new JSONObject(strJson);
+
                     rspn = histObj.getString(GET_REPSONSE);
-                    Log.d(TAG, rspn);
-                    //Log.d(TAG, strJson);
+
                     JSONArray jsonArr = histObj.getJSONArray(ARRAY_TAG);
 
-                    int l = Integer.parseInt(limitPeriod);
+                    int jsonLinesNum = Integer.parseInt(limitPeriod);
 
-                    for (int i = 0; i < l + 1; i++) {
-                        parseHistory(jsonArr.getJSONObject(i));
+                    for (int i = 0; i < jsonLinesNum + 1; i++) {
+                        parseHistory(jsonArr.getJSONObject(i)); //parsing data into CurrencyHist type and putting it into ArrayList
                     }
-                    initializeLineGraphView(graphAsync,timePeriod,true);
+                    initializeLineGraphView(graphAsync,timePeriod,true);//initialize graph
 
 
             } catch (final JSONException e) {
-                Log.d(TAG, rspn + "3");
-                initializeLineGraphView(graphAsync,timePeriod,false);
+                initializeLineGraphView(graphAsync,timePeriod,false);//initialize graph error
             }
         }
     }
