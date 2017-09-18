@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -75,7 +76,8 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
     TextView utcTimeVal;
     TextView pairNameText;
     TextView priceVal;
-
+    TextView graphErrorText;
+    ImageView graphErrorImg;
     public static final String GET_REPSONSE = "Response";
     public String BASE_URL = null;
     public static  String fsym = null;//show this currency
@@ -89,7 +91,7 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
     private static final String timeMark = "time";//json tag for utc time
     private static final String priceMark = "close";//json tag for price
 
-   // public GraphView graph;
+    GraphView graphAsync;
     TextView spinnerCutomItem;
     Spinner spinnerDialogGraph;
     ArrayAdapter spinnerOptions;
@@ -116,7 +118,7 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
             }
         });
 
-
+        graphErrorText = (TextView) findViewById(R.id.graphErrorText);
         hourDetailVal = (TextView) findViewById(R.id.hourDetailVal);
         dayDetailVal = (TextView) findViewById(R.id.dayDetailVal);
         weekDetailVal = (TextView) findViewById(R.id.weekDetailVal);
@@ -125,13 +127,14 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
         pairNameText = (TextView) findViewById(R.id.pairNameText);
         priceVal = (TextView) findViewById(R.id.priceVal);
 
+        graphErrorImg = (ImageView) findViewById(R.id.graphErrorImg);
        // spinnerCutomItem = (TextView) findViewById(R.id.spinnerItemText);
         spinnerOptions = ArrayAdapter.createFromResource(this,R.array.graph_spinner_options,R.layout.spinner_item);
         spinnerDialogGraph = (Spinner) findViewById(R.id.spinnerGraph);
         spinnerDialogGraph.setAdapter(spinnerOptions);
         //spinnerDialogGraph.setPopupBackgroundDrawable(Drawable.createFromPath("@drawable/btc.png"));
         spinnerDialogGraph.setOnItemSelectedListener(DetailActivity.this);
-
+       graphAsync = (GraphView) findViewById(R.id.graph);
         Intent intent = getIntent();
         String pairNameData = intent.getStringExtra("pairName");
 
@@ -200,106 +203,125 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
         Toast.makeText(this, "nothing selected", Toast.LENGTH_SHORT).show();
     }
 
-    public void initializeLineGraphView(GraphView graph, int periodOfTime) {
-        try {
-            graph.removeAllSeries();
-            graph.refreshDrawableState();
+    public void initializeLineGraphView(GraphView graph, int periodOfTime, boolean ifSuccess) {
+        if(ifSuccess) {
+            try {
+                graph.removeAllSeries();
+                graph.refreshDrawableState();
 
-            final int pot = periodOfTime;
-            LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[]{
-
-
-                    new DataPoint(HISTORICAL_DATA.get(0).getUtcTime(), HISTORICAL_DATA.get(0).getCloseValue())//(int)HISTORICAL_DATA.get(0).getUtcTime()
-
-            });
-            for (int i = 1; i < HISTORICAL_DATA.size(); i++) {
-
-                DataPoint kek = new DataPoint(HISTORICAL_DATA.get(i).getUtcTime(), HISTORICAL_DATA.get(i).getCloseValue());
-                series.appendData(kek, false, HISTORICAL_DATA.size());
-            }
-
-            series.setDrawDataPoints(true);
-            series.setDataPointsRadius(6);
-            series.setThickness(3);
-            series.setColor(Color.parseColor("#FF99cc00"));
-            series.setTitle(fsym + "/USD");
-
-            graph.getLegendRenderer().setBackgroundColor(Color.parseColor("#3C3D44"));
-            graph.getLegendRenderer().setTextSize(20f);
-            graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
-            graph.getLegendRenderer().setVisible(true);
-            // graph.setTitle("Месячный график");
-
-            // graph.getGridLabelRenderer().setHumanRounding(false);
-
-            graph.getViewport().setMinX((int) HISTORICAL_DATA.get(0).getUtcTime());
-            Log.d("GraphX", ((int) HISTORICAL_DATA.get(0).getUtcTime()) + "");
-            graph.getViewport().setMaxX((int) HISTORICAL_DATA.get(HISTORICAL_DATA.size() - 1).getUtcTime());
-            Log.d("GraphX",  ((int) HISTORICAL_DATA.get(HISTORICAL_DATA.size() - 1).getUtcTime()) + "");
-            double minY = HISTORICAL_DATA.get(0).getCloseValue() - (HISTORICAL_DATA.get(0).getCloseValue() / 100) * 20;
-            graph.getViewport().setMinY(minY);
-
-            graph.getViewport().setScrollable(true);
-            graph.getViewport().setScalable(true);
-            graph.getViewport().setXAxisBoundsManual(true);
-            if (pot == 2) {
-                graph.getGridLabelRenderer().setNumHorizontalLabels(HISTORICAL_DATA.size());
-            } else graph.getGridLabelRenderer().setNumHorizontalLabels(HISTORICAL_DATA.size() / 2);
-            //graph.getGridLabelRenderer().setNumVerticalLabels(9);
-            graph.getGridLabelRenderer().setHorizontalLabelsAngle(50);
-
-            graph.getGridLabelRenderer().setHorizontalLabelsColor(Color.parseColor("#FFFFFF"));
-            graph.getGridLabelRenderer().setTextSize(20.3f);
-            graph.getGridLabelRenderer().setHighlightZeroLines(true);
-            graph.getViewport().setBackgroundColor(Color.parseColor("#44454A"));
-
-            graph.getGridLabelRenderer().setGridColor(Color.parseColor("#505665"));//move to COLORS.XML
-            graph.getGridLabelRenderer().setLabelsSpace(10);
-            graph.getViewport().setDrawBorder(true);
-
-            graph.setHorizontalScrollBarEnabled(true);
-
-            graph.addSeries(series);
-
-            graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter(){
-
-                @Override
-                public String formatLabel(double value, boolean isValueX){
-
-                    String dateFormat = "";
-
-                    switch (pot){
-                        case 1: dateFormat = "MM.dd"; break;
-                        case 2: dateFormat = "EEE"; break;
-                        case 3: dateFormat = "HH:mm"; break;
-                        default: dateFormat = "MM.dd"; break;
-                    }
-                    if(isValueX){
-
-                        java.util.TimeZone tz = java.util.TimeZone.getDefault();
-                        int offset = tz.getOffset(new Date(0).getTime());
-                        value = (long)value;
-                        Date date =  new Date((long) (value * 1000) + offset + 1500000 );
+                final int pot = periodOfTime;
+                LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[]{
 
 
-                        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(dateFormat);
+                        new DataPoint(HISTORICAL_DATA.get(0).getUtcTime(), HISTORICAL_DATA.get(0).getCloseValue())//(int)HISTORICAL_DATA.get(0).getUtcTime()
 
-                        String formattedDate = sdf.format(date);
+                });
+                for (int i = 1; i < HISTORICAL_DATA.size(); i++) {
 
-                        return formattedDate;
-                    }else{
-                        Log.d("time4", value + "");
-                        return super.formatLabel(value, isValueX);
-                    }
+                    DataPoint kek = new DataPoint(HISTORICAL_DATA.get(i).getUtcTime(), HISTORICAL_DATA.get(i).getCloseValue());
+                    series.appendData(kek, false, HISTORICAL_DATA.size());
                 }
 
-            });
+                series.setDrawDataPoints(true);
+                series.setDataPointsRadius(6);
+                series.setThickness(3);
+                series.setColor(Color.parseColor("#FF99cc00"));
+                series.setTitle(fsym + "/USD");
 
-        }catch (IndexOutOfBoundsException e){
+                graph.getLegendRenderer().setBackgroundColor(Color.parseColor("#3C3D44"));
+                graph.getLegendRenderer().setTextSize(20f);
+                graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+                graph.getLegendRenderer().setVisible(true);
+                // graph.setTitle("Месячный график");
+
+                // graph.getGridLabelRenderer().setHumanRounding(false);
+
+                graph.getViewport().setMinX((int) HISTORICAL_DATA.get(0).getUtcTime());
+                Log.d("GraphX", ((int) HISTORICAL_DATA.get(0).getUtcTime()) + "");
+                graph.getViewport().setMaxX((int) HISTORICAL_DATA.get(HISTORICAL_DATA.size() - 1).getUtcTime());
+                Log.d("GraphX", ((int) HISTORICAL_DATA.get(HISTORICAL_DATA.size() - 1).getUtcTime()) + "");
+                double minY = HISTORICAL_DATA.get(0).getCloseValue() - (HISTORICAL_DATA.get(0).getCloseValue() / 100) * 20;
+                graph.getViewport().setMinY(minY);
+
+                graph.getViewport().setScrollable(true);
+                graph.getViewport().setScalable(true);
+                graph.getViewport().setXAxisBoundsManual(true);
+                if (pot == 2) {
+                    graph.getGridLabelRenderer().setNumHorizontalLabels(HISTORICAL_DATA.size());
+                } else
+                    graph.getGridLabelRenderer().setNumHorizontalLabels(HISTORICAL_DATA.size() / 2);
+                //graph.getGridLabelRenderer().setNumVerticalLabels(9);
+                graph.getGridLabelRenderer().setHorizontalLabelsAngle(50);
+
+                graph.getGridLabelRenderer().setHorizontalLabelsColor(Color.parseColor("#FFFFFF"));
+                graph.getGridLabelRenderer().setTextSize(20.3f);
+                graph.getGridLabelRenderer().setHighlightZeroLines(true);
+                graph.getViewport().setBackgroundColor(Color.parseColor("#44454A"));
+
+                graph.getGridLabelRenderer().setGridColor(Color.parseColor("#505665"));//move to COLORS.XML
+                graph.getGridLabelRenderer().setLabelsSpace(10);
+                graph.getViewport().setDrawBorder(true);
+
+                graph.setHorizontalScrollBarEnabled(true);
+
+                graph.addSeries(series);
+
+                graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
+
+                    @Override
+                    public String formatLabel(double value, boolean isValueX) {
+
+                        String dateFormat = "";
+
+                        switch (pot) {
+                            case 1:
+                                dateFormat = "MM.dd";
+                                break;
+                            case 2:
+                                dateFormat = "EEE";
+                                break;
+                            case 3:
+                                dateFormat = "HH:mm";
+                                break;
+                            default:
+                                dateFormat = "MM.dd";
+                                break;
+                        }
+                        if (isValueX) {
+
+                            java.util.TimeZone tz = java.util.TimeZone.getDefault();
+                            int offset = tz.getOffset(new Date(0).getTime());
+                            value = (long) value;
+                            Date date = new Date((long) (value * 1000) + offset + 1500000);
+
+
+                            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(dateFormat);
+
+                            String formattedDate = sdf.format(date);
+
+                            return formattedDate;
+                        } else {
+                            Log.d("time4", value + "");
+                            return super.formatLabel(value, isValueX);
+                        }
+                    }
+
+                });
+
+            } catch (IndexOutOfBoundsException e) {
+                graphAsync.setVisibility(View.INVISIBLE);
+                graphErrorImg.setVisibility(View.VISIBLE);
+                graphErrorText.setVisibility(View.VISIBLE);
+                spinnerDialogGraph.setVisibility(View.INVISIBLE);
+            }
 
         }
-
-
+        else{
+                graphAsync.setVisibility(View.INVISIBLE);
+                graphErrorImg.setVisibility(View.VISIBLE);
+                graphErrorText.setVisibility(View.VISIBLE);
+                spinnerDialogGraph.setVisibility(View.INVISIBLE);
+        }
 
     }
 
@@ -395,12 +417,12 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
         protected void onPostExecute(String strJson) {
             super.onPostExecute(strJson);
                 String rspn = null;
-            Log.d(TAG, strJson + "1");
+           // Log.d(TAG, strJson + "1");
             try {
 
                     JSONObject histObj = new JSONObject(strJson);
                     rspn = histObj.getString(GET_REPSONSE);
-                    Log.d(TAG, rspn + "2");
+                    Log.d(TAG, rspn);
                     //Log.d(TAG, strJson);
                     JSONArray jsonArr = histObj.getJSONArray(ARRAY_TAG);
 
@@ -409,22 +431,13 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
                     for (int i = 0; i < l + 1; i++) {
                         parseHistory(jsonArr.getJSONObject(i));
                     }
-                    initializeLineGraphView(graphAsync,timePeriod);
+                    initializeLineGraphView(graphAsync,timePeriod,true);
 
 
             } catch (final JSONException e) {
                 Log.d(TAG, rspn + "3");
-               // Log.d(TAG, strJson);
+                initializeLineGraphView(graphAsync,timePeriod,false);
             }
-
-            //for(CurrencyHist obj : HISTORICAL_DATA){
-             //   Log.d("Graph", obj.getUtcTime() + " : " + obj.getCloseValue() + "");
-           // }
-
-
-
-
-
         }
     }
 
