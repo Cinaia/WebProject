@@ -7,7 +7,7 @@
     <string name="ETH_S">ETH</string>
     <string name="NVC_S">NVC</string>
     <string name="PPC_S">PPC</string>
-    <string-array name="graph_spinner_options">
+    <string-array name="graph_spinner_options" >
         <item name="monthly_graph">Месячный график</item>
         <item name="weekly_graph">Недельный график</item>
         <item name="daily_graph">Дневной график</item>

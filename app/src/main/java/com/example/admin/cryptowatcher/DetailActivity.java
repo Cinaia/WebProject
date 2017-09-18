@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.icu.math.BigDecimal;
 import android.icu.text.DateFormat;
 import android.icu.text.DateFormatSymbols;
@@ -64,7 +65,7 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
     boolean isFirstOpen = true;
 
     public static ArrayList<CurrencyHist> HISTORICAL_DATA = new ArrayList<>();
-    private static final String TAG = "my_deta";
+    public static final String TAG = "my_deta";
 
     TextView hourDetailVal;
     TextView dayDetailVal;
@@ -75,6 +76,7 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
     TextView pairNameText;
     TextView priceVal;
 
+    public static final String GET_REPSONSE = "Response";
     public String BASE_URL = null;
     public static  String fsym = null;//show this currency
     public String tsym = "USD";//in this value
@@ -123,10 +125,11 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
         pairNameText = (TextView) findViewById(R.id.pairNameText);
         priceVal = (TextView) findViewById(R.id.priceVal);
 
-        spinnerCutomItem = (TextView) findViewById(R.id.spinnerItemText);
-        spinnerOptions = ArrayAdapter.createFromResource(this,R.array.graph_spinner_options,R.layout.support_simple_spinner_dropdown_item);
+       // spinnerCutomItem = (TextView) findViewById(R.id.spinnerItemText);
+        spinnerOptions = ArrayAdapter.createFromResource(this,R.array.graph_spinner_options,R.layout.spinner_item);
         spinnerDialogGraph = (Spinner) findViewById(R.id.spinnerGraph);
         spinnerDialogGraph.setAdapter(spinnerOptions);
+        //spinnerDialogGraph.setPopupBackgroundDrawable(Drawable.createFromPath("@drawable/btc.png"));
         spinnerDialogGraph.setOnItemSelectedListener(DetailActivity.this);
 
         Intent intent = getIntent();
@@ -391,27 +394,35 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
         @Override
         protected void onPostExecute(String strJson) {
             super.onPostExecute(strJson);
-
+                String rspn = null;
+            Log.d(TAG, strJson + "1");
             try {
-                JSONObject histObj = new JSONObject(strJson);
-                JSONArray jsonArr = histObj.getJSONArray(ARRAY_TAG);
 
-                int l = Integer.parseInt(limitPeriod);
+                    JSONObject histObj = new JSONObject(strJson);
+                    rspn = histObj.getString(GET_REPSONSE);
+                    Log.d(TAG, rspn + "2");
+                    //Log.d(TAG, strJson);
+                    JSONArray jsonArr = histObj.getJSONArray(ARRAY_TAG);
 
-                for(int i = 0; i < l +1; i++){
-                       parseHistory(jsonArr.getJSONObject(i));
-                }
+                    int l = Integer.parseInt(limitPeriod);
+
+                    for (int i = 0; i < l + 1; i++) {
+                        parseHistory(jsonArr.getJSONObject(i));
+                    }
+                    initializeLineGraphView(graphAsync,timePeriod);
+
 
             } catch (final JSONException e) {
-
+                Log.d(TAG, rspn + "3");
+               // Log.d(TAG, strJson);
             }
 
-            for(CurrencyHist obj : HISTORICAL_DATA){
-                Log.d("Graph", obj.getUtcTime() + " : " + obj.getCloseValue() + "");
-            }
+            //for(CurrencyHist obj : HISTORICAL_DATA){
+             //   Log.d("Graph", obj.getUtcTime() + " : " + obj.getCloseValue() + "");
+           // }
 
 
-            initializeLineGraphView(graphAsync,timePeriod);
+
 
 
         }
