@@ -52,7 +52,7 @@ public class HomeActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         Log.d("Fuck","onCreate is called");
         getSupportActionBar().setDisplayShowTitleEnabled(true);
-        toolbar.setTitle("Текущий курс");
+        toolbar.setTitle("Текущий курс");//H--C
 
         listAdapter = new listAdapter(this, MainActivity.API_COLLECTION);
 
@@ -176,7 +176,7 @@ public class HomeActivity extends AppCompatActivity {
                 mProgressDialog = new ProgressDialog(
                         HomeActivity.this, R.style.Theme_AppCompat_DayNight_Dialog);                    //set style for progressDialog
                 mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);                        //set spinner
-                mProgressDialog.setMessage("Загружаю. Подождите...");
+                mProgressDialog.setMessage("Загружаю. Подождите...");//H--C
 
 
                 mProgressDialog.show();
@@ -201,8 +201,8 @@ public class HomeActivity extends AppCompatActivity {
     public void onBackPressed() {
         new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
                 .setIcon(R.mipmap.logo)
-                .setTitle("Выход")
-                .setMessage("Покинуть приложение?")
+                .setTitle("Выход")//H--C
+                .setMessage("Покинуть приложение?")//H--C
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -211,7 +211,7 @@ public class HomeActivity extends AppCompatActivity {
                     }
 
                 })
-                .setNegativeButton("Нет", null)
+                .setNegativeButton("Нет", null)//H--C
                 .show();
     }
 

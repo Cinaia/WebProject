@@ -31,6 +31,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jaredrummler.materialspinner.MaterialSpinner;
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GridLabelRenderer;
@@ -62,7 +63,7 @@ import java.util.concurrent.ExecutionException;
  * H--C means that smth needs to get hardcoded!!!
  */
 
-public class DetailActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class DetailActivity extends AppCompatActivity  {
 
     boolean isFirstOpen = true;
 
@@ -94,7 +95,7 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
     private static final String priceMark = "close";//json tag for price
 
     GraphView graphAsync;
-    Spinner spinnerDialogGraph;
+    MaterialSpinner materialSpinnerGraph;
     ArrayAdapter spinnerOptions;
     private String pairNameRecieved = null;
 
@@ -129,11 +130,18 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
         priceVal = (TextView) findViewById(R.id.priceVal);
 
         graphErrorImg = (ImageView) findViewById(R.id.graphErrorImg);
-        spinnerOptions = ArrayAdapter.createFromResource(this,R.array.graph_spinner_options,R.layout.spinner_item);
-        spinnerDialogGraph = (Spinner) findViewById(R.id.spinnerGraph);
-        spinnerDialogGraph.setAdapter(spinnerOptions);
 
-        spinnerDialogGraph.setOnItemSelectedListener(DetailActivity.this);
+
+        materialSpinnerGraph = (MaterialSpinner) findViewById(R.id.materialSpinnerGraph);
+        materialSpinnerGraph.setItems("Месячный график", "Недельный график", "Дневной график");
+
+        materialSpinnerGraph.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
+
+            @Override public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
+                new getDataAsync(pairNameRecieved.toUpperCase(),position + 1).execute();
+            }
+        });
+
         graphAsync = (GraphView) findViewById(R.id.graph);
 
         //getting data from previous activity
@@ -147,7 +155,7 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
                 fsym = obj.getABBR().toUpperCase();
 
                 pairNameRecieved = fsym; //set the pair symbol name
-
+                new getDataAsync(pairNameRecieved.toUpperCase(), 1).execute();
                 pairNameText.setText(obj.getPAIR_NAME().toUpperCase());//API loves Upper-case
 
                 if(obj.getHOUR_CHANGE() > 0) {
@@ -184,6 +192,13 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
         }
 
     }
+/*
+    TextView spinnerDialogText = (TextView) view;
+
+       new getDataAsync(pairNameRecieved.toUpperCase(),position + 1).execute();
+
+
+
     @Override
     public void onItemSelected(AdapterView<?> parent,View view,int position , long id){
     TextView spinnerDialogText = (TextView) view;
@@ -196,7 +211,7 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
         Toast.makeText(this, "nothing selected", Toast.LENGTH_SHORT).show();
-    }
+    }*/
 
     public void initializeLineGraphView(GraphView graph, int periodOfTime, boolean ifSuccess) {
         if(ifSuccess) {
@@ -306,7 +321,7 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
                  graphAsync.setVisibility(View.INVISIBLE);
                  graphErrorImg.setVisibility(View.VISIBLE);
                  graphErrorText.setVisibility(View.VISIBLE);
-                 spinnerDialogGraph.setVisibility(View.INVISIBLE);
+                 materialSpinnerGraph.setVisibility(View.INVISIBLE);
             }
 
         }
@@ -314,7 +329,7 @@ public class DetailActivity extends AppCompatActivity implements AdapterView.OnI
                 graphAsync.setVisibility(View.INVISIBLE);
                 graphErrorImg.setVisibility(View.VISIBLE);
                 graphErrorText.setVisibility(View.VISIBLE);
-                spinnerDialogGraph.setVisibility(View.INVISIBLE);
+                 materialSpinnerGraph.setVisibility(View.INVISIBLE);
         }
 
     }

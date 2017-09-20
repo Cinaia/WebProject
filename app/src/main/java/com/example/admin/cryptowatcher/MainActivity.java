@@ -142,7 +142,7 @@ public class MainActivity extends Activity {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            statusField.setText("Connecting..");
+            statusField.setText("Connecting..");//H--C
 
         }
 
