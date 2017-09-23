@@ -1,16 +1,5 @@
 <resources>
     <string name="app_name">CryptoWatcher</string>
-    <string name="_11">11</string>
     <string name="cryptowatcher">CryptoWatcher</string>
-    <string name="BTC_S">BTC</string>
-    <string name="LTC_S">LTC</string>
-    <string name="ETH_S">ETH</string>
-    <string name="NVC_S">NVC</string>
-    <string name="PPC_S">PPC</string>
     <string name="graph_not_avaliable">График для этой валютной пары недоступен</string>
-    <string-array name="graph_spinner_options" >
-        <item name="monthly_graph">Месячный график</item>
-        <item name="weekly_graph">Недельный график</item>
-        <item name="daily_graph">Дневной график</item>
-    </string-array>
 </resources>

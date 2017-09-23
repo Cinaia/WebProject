@@ -12,7 +12,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -57,7 +60,7 @@ public class HomeActivity extends AppCompatActivity {
         listAdapter = new listAdapter(this, MainActivity.API_COLLECTION);
 
 
-        ListView lvMain = (ListView) findViewById(R.id.homeList);
+        final ListView lvMain = (ListView) findViewById(R.id.homeList);
 
         lvMain.setAdapter(listAdapter);
 
@@ -66,10 +69,12 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+
                 String pairName = MainActivity.API_COLLECTION.get(position).getPAIR_NAME();
                 Intent detailScreen = new Intent(HomeActivity.this, DetailActivity.class);
                 detailScreen.putExtra("pairName", pairName);
                 startActivity(detailScreen);
+
 
             }
         });

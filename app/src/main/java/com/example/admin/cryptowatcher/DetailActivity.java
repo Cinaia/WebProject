@@ -1,69 +1,49 @@
 package com.example.admin.cryptowatcher;
 
-import android.app.ActionBar;
-import android.app.Activity;
-import android.content.Context;
+
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.icu.math.BigDecimal;
-import android.icu.text.DateFormat;
-import android.icu.text.DateFormatSymbols;
-import android.icu.text.DateIntervalFormat;
-import android.icu.text.DecimalFormat;
 import android.icu.text.NumberFormat;
-import android.icu.text.SimpleDateFormat;
-import android.icu.util.Calendar;
-import android.icu.util.TimeZone;
+
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.jaredrummler.materialspinner.MaterialSpinner;
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.GridLabelRenderer;
-import com.jjoe64.graphview.LabelFormatter;
 import com.jjoe64.graphview.LegendRenderer;
-import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
+import com.liuguangqiang.swipeback.SwipeBackActivity;
+import com.liuguangqiang.swipeback.SwipeBackLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
+
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.sql.Time;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
-import java.util.concurrent.ExecutionException;
+
 
 /**
  * Created by Alex on 11.07.2017.
  * H--C means that smth needs to get hardcoded!!!
  */
 
-public class DetailActivity extends AppCompatActivity  {
+public class DetailActivity extends SwipeBackActivity {
 
     boolean isFirstOpen = true;
 
@@ -75,28 +55,28 @@ public class DetailActivity extends AppCompatActivity  {
     TextView weekDetailVal;
     TextView volumeDetailVal;
     TextView btcPriceVal;
-    TextView utcTimeVal;
     TextView pairNameText;
     TextView priceVal;
     TextView graphErrorText;
     ImageView graphErrorImg;
 
-    public static final String GET_REPSONSE = "Response";
+
     public String BASE_URL = null;
-    public static  String fsym = null;//show this currency
+
     public String tsym = "USD";//in this value
     public String limitPeriod = "30";//period of time to gather data
     public String aggregate = "1";// interval
     public String market = "CCCAGG";// take values from
     public static String ttt = null;
+    public static String fsym = null;//show this currency
     public static final String ARRAY_TAG = "Data";
-
+    public static final String GET_REPSONSE = "Response";
     private static final String timeMark = "time";//json tag for utc time
     private static final String priceMark = "close";//json tag for price
 
     GraphView graphAsync;
     MaterialSpinner materialSpinnerGraph;
-    ArrayAdapter spinnerOptions;
+
     private String pairNameRecieved = null;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -135,12 +115,7 @@ public class DetailActivity extends AppCompatActivity  {
         materialSpinnerGraph = (MaterialSpinner) findViewById(R.id.materialSpinnerGraph);
         materialSpinnerGraph.setItems("Месячный график", "Недельный график", "Дневной график");
 
-        materialSpinnerGraph.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
 
-            @Override public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
-                new getDataAsync(pairNameRecieved.toUpperCase(),position + 1).execute();
-            }
-        });
 
         graphAsync = (GraphView) findViewById(R.id.graph);
 
@@ -148,14 +123,15 @@ public class DetailActivity extends AppCompatActivity  {
         Intent intent = getIntent();
         String pairNameData = intent.getStringExtra("pairName");
 
-        
+        setDragEdge(SwipeBackLayout.DragEdge.LEFT);//direction of the swipe to get back to MainActivity
+
         for (Currencies obj: MainActivity.API_COLLECTION){ //passing through data array and finding our needed currency pair
             if (obj.getPAIR_NAME().equals(pairNameData)){
 
                 fsym = obj.getABBR().toUpperCase();
 
                 pairNameRecieved = fsym; //set the pair symbol name
-                new getDataAsync(pairNameRecieved.toUpperCase(), 1).execute();
+
                 pairNameText.setText(obj.getPAIR_NAME().toUpperCase());//API loves Upper-case
 
                 if(obj.getHOUR_CHANGE() > 0) {
@@ -182,6 +158,14 @@ public class DetailActivity extends AppCompatActivity  {
                     weekDetailVal.setTextColor(Color.parseColor("#FFFF4444"));//H--C
                 }
 
+                //set listener for the spinner
+                materialSpinnerGraph.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
+
+                    @Override public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
+                        new getDataAsync(pairNameRecieved.toUpperCase(),position + 1).execute();
+                    }
+                });
+                new getDataAsync(pairNameRecieved.toUpperCase(), 1).execute();
                 priceVal.setText(obj.getPRICE() + " USD");//H--C
 
                 volumeDetailVal.setText("" + NumberFormat.getNumberInstance(Locale.US).format(obj.getMARKET_CAP_USD()) + " USD");//H--C
@@ -192,26 +176,13 @@ public class DetailActivity extends AppCompatActivity  {
         }
 
     }
-/*
-    TextView spinnerDialogText = (TextView) view;
-
-       new getDataAsync(pairNameRecieved.toUpperCase(),position + 1).execute();
-
-
 
     @Override
-    public void onItemSelected(AdapterView<?> parent,View view,int position , long id){
-    TextView spinnerDialogText = (TextView) view;
-
-       new getDataAsync(pairNameRecieved.toUpperCase(),position + 1).execute();
-        Log.d("pairNameTest", position + "pos");
-        Log.d("pairNameTest", id + "id");
+    protected void onResume() {
+        super.onResume();
+        //initializing default monthly graph
+      //  new getDataAsync(pairNameRecieved.toUpperCase(), 1).execute();
     }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-        Toast.makeText(this, "nothing selected", Toast.LENGTH_SHORT).show();
-    }*/
 
     public void initializeLineGraphView(GraphView graph, int periodOfTime, boolean ifSuccess) {
         if(ifSuccess) {
@@ -329,7 +300,7 @@ public class DetailActivity extends AppCompatActivity  {
                 graphAsync.setVisibility(View.INVISIBLE);
                 graphErrorImg.setVisibility(View.VISIBLE);
                 graphErrorText.setVisibility(View.VISIBLE);
-                 materialSpinnerGraph.setVisibility(View.INVISIBLE);
+                materialSpinnerGraph.setVisibility(View.INVISIBLE);
         }
 
     }
@@ -416,6 +387,26 @@ public class DetailActivity extends AppCompatActivity  {
                 e.printStackTrace();
             }
 
+            String rspn = null;//server response Success/Error
+            try {
+
+                JSONObject histObj = new JSONObject(resultJson);
+
+                rspn = histObj.getString(GET_REPSONSE);
+
+                JSONArray jsonArr = histObj.getJSONArray(ARRAY_TAG);
+
+                int jsonLinesNum = Integer.parseInt(limitPeriod);
+
+                for (int i = 0; i < jsonLinesNum + 1; i++) {
+                    parseHistory(jsonArr.getJSONObject(i)); //parsing data into CurrencyHist type and putting it into ArrayList
+                }
+                initializeLineGraphView(graphAsync,timePeriod,true);//initialize graph
+
+
+            } catch (final JSONException e) {
+                initializeLineGraphView(graphAsync,timePeriod,false);//initialize graph error
+            }
             return resultJson;
 
         }
@@ -425,7 +416,7 @@ public class DetailActivity extends AppCompatActivity  {
         protected void onPostExecute(String strJson) {
             super.onPostExecute(strJson);
 
-            String rspn = null;//server response Success/Error
+          /*  String rspn = null;//server response Success/Error
             try {
 
                     JSONObject histObj = new JSONObject(strJson);
@@ -444,7 +435,7 @@ public class DetailActivity extends AppCompatActivity  {
 
             } catch (final JSONException e) {
                 initializeLineGraphView(graphAsync,timePeriod,false);//initialize graph error
-            }
+            }*/
         }
     }
 
