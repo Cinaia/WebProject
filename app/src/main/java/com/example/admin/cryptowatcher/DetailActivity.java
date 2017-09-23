@@ -67,7 +67,6 @@ public class DetailActivity extends SwipeBackActivity {
     public String limitPeriod = "30";//period of time to gather data
     public String aggregate = "1";// interval
     public String market = "CCCAGG";// take values from
-    public static String ttt = null;
     public static String fsym = null;//show this currency
     public static final String ARRAY_TAG = "Data";
     public static final String GET_REPSONSE = "Response";
@@ -123,11 +122,12 @@ public class DetailActivity extends SwipeBackActivity {
         Intent intent = getIntent();
         String pairNameData = intent.getStringExtra("pairName");
 
-        setDragEdge(SwipeBackLayout.DragEdge.LEFT);//direction of the swipe to get back to MainActivity
+        //setDragEdge(SwipeBackLayout.DragEdge.LEFT);//direction of the swipe to get back to MainActivity
+
 
         for (Currencies obj: MainActivity.API_COLLECTION){ //passing through data array and finding our needed currency pair
             if (obj.getPAIR_NAME().equals(pairNameData)){
-
+                Log.d("speedUP", "my index: " + MainActivity.API_COLLECTION.indexOf(obj.getPAIR_NAME()));
                 fsym = obj.getABBR().toUpperCase();
 
                 pairNameRecieved = fsym; //set the pair symbol name
@@ -165,7 +165,10 @@ public class DetailActivity extends SwipeBackActivity {
                         new getDataAsync(pairNameRecieved.toUpperCase(),position + 1).execute();
                     }
                 });
+
+                //draw graph
                 new getDataAsync(pairNameRecieved.toUpperCase(), 1).execute();
+
                 priceVal.setText(obj.getPRICE() + " USD");//H--C
 
                 volumeDetailVal.setText("" + NumberFormat.getNumberInstance(Locale.US).format(obj.getMARKET_CAP_USD()) + " USD");//H--C
@@ -173,8 +176,9 @@ public class DetailActivity extends SwipeBackActivity {
                 btcPriceVal.setText("" + String.format("%.10f", obj.getPRICE_BTC()) + " BTC");//H--C
 
             }
-        }
 
+        }
+        Log.d("speedUP", "on Creater called");
     }
 
     @Override
@@ -182,13 +186,17 @@ public class DetailActivity extends SwipeBackActivity {
         super.onResume();
         //initializing default monthly graph
       //  new getDataAsync(pairNameRecieved.toUpperCase(), 1).execute();
+        Log.d("speedUP", "on Resume called");
+
     }
 
     public void initializeLineGraphView(GraphView graph, int periodOfTime, boolean ifSuccess) {
+        Log.d("speedUP", "initialize graph called");
+
         if(ifSuccess) {
             try {
                 graph.removeAllSeries();
-                graph.refreshDrawableState();
+                //graph.refreshDrawableState();
 
                 final int pot = periodOfTime;
 
@@ -338,6 +346,8 @@ public class DetailActivity extends SwipeBackActivity {
         protected void onPreExecute() {
             super.onPreExecute();
 
+            Log.d("speedUP", "Async task called");
+
             HISTORICAL_DATA.clear(); //clear previous data for the new graph
 
             //from requests for the API
@@ -416,26 +426,6 @@ public class DetailActivity extends SwipeBackActivity {
         protected void onPostExecute(String strJson) {
             super.onPostExecute(strJson);
 
-          /*  String rspn = null;//server response Success/Error
-            try {
-
-                    JSONObject histObj = new JSONObject(strJson);
-
-                    rspn = histObj.getString(GET_REPSONSE);
-
-                    JSONArray jsonArr = histObj.getJSONArray(ARRAY_TAG);
-
-                    int jsonLinesNum = Integer.parseInt(limitPeriod);
-
-                    for (int i = 0; i < jsonLinesNum + 1; i++) {
-                        parseHistory(jsonArr.getJSONObject(i)); //parsing data into CurrencyHist type and putting it into ArrayList
-                    }
-                    initializeLineGraphView(graphAsync,timePeriod,true);//initialize graph
-
-
-            } catch (final JSONException e) {
-                initializeLineGraphView(graphAsync,timePeriod,false);//initialize graph error
-            }*/
         }
     }
 

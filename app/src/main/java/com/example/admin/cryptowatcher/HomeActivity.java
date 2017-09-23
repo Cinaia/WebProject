@@ -1,5 +1,6 @@
 package com.example.admin.cryptowatcher;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -69,12 +70,18 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+                Animation animation1 = new AlphaAnimation(0.7f, 1.0f);
+                animation1.setDuration(10);
+                animation1.setBackgroundColor(Color.parseColor("#fafafa"));
 
+                view.startAnimation(animation1);
                 String pairName = MainActivity.API_COLLECTION.get(position).getPAIR_NAME();
                 Intent detailScreen = new Intent(HomeActivity.this, DetailActivity.class);
+                detailScreen.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_LAUNCH_ADJACENT);
                 detailScreen.putExtra("pairName", pairName);
-                startActivity(detailScreen);
 
+                startActivity(detailScreen);
+                Log.d("speedUP", "itemClicked");
 
             }
         });
@@ -111,6 +118,24 @@ public class HomeActivity extends AppCompatActivity {
             showProgressDialog = showLoading;
         }
 
+        @Override
+        protected void onPreExecute() {
+            Log.d("Fuck","onPreExecute is called from AsyncTask");
+            MainActivity.API_COLLECTION.clear();
+
+
+            if(showProgressDialog) {
+                mProgressDialog = new ProgressDialog(
+                        HomeActivity.this, R.style.Theme_AppCompat_DayNight_Dialog);                    //set style for progressDialog
+                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);                        //set spinner
+                mProgressDialog.setMessage("Загружаю. Подождите...");//H--C
+
+
+                mProgressDialog.show();
+            }
+
+
+        }
 
         @Override
         protected String doInBackground(Void... params) {
@@ -171,24 +196,7 @@ public class HomeActivity extends AppCompatActivity {
         }
 
 
-        @Override
-        protected void onPreExecute() {
-            Log.d("Fuck","onPreExecute is called from AsyncTask");
-            MainActivity.API_COLLECTION.clear();
 
-
-            if(showProgressDialog) {
-                mProgressDialog = new ProgressDialog(
-                        HomeActivity.this, R.style.Theme_AppCompat_DayNight_Dialog);                    //set style for progressDialog
-                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);                        //set spinner
-                mProgressDialog.setMessage("Загружаю. Подождите...");//H--C
-
-
-                mProgressDialog.show();
-            }
-
-
-        }
     }
 
     @Override
@@ -232,7 +240,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-
+        Log.d("speedUP", "on Pause Home called");
         Log.d(TAG, "HomeActivity: onPause()" + isFirstOpen);
     }
 
