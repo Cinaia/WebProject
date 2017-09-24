@@ -36,12 +36,12 @@
             android:id="@+id/dayDetailVal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="54dp"
+            android:layout_marginBottom="47dp"
             android:text="45.3554"
             android:textColor="@android:color/holo_green_light"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/guideline2"
-            app:layout_constraintHorizontal_bias="0.461"
+            app:layout_constraintHorizontal_bias="0.615"
             app:layout_constraintLeft_toLeftOf="@+id/dayDetailText"
             app:layout_constraintRight_toRightOf="@+id/dayDetailText" />
 
@@ -52,7 +52,7 @@
             android:layout_column="1"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
-            android:layout_marginTop="46dp"
+            android:layout_marginTop="45dp"
             android:layout_row="2"
             android:text="За неделю"
             android:textColor="@android:color/background_light"
@@ -67,7 +67,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="32dp"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="48dp"
+            android:layout_marginTop="54dp"
             android:text="За день"
             android:textColor="@android:color/background_light"
             android:textSize="18sp"
@@ -99,12 +99,12 @@
             android:id="@+id/weekDetailVal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="54dp"
+            android:layout_marginBottom="47dp"
             android:text="44.314"
             android:textColor="@android:color/holo_green_light"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/guideline2"
-            app:layout_constraintHorizontal_bias="0.456"
+            app:layout_constraintHorizontal_bias="0.565"
             app:layout_constraintLeft_toLeftOf="@+id/weekDetailText"
             app:layout_constraintRight_toRightOf="@+id/weekDetailText" />
 
@@ -176,12 +176,12 @@
             android:id="@+id/hourDetailVal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="54dp"
+            android:layout_marginBottom="47dp"
             android:text="43.5442"
             android:textColor="@android:color/holo_green_light"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/guideline2"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintLeft_toLeftOf="@+id/hourDetailText"
             app:layout_constraintRight_toRightOf="@+id/hourDetailText" />
 
@@ -218,6 +218,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:background="?attr/colorControlHighlight"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/guideline4"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -248,9 +249,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_begin="52dp"
-            tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="77dp" />
+            app:layout_constraintGuide_begin="67dp" />
 
         <android.support.constraint.Guideline
             android:id="@+id/guideline2"
@@ -271,13 +270,13 @@
             tools:layout_editor_absoluteX="0dp" />
 
         <android.support.constraint.Guideline
+            android:id="@+id/guideline4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/guideline4"
-            app:layout_constraintGuide_begin="640dp"
             android:orientation="horizontal"
-            tools:layout_editor_absoluteY="665dp"
-            tools:layout_editor_absoluteX="0dp" />
+            app:layout_constraintGuide_begin="640dp"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="665dp" />
 
         <com.jaredrummler.materialspinner.MaterialSpinner
             android:id="@+id/materialSpinnerGraph"
@@ -328,18 +327,37 @@
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:alpha="0.3"
-            android:visibility="invisible"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/graph"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline3"
-            app:srcCompat="@drawable/logo"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp" /><![CDATA[
+            app:layout_constraintVertical_bias="0.0"
+            app:srcCompat="@drawable/logo" />
+
+        <ProgressBar
+            android:id="@+id/graphLoader"
+            style="@android:style/Widget.Material.ProgressBar"
+            android:layout_width="48dp"
+            android:layout_height="37dp"
+            android:layout_marginBottom="8dp"
+
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:backgroundTintMode="screen"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="@+id/materialSpinnerGraph"
+            app:layout_constraintRight_toRightOf="@+id/materialSpinnerGraph"
+            app:layout_constraintTop_toTopOf="@+id/materialSpinnerGraph"
+            app:layout_constraintVertical_bias="0.0" /><![CDATA[
 
 
 
