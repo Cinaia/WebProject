@@ -77,7 +77,7 @@ public class HomeActivity extends AppCompatActivity {
                 view.startAnimation(animation1);
                 String pairName = MainActivity.API_COLLECTION.get(position).getPAIR_NAME();
                 Intent detailScreen = new Intent(HomeActivity.this, DetailActivity.class);
-                detailScreen.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_LAUNCH_ADJACENT);
+                //detailScreen.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_LAUNCH_ADJACENT);
                 detailScreen.putExtra("pairName", pairName);
 
                 startActivity(detailScreen);

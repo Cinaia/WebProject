@@ -38,7 +38,7 @@ import static org.json.JSONObject.NULL;
 
 public class MainActivity extends Activity {
 
-    public static final int LIMIT = 25;
+    public static final int LIMIT = 15;
     public static final String CURRENCY = "USD";
     public static final String API_URL = "https://api.coinmarketcap.com/v1/ticker/?limit=" + LIMIT;
 
@@ -56,7 +56,7 @@ public class MainActivity extends Activity {
     public static final String SYMBOL = "symbol";
     public static final String UTC_TIME = "last_updated";
 
-    public static ArrayList<Currencies> API_COLLECTION = new ArrayList<>();//List for parsed data from API
+    public static ArrayList<Currencies> API_COLLECTION; //List for parsed data from API
 
     public static String LOG_TAG = "my_log";
 
@@ -78,11 +78,11 @@ public class MainActivity extends Activity {
         setContentView(R.layout.splash_screen);
 
         Log.d("eredd", "onCreate method is called");
-
+        API_COLLECTION = new ArrayList<>();
         statusField = (TextView) findViewById(R.id.splashProccessText);
         splashImageBtc = (ImageView) findViewById(R.id.splashImage);
         spinnerBar = (ProgressBar) findViewById(R.id.progressBar);
-        SystemClock.sleep(500);
+        //SystemClock.sleep(500);
 
         if(isNetworkConnected()){
             new ShowDialogAsyncTask().execute();
@@ -150,7 +150,7 @@ public class MainActivity extends Activity {
         protected String doInBackground(Void... params) {
 
 
-
+            Log.d("eredd", "doing");
             try {
                 URL url = new URL(API_URL);
 
@@ -178,7 +178,7 @@ public class MainActivity extends Activity {
                 JSONArray jsonArr = new JSONArray(resultJson);
 
 
-                for(int i = 0; i < LIMIT; i++){
+                for(int i = 0; i < LIMIT ; i++){
                     parseToList(jsonArr.getJSONObject(i));
                 }
 
@@ -187,13 +187,14 @@ public class MainActivity extends Activity {
                // statusField.setText("Connection error!");
 
             }
+            Log.d("eredd", resultJson);
             return resultJson;
         }
 
         @Override
         protected void onPostExecute(String strJson) {
             super.onPostExecute(strJson);
-
+           // Log.d("eredd", strJson);
             statusField.setText("Done!");
 
                 Intent intent = new Intent(MainActivity.this, HomeActivity.class);

@@ -1,8 +1,7 @@
 package com.example.admin.cryptowatcher;
 
 
-import android.app.ProgressDialog;
-import android.content.Context;
+
 import android.content.Intent;
 import android.graphics.Color;
 import android.icu.text.NumberFormat;
@@ -16,7 +15,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 import com.jjoe64.graphview.DefaultLabelFormatter;
@@ -40,7 +38,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
+
 
 
 /**
@@ -52,7 +50,7 @@ public class DetailActivity extends SwipeBackActivity {
 
     boolean isFirstOpen = true;
 
-    public static ArrayList<CurrencyHist> HISTORICAL_DATA = new ArrayList<>();
+    public static ArrayList<CurrencyHist> HISTORICAL_DATA;
     public static final String TAG = "my_deta";
 
     TextView hourDetailVal;
@@ -64,7 +62,7 @@ public class DetailActivity extends SwipeBackActivity {
     TextView priceVal;
     TextView graphErrorText;
     ImageView graphErrorImg;
-    ProgressBar graphLoader;
+
 
     public String BASE_URL = null;
 
@@ -112,7 +110,7 @@ public class DetailActivity extends SwipeBackActivity {
         btcPriceVal = (TextView) findViewById(R.id.btcPriceVal);
         pairNameText = (TextView) findViewById(R.id.pairNameText);
         priceVal = (TextView) findViewById(R.id.priceVal);
-        graphLoader = (ProgressBar) findViewById(R.id.graphLoader);
+
         graphErrorImg = (ImageView) findViewById(R.id.graphErrorImg);
 
 
@@ -124,6 +122,8 @@ public class DetailActivity extends SwipeBackActivity {
         materialSpinnerGraph.setVisibility(View.INVISIBLE);
         graphAsync = (GraphView) findViewById(R.id.graph);
 
+
+        HISTORICAL_DATA  = new ArrayList<>();
         //getting data from previous activity
         Intent intent = getIntent();
         String pairNameData = intent.getStringExtra("pairName");
@@ -136,6 +136,7 @@ public class DetailActivity extends SwipeBackActivity {
         for (Currencies obj: MainActivity.API_COLLECTION){ //passing through data array and finding our needed currency pair
             if (obj.getPAIR_NAME().equals(pairNameData)){
                 Log.d("speedUP", "my index: " + MainActivity.API_COLLECTION.indexOf(obj.getPAIR_NAME()));
+
                 fsym = obj.getABBR().toUpperCase();
 
                 pairNameRecieved = fsym; //set the pair symbol name
@@ -165,7 +166,7 @@ public class DetailActivity extends SwipeBackActivity {
                     weekDetailVal.setText("" + obj.getWEEK_CHANGE() + "%");
                     weekDetailVal.setTextColor(Color.parseColor("#FFFF4444"));//H--C
                 }
-                graphLoader.setVisibility(View.VISIBLE);
+
                 //set listener for the spinner
                 materialSpinnerGraph.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
 
@@ -183,7 +184,6 @@ public class DetailActivity extends SwipeBackActivity {
 
                 btcPriceVal.setText("" + String.format("%.10f", obj.getPRICE_BTC()) + " BTC");//H--C
 
-
             }
 
         }
@@ -193,8 +193,7 @@ public class DetailActivity extends SwipeBackActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //initializing default monthly graph
-      //  new getDataAsync(pairNameRecieved.toUpperCase(), 1).execute();
+
         Log.d("speedUP", "on Resume called");
 
 
@@ -220,6 +219,7 @@ public class DetailActivity extends SwipeBackActivity {
 
                     DataPoint kek = new DataPoint(HISTORICAL_DATA.get(i).getUtcTime(), HISTORICAL_DATA.get(i).getCloseValue());
                     series.appendData(kek, false, HISTORICAL_DATA.size());
+                    Log.d("inGrap", HISTORICAL_DATA.get(i).getCloseValue() + "");
                 }
 
                 series.setDrawDataPoints(true);
@@ -312,6 +312,7 @@ public class DetailActivity extends SwipeBackActivity {
                  graphErrorImg.setVisibility(View.VISIBLE);
                  graphErrorText.setVisibility(View.VISIBLE);
                  materialSpinnerGraph.setVisibility(View.INVISIBLE);
+                Log.d("inGrap", "catch if triggered");
             }
 
         }
@@ -325,7 +326,7 @@ public class DetailActivity extends SwipeBackActivity {
     }
 
     public static void parseHistory(JSONObject object) throws JSONException {
-
+        Log.d("inGrap", "parse if triggered");
         long utcTime = (object.getLong(timeMark));
 
         float priceAt = Float.parseFloat(object.getString(priceMark));
@@ -334,13 +335,14 @@ public class DetailActivity extends SwipeBackActivity {
         HISTORICAL_DATA.add(temp);
 
     }
+
     private class getDataAsync extends AsyncTask<Void , Integer, String> {
 
         private String fsymAsync = null;//pairName
         private  int timePeriod = 1;//amount of hours or days for API call
        // ProgressDialog mProgressDialog;
        // ProgressBar graphLoaderA = (ProgressBar) findViewById(R.id.graphLoader);
-        GraphView graphAsync = (GraphView) findViewById(R.id.graph);
+
 
         public getDataAsync(String pairName, int period) {
             super();
@@ -352,13 +354,7 @@ public class DetailActivity extends SwipeBackActivity {
         BufferedReader reader = null;
         String resultJson = "";
 
-        Runnable runn1 = new Runnable() {
-            public void run() {
 
-                graphAsync.setVisibility(View.VISIBLE);
-                initializeLineGraphView(graphAsync,timePeriod,true);
-            }
-        };
 
         @Override
         protected void onPreExecute() {
@@ -367,8 +363,6 @@ public class DetailActivity extends SwipeBackActivity {
             Log.d("speedUP", "Async task called");
 
 
-
-           // graphLoader.setIndeterminate(true);
 
             HISTORICAL_DATA.clear(); //clear previous data for the new graph
 
@@ -426,7 +420,7 @@ public class DetailActivity extends SwipeBackActivity {
                 JSONObject histObj = new JSONObject(resultJson);
 
                 rspn = histObj.getString(GET_REPSONSE);
-
+                Log.d("ifGotten" , rspn);
                 JSONArray jsonArr = histObj.getJSONArray(ARRAY_TAG);
 
                 int jsonLinesNum = Integer.parseInt(limitPeriod);
@@ -434,53 +428,23 @@ public class DetailActivity extends SwipeBackActivity {
                 for (int i = 0; i < jsonLinesNum + 1; i++) {
                     parseHistory(jsonArr.getJSONObject(i)); //parsing data into CurrencyHist type and putting it into ArrayList
                 }
-
-
-
+                initializeLineGraphView(graphAsync,timePeriod,true);
             } catch (final JSONException e) {
                 initializeLineGraphView(graphAsync,timePeriod,false);//initialize graph error
             }
 
-            try {
-                Thread.sleep(1500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            Thread t = new Thread(new Runnable() {
-                public void run() {
 
-                        runOnUiThread(runn1);
-
-
-
-                }
-            });
-            t.start();
 
             return resultJson;
 
         }
 
-        @RequiresApi(api = Build.VERSION_CODES.N)
+        //@RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         protected void onPostExecute(String strJson) {
             super.onPostExecute(strJson);
-            //graphLoader.setVisibility(View.VISIBLE);
-            Log.d("ginit"," initiated");
-
-
-
-
-           // graphLoader.setVisibility(View.VISIBLE);
-
-
-            graphLoader.setVisibility(View.INVISIBLE);
+            graphAsync.setVisibility(View.VISIBLE);
             materialSpinnerGraph.setVisibility(View.VISIBLE);
-
-
-
-           // mProgressDialog.dismiss();
-
 
         }
     }
