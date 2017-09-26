@@ -16,6 +16,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.jaredrummler.materialspinner.MaterialSpinner;
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
@@ -101,6 +103,7 @@ public class DetailActivity extends SwipeBackActivity {
             }
         });
 
+
         //yep , setting a bunch of elements from the layout
         graphErrorText = (TextView) findViewById(R.id.graphErrorText);
         hourDetailVal = (TextView) findViewById(R.id.hourDetailVal);
@@ -122,7 +125,11 @@ public class DetailActivity extends SwipeBackActivity {
         materialSpinnerGraph.setVisibility(View.INVISIBLE);
         graphAsync = (GraphView) findViewById(R.id.graph);
 
-
+        if(graphAsync.isShown() == false)
+        {
+            //Toast.makeText(this, "begin" , Toast.LENGTH_SHORT).show();
+            Log.d("ToSh", "begin");
+        }
         HISTORICAL_DATA  = new ArrayList<>();
         //getting data from previous activity
         Intent intent = getIntent();
@@ -188,6 +195,7 @@ public class DetailActivity extends SwipeBackActivity {
 
         }
         Log.d("speedUP", "on Creater called");
+
     }
 
     @Override
@@ -254,14 +262,14 @@ public class DetailActivity extends SwipeBackActivity {
 
                 graph.getGridLabelRenderer().setHorizontalLabelsColor(Color.parseColor("#FFFFFF"));//H--C
                 graph.getGridLabelRenderer().setTextSize(20.3f);
-                graph.getGridLabelRenderer().setHighlightZeroLines(true);
-                graph.getViewport().setBackgroundColor(Color.parseColor("#44454A"));//H--C
+             //   graph.getGridLabelRenderer().setHighlightZeroLines(true);
+               // graph.getViewport().setBackgroundColor(Color.parseColor("#44454A"));//H--C
 
                 graph.getGridLabelRenderer().setGridColor(Color.parseColor("#505665"));//H--C
                 graph.getGridLabelRenderer().setLabelsSpace(10);
-                graph.getViewport().setDrawBorder(true);
+               // graph.getViewport().setDrawBorder(true);
 
-                graph.setHorizontalScrollBarEnabled(true);
+                //graph.setHorizontalScrollBarEnabled(true);
 
                 graph.addSeries(series);
 
@@ -306,12 +314,15 @@ public class DetailActivity extends SwipeBackActivity {
                     }
 
                 });
+                graphAsync.setVisibility(View.VISIBLE);
+                materialSpinnerGraph.setVisibility(View.VISIBLE);
 
             } catch (IndexOutOfBoundsException e) {
                  graphAsync.setVisibility(View.INVISIBLE);
                  graphErrorImg.setVisibility(View.VISIBLE);
                  graphErrorText.setVisibility(View.VISIBLE);
                  materialSpinnerGraph.setVisibility(View.INVISIBLE);
+
                 Log.d("inGrap", "catch if triggered");
             }
 
@@ -333,6 +344,7 @@ public class DetailActivity extends SwipeBackActivity {
 
         CurrencyHist temp = new CurrencyHist(utcTime,priceAt);
         HISTORICAL_DATA.add(temp);
+
 
     }
 
@@ -414,6 +426,18 @@ public class DetailActivity extends SwipeBackActivity {
                 e.printStackTrace();
             }
 
+
+
+
+
+            return resultJson;
+
+        }
+
+        //@RequiresApi(api = Build.VERSION_CODES.N)
+        @Override
+        protected void onPostExecute(String strJson) {
+            super.onPostExecute(strJson);
             String rspn = null;//server response Success/Error
             try {
 
@@ -433,18 +457,8 @@ public class DetailActivity extends SwipeBackActivity {
                 initializeLineGraphView(graphAsync,timePeriod,false);//initialize graph error
             }
 
-
-
-            return resultJson;
-
-        }
-
-        //@RequiresApi(api = Build.VERSION_CODES.N)
-        @Override
-        protected void onPostExecute(String strJson) {
-            super.onPostExecute(strJson);
-            graphAsync.setVisibility(View.VISIBLE);
-            materialSpinnerGraph.setVisibility(View.VISIBLE);
+            //graphAsync.setVisibility(View.VISIBLE);
+            //materialSpinnerGraph.setVisibility(View.VISIBLE);
 
         }
     }
@@ -455,6 +469,7 @@ public class DetailActivity extends SwipeBackActivity {
     protected void onStart() {
 
         super.onStart();
+
 
         if(isFirstOpen) {                                                                          //if activity is first created
 
@@ -471,7 +486,7 @@ public class DetailActivity extends SwipeBackActivity {
     protected void onPause() {
         super.onPause();
 
-
+        HISTORICAL_DATA.clear();
         graphAsync.setVisibility(View.GONE);
     }
 }

@@ -233,7 +233,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onResume();
 
             new AsyncTaskRunner(true).execute();
-
+            listAdapter.notifyDataSetChanged();
         Log.d("Fuck","onResume is called ");
     }
 
