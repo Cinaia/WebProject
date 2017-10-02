@@ -11,8 +11,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -48,9 +50,10 @@ import java.util.Locale;
  * H--C means that smth needs to get hardcoded!!!
  */
 
-public class DetailActivity extends SwipeBackActivity {
-
+public class DetailActivity extends FragmentActivity {
+    //SwipeBackActivity
     boolean isFirstOpen = true;
+
 
     public static ArrayList<CurrencyHist> HISTORICAL_DATA;
     public static final String TAG = "my_deta";
@@ -78,8 +81,8 @@ public class DetailActivity extends SwipeBackActivity {
     private static final String timeMark = "time";//json tag for utc time
     private static final String priceMark = "close";//json tag for price
 
-    GraphView graphAsync;
-    MaterialSpinner materialSpinnerGraph;
+    //GraphView graphAsync;
+    //MaterialSpinner materialSpinnerGraph;
 
     private String pairNameRecieved = null;
 
@@ -89,19 +92,7 @@ public class DetailActivity extends SwipeBackActivity {
 
         setContentView(R.layout.detail_info);
         //make toolbar grate again
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(true);
-        toolbar.setTitle("List Activity");//H--C
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View v){
-                onBackPressed();// возврат на предыдущий activity
-            }
-        });
 
 
         //yep , setting a bunch of elements from the layout
@@ -117,19 +108,15 @@ public class DetailActivity extends SwipeBackActivity {
         graphErrorImg = (ImageView) findViewById(R.id.graphErrorImg);
 
 
-        materialSpinnerGraph = (MaterialSpinner) findViewById(R.id.materialSpinnerGraph);
-        materialSpinnerGraph.setItems("Месячный график", "Недельный график", "Дневной график");
+       // materialSpinnerGraph = (MaterialSpinner) findViewById(R.id.materialSpinnerGraph);
+        //materialSpinnerGraph.setItems("Месячный график", "Недельный график", "Дневной график");
 
 
 
-        materialSpinnerGraph.setVisibility(View.INVISIBLE);
-        graphAsync = (GraphView) findViewById(R.id.graph);
+        //materialSpinnerGraph.setVisibility(View.INVISIBLE);
+        //graphAsync = (GraphView) findViewById(R.id.graph);
 
-        if(graphAsync.isShown() == false)
-        {
-            //Toast.makeText(this, "begin" , Toast.LENGTH_SHORT).show();
-            Log.d("ToSh", "begin");
-        }
+
         HISTORICAL_DATA  = new ArrayList<>();
         //getting data from previous activity
         Intent intent = getIntent();
@@ -175,15 +162,15 @@ public class DetailActivity extends SwipeBackActivity {
                 }
 
                 //set listener for the spinner
-                materialSpinnerGraph.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
+               // materialSpinnerGraph.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
 
-                    @Override public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
-                        new getDataAsync(pairNameRecieved.toUpperCase(),position + 1).execute();
-                    }
-                });
+              //      @Override public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
+                //        new getDataAsync(pairNameRecieved.toUpperCase(),position + 1).execute();
+                //    }
+                //});
 
                 //draw graph
-                new getDataAsync(pairNameRecieved.toUpperCase(), 1).execute();
+                //new getDataAsync(pairNameRecieved.toUpperCase(), 1).execute();
 
                 priceVal.setText(obj.getPRICE() + " USD");//H--C
 
@@ -207,134 +194,8 @@ public class DetailActivity extends SwipeBackActivity {
 
     }
 
-    public void initializeLineGraphView(GraphView graph, int periodOfTime, boolean ifSuccess) {
-        Log.d("speedUP", "initialize graph called");
-
-        if(ifSuccess) {
-            try {
-                graph.removeAllSeries();
-                //graph.refreshDrawableState();
-
-                final int pot = periodOfTime;
-
-                //this could be written better
-                LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[]{
-
-                        new DataPoint(HISTORICAL_DATA.get(0).getUtcTime(), HISTORICAL_DATA.get(0).getCloseValue())//(int)HISTORICAL_DATA.get(0).getUtcTime()
-
-                });
-                for (int i = 1; i < HISTORICAL_DATA.size(); i++) {
-
-                    DataPoint kek = new DataPoint(HISTORICAL_DATA.get(i).getUtcTime(), HISTORICAL_DATA.get(i).getCloseValue());
-                    series.appendData(kek, false, HISTORICAL_DATA.size());
-                    Log.d("inGrap", HISTORICAL_DATA.get(i).getCloseValue() + "");
-                }
-
-                series.setDrawDataPoints(true);
-                series.setDataPointsRadius(6);
-                series.setThickness(3);
-                series.setColor(Color.parseColor("#FF99cc00"));//H--C
-                series.setTitle(fsym + "/USD");//H--C
-
-                graph.getLegendRenderer().setBackgroundColor(Color.parseColor("#3C3D44"));//H--C
-                graph.getLegendRenderer().setTextSize(20f);
-                graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
-                graph.getLegendRenderer().setVisible(true);
-
-                //set graph's MIN and MAX values on both axis
-                graph.getViewport().setMinX((int) HISTORICAL_DATA.get(0).getUtcTime());
-                Log.d("GraphX", ((int) HISTORICAL_DATA.get(0).getUtcTime()) + "");
-                graph.getViewport().setMaxX((int) HISTORICAL_DATA.get(HISTORICAL_DATA.size() - 1).getUtcTime());
-                Log.d("GraphX", ((int) HISTORICAL_DATA.get(HISTORICAL_DATA.size() - 1).getUtcTime()) + "");
-                double minY = HISTORICAL_DATA.get(0).getCloseValue() - (HISTORICAL_DATA.get(0).getCloseValue() / 100) * 20;
-                graph.getViewport().setMinY(minY);
 
 
-                graph.getViewport().setScrollable(true);
-                graph.getViewport().setScalable(true);
-                graph.getViewport().setXAxisBoundsManual(true);
-                if (pot == 2) {
-                    graph.getGridLabelRenderer().setNumHorizontalLabels(HISTORICAL_DATA.size());
-                } else
-                    graph.getGridLabelRenderer().setNumHorizontalLabels(HISTORICAL_DATA.size() / 2);
-
-                graph.getGridLabelRenderer().setHorizontalLabelsAngle(50);
-
-                graph.getGridLabelRenderer().setHorizontalLabelsColor(Color.parseColor("#FFFFFF"));//H--C
-                graph.getGridLabelRenderer().setTextSize(20.3f);
-             //   graph.getGridLabelRenderer().setHighlightZeroLines(true);
-               // graph.getViewport().setBackgroundColor(Color.parseColor("#44454A"));//H--C
-
-                graph.getGridLabelRenderer().setGridColor(Color.parseColor("#505665"));//H--C
-                graph.getGridLabelRenderer().setLabelsSpace(10);
-               // graph.getViewport().setDrawBorder(true);
-
-                //graph.setHorizontalScrollBarEnabled(true);
-
-                graph.addSeries(series);
-
-
-                graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
-
-                    @Override
-                    public String formatLabel(double value, boolean isValueX) {
-
-                        String dateFormat = "";
-
-                        switch (pot) {
-                            case 1:
-                                dateFormat = "MM.dd";
-                                break;
-                            case 2:
-                                dateFormat = "EEE";
-                                break;
-                            case 3:
-                                dateFormat = "HH:mm";
-                                break;
-                            default:
-                                dateFormat = "MM.dd";
-                                break;
-                        }
-                        if (isValueX) {
-
-                            java.util.TimeZone tz = java.util.TimeZone.getDefault();
-                            int offset = tz.getOffset(new Date(0).getTime());
-                            value = (long) value;
-                            Date date = new Date((long) (value * 1000) + offset + 1500000);
-
-                            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(dateFormat);
-
-                            String formattedDate = sdf.format(date);
-
-                            return formattedDate;
-                        } else {
-                            Log.d("time4", value + "");
-                            return super.formatLabel(value, isValueX);
-                        }
-                    }
-
-                });
-                graphAsync.setVisibility(View.VISIBLE);
-                materialSpinnerGraph.setVisibility(View.VISIBLE);
-
-            } catch (IndexOutOfBoundsException e) {
-                 graphAsync.setVisibility(View.INVISIBLE);
-                 graphErrorImg.setVisibility(View.VISIBLE);
-                 graphErrorText.setVisibility(View.VISIBLE);
-                 materialSpinnerGraph.setVisibility(View.INVISIBLE);
-
-                Log.d("inGrap", "catch if triggered");
-            }
-
-        }
-        else{
-                graphAsync.setVisibility(View.INVISIBLE);
-                graphErrorImg.setVisibility(View.VISIBLE);
-                graphErrorText.setVisibility(View.VISIBLE);
-                materialSpinnerGraph.setVisibility(View.INVISIBLE);
-        }
-
-    }
 
     public static void parseHistory(JSONObject object) throws JSONException {
         Log.d("inGrap", "parse if triggered");
@@ -452,9 +313,9 @@ public class DetailActivity extends SwipeBackActivity {
                 for (int i = 0; i < jsonLinesNum + 1; i++) {
                     parseHistory(jsonArr.getJSONObject(i)); //parsing data into CurrencyHist type and putting it into ArrayList
                 }
-                initializeLineGraphView(graphAsync,timePeriod,true);
+               // initializeLineGraphView(graphAsync,timePeriod,true);
             } catch (final JSONException e) {
-                initializeLineGraphView(graphAsync,timePeriod,false);//initialize graph error
+               // initializeLineGraphView(graphAsync,timePeriod,false);//initialize graph error
             }
 
             //graphAsync.setVisibility(View.VISIBLE);
@@ -487,7 +348,7 @@ public class DetailActivity extends SwipeBackActivity {
         super.onPause();
 
         HISTORICAL_DATA.clear();
-        graphAsync.setVisibility(View.GONE);
+        //graphAsync.setVisibility(View.GONE);
     }
 }
 

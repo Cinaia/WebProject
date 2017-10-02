@@ -160,7 +160,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:layout_marginBottom="74dp"
+            android:layout_marginBottom="8dp"
 
             android:layout_marginTop="8dp"
 
@@ -169,7 +169,8 @@
             app:layout_constraintBottom_toTopOf="@+id/guideline3"
             app:layout_constraintRight_toRightOf="@+id/volumeDetailVal"
             app:layout_constraintTop_toBottomOf="@+id/volumeDetailVal"
-            app:layout_constraintVertical_bias="0.7" />
+            app:layout_constraintVertical_bias="0.12"
+            android:layout_marginRight="-1dp" />
 
 
         <TextView
@@ -207,6 +208,7 @@
             app:layout_constraintTop_toTopOf="@+id/guideline"
             app:layout_constraintVertical_bias="0.0" />
 
+        <!--
         <com.jjoe64.graphview.GraphView
             android:id="@+id/graph"
             android:layout_width="0dp"
@@ -225,7 +227,23 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline3"
             app:layout_constraintVertical_bias="0.0" />
+     -->
 
+        <fragment
+            android:id="@+id/graphicF"
+            class="com.example.admin.cryptowatcher.graphFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_weight="1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline3"
+            tools:layout="@layout/graph_fragment" />
         <TextView
             android:id="@+id/priceVal"
             android:layout_width="0dp"
@@ -249,7 +267,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_begin="67dp" />
+            app:layout_constraintGuide_begin="67dp"
+            tools:layout_editor_absoluteY="92dp"
+            tools:layout_editor_absoluteX="0dp" />
 
         <android.support.constraint.Guideline
             android:id="@+id/guideline2"
@@ -258,16 +278,14 @@
             android:orientation="horizontal"
             app:layout_constraintGuide_begin="205dp"
             tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="229dp" />
+            tools:layout_editor_absoluteY="230dp" />
 
         <android.support.constraint.Guideline
             android:id="@+id/guideline3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_begin="375dp"
-            tools:layout_editor_absoluteY="399dp"
-            tools:layout_editor_absoluteX="0dp" />
+            app:layout_constraintGuide_begin="311dp" />
 
         <android.support.constraint.Guideline
             android:id="@+id/guideline4"
@@ -278,13 +296,15 @@
             tools:layout_editor_absoluteX="0dp"
             tools:layout_editor_absoluteY="665dp" />
 
-        <com.jaredrummler.materialspinner.MaterialSpinner
+       <!--- <com.jaredrummler.materialspinner.MaterialSpinner
             android:id="@+id/materialSpinnerGraph"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:gravity="center"
             android:textAlignment="center"
@@ -296,16 +316,13 @@
             app:layout_constraintTop_toBottomOf="@+id/priceVal"
             app:layout_constraintVertical_bias="1.0"
             app:ms_background_color="@color/hintBlack"
-            app:ms_text_color="@color/backgroundMaterialLight"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp" />
+            app:ms_text_color="@color/backgroundMaterialLight" />
 
-
+            -->
         <TextView
             android:id="@+id/graphErrorText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
@@ -313,7 +330,6 @@
             android:text="@string/graph_not_avaliable"
             android:textColor="@android:color/holo_green_light"
             android:visibility="invisible"
-            app:layout_constraintBottom_toTopOf="@+id/graph"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/priceVal"
@@ -324,17 +340,10 @@
 
         <ImageView
             android:id="@+id/graphErrorImg"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:alpha="0.3"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/graph"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline3"

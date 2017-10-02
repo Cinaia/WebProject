@@ -45,7 +45,8 @@ public class HomeActivity extends AppCompatActivity {
     private static final String TAG = "my_tag_home";                                               //tag for logs
     private SwipeRefreshLayout swipeContainer;
 
-    boolean isFirstOpen = true;                                                                    //checks if activity is opened of the first time
+    boolean isFirstOpen = true;
+    //checks if activity is opened of the first time
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,11 +78,9 @@ public class HomeActivity extends AppCompatActivity {
                 view.startAnimation(animation1);
                 String pairName = MainActivity.API_COLLECTION.get(position).getPAIR_NAME();
                 Intent detailScreen = new Intent(HomeActivity.this, DetailActivity.class);
-                //detailScreen.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_LAUNCH_ADJACENT);
                 detailScreen.putExtra("pairName", pairName);
-
                 startActivity(detailScreen);
-                Log.d("speedUP", "itemClicked");
+
 
             }
         });
@@ -99,6 +98,8 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
+     void passArg(String pairName) {
+     }
 
     private class AsyncTaskRunner extends AsyncTask<Void, Integer, String> {
 
@@ -118,9 +119,10 @@ public class HomeActivity extends AppCompatActivity {
             showProgressDialog = showLoading;
         }
 
+
         @Override
         protected void onPreExecute() {
-            Log.d("Fuck","onPreExecute is called from AsyncTask");
+
             MainActivity.API_COLLECTION.clear();
 
 
@@ -233,7 +235,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onResume();
 
             new AsyncTaskRunner(true).execute();
-            listAdapter.notifyDataSetChanged();
+            //listAdapter.notifyDataSetChanged();
         Log.d("Fuck","onResume is called ");
     }
 
