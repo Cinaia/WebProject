@@ -53,11 +53,11 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_screen);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+      //  setSupportActionBar(toolbar);
         Log.d("Fuck","onCreate is called");
-        getSupportActionBar().setDisplayShowTitleEnabled(true);
-        toolbar.setTitle("Текущий курс");//H--C
+      //  getSupportActionBar().setDisplayShowTitleEnabled(true);
+      //  toolbar.setTitle("Текущий курс");//H--C
 
         listAdapter = new listAdapter(this, MainActivity.API_COLLECTION);
 
@@ -79,7 +79,9 @@ public class HomeActivity extends AppCompatActivity {
                 String pairName = MainActivity.API_COLLECTION.get(position).getPAIR_NAME();
                 Intent detailScreen = new Intent(HomeActivity.this, DetailActivity.class);
                 detailScreen.putExtra("pairName", pairName);
+                Log.d("transitString",pairName + "1");
                 startActivity(detailScreen);
+
 
 
             }

@@ -1,5 +1,6 @@
 package com.example.admin.cryptowatcher;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -51,15 +52,17 @@ public class graphFragment extends Fragment {
     private static final String timeMark = "time";//json tag for utc time
     private static final String priceMark = "close";//json tag for price
 
+    private String pairName;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.graph_fragment,  container, false);
 
+      //  String strtext=getArguments().getString("dataString");
+       // Log.d("transitString", strtext + "graphFrag");
 
 
-
-
+        pairName = "BTC";
 
         HISTORICAL_DATA = new ArrayList<>();
        // new getDataAsync("BTC", 1).execute();
@@ -67,9 +70,15 @@ public class graphFragment extends Fragment {
         return view;
     }
 
+   /* @Override
+    public void sendData(String data) {
+        if(data != null)
+            this.pairName = data;
+    }*/
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.d("tranitString",pairName);
         materialSpinnerGraph = (MaterialSpinner)getView().findViewById(R.id.materialSpinnerGraph1);
         materialSpinnerGraph.setItems("Месячный график", "Недельный график", "Дневной график");
         materialSpinnerGraph.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {

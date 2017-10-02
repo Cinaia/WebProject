@@ -1,47 +1,18 @@
 package com.example.admin.cryptowatcher;
 
 
-
 import android.content.Intent;
-import android.graphics.Color;
-import android.icu.text.NumberFormat;
-
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.annotation.RequiresApi;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.MotionEvent;
+import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.jaredrummler.materialspinner.MaterialSpinner;
-import com.jjoe64.graphview.DefaultLabelFormatter;
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.LegendRenderer;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
 import com.liuguangqiang.swipeback.SwipeBackActivity;
-import com.liuguangqiang.swipeback.SwipeBackLayout;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 
 
 
@@ -50,288 +21,52 @@ import java.util.Locale;
  * H--C means that smth needs to get hardcoded!!!
  */
 
-public class DetailActivity extends FragmentActivity {
+public class DetailActivity extends SwipeBackActivity  {
     //SwipeBackActivity
     boolean isFirstOpen = true;
+ public interface DataPass {
+      public void sendData(String data);
+    }
 
-
-    public static ArrayList<CurrencyHist> HISTORICAL_DATA;
     public static final String TAG = "my_deta";
-
-    TextView hourDetailVal;
-    TextView dayDetailVal;
-    TextView weekDetailVal;
-    TextView volumeDetailVal;
-    TextView btcPriceVal;
-    TextView pairNameText;
-    TextView priceVal;
-    TextView graphErrorText;
-    ImageView graphErrorImg;
-
 
     public String BASE_URL = null;
 
-    public String tsym = "USD";//in this value
-    public String limitPeriod = "30";//period of time to gather data
-    public String aggregate = "1";// interval
-    public String market = "CCCAGG";// take values from
-    public static String fsym = null;//show this currency
-    public static final String ARRAY_TAG = "Data";
-    public static final String GET_REPSONSE = "Response";
-    private static final String timeMark = "time";//json tag for utc time
-    private static final String priceMark = "close";//json tag for price
-
-    //GraphView graphAsync;
-    //MaterialSpinner materialSpinnerGraph;
-
     private String pairNameRecieved = null;
-
+    DataPass dp;
     @RequiresApi(api = Build.VERSION_CODES.N)
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.detail_info);
-        //make toolbar grate again
 
 
-
-        //yep , setting a bunch of elements from the layout
-        graphErrorText = (TextView) findViewById(R.id.graphErrorText);
-        hourDetailVal = (TextView) findViewById(R.id.hourDetailVal);
-        dayDetailVal = (TextView) findViewById(R.id.dayDetailVal);
-        weekDetailVal = (TextView) findViewById(R.id.weekDetailVal);
-        volumeDetailVal = (TextView) findViewById(R.id.volumeDetailVal);
-        btcPriceVal = (TextView) findViewById(R.id.btcPriceVal);
-        pairNameText = (TextView) findViewById(R.id.pairNameText);
-        priceVal = (TextView) findViewById(R.id.priceVal);
-
-        graphErrorImg = (ImageView) findViewById(R.id.graphErrorImg);
-
-
-       // materialSpinnerGraph = (MaterialSpinner) findViewById(R.id.materialSpinnerGraph);
-        //materialSpinnerGraph.setItems("Месячный график", "Недельный график", "Дневной график");
-
-
-
-        //materialSpinnerGraph.setVisibility(View.INVISIBLE);
-        //graphAsync = (GraphView) findViewById(R.id.graph);
-
-
-        HISTORICAL_DATA  = new ArrayList<>();
-        //getting data from previous activity
         Intent intent = getIntent();
         String pairNameData = intent.getStringExtra("pairName");
-
-        //setDragEdge(SwipeBackLayout.DragEdge.LEFT);//direction of the swipe to get back to MainActivity
-
-
-
-
-        for (Currencies obj: MainActivity.API_COLLECTION){ //passing through data array and finding our needed currency pair
-            if (obj.getPAIR_NAME().equals(pairNameData)){
-                Log.d("speedUP", "my index: " + MainActivity.API_COLLECTION.indexOf(obj.getPAIR_NAME()));
-
-                fsym = obj.getABBR().toUpperCase();
-
-                pairNameRecieved = fsym; //set the pair symbol name
-
-                pairNameText.setText(obj.getPAIR_NAME().toUpperCase());//API loves Upper-case
-
-                if(obj.getHOUR_CHANGE() > 0) {
-                    hourDetailVal.setText("+" + obj.getHOUR_CHANGE() + "%");
-                    hourDetailVal.setTextColor(Color.parseColor("#FF99cc00"));//H--C
-                }else{
-                    hourDetailVal.setText("" + obj.getHOUR_CHANGE() + "%");
-                    hourDetailVal.setTextColor(Color.parseColor("#FFFF4444"));//H--C
-                }
-
-                if(obj.getDAY_CHANGE() > 0) {
-                    dayDetailVal.setText("+" + obj.getDAY_CHANGE() + "%");
-                    dayDetailVal.setTextColor(Color.parseColor("#FF99cc00"));//H--C
-                }else{
-                    dayDetailVal.setText("" + obj.getDAY_CHANGE() + "%");
-                    dayDetailVal.setTextColor(Color.parseColor("#FFFF4444"));//H--C
-                }
-
-                if(obj.getWEEK_CHANGE() > 0) {
-                    weekDetailVal.setText("+" + obj.getWEEK_CHANGE() + "%");
-                    weekDetailVal.setTextColor(Color.parseColor("#FF99cc00"));//H--C
-                }else{
-                    weekDetailVal.setText("" + obj.getWEEK_CHANGE() + "%");
-                    weekDetailVal.setTextColor(Color.parseColor("#FFFF4444"));//H--C
-                }
-
-                //set listener for the spinner
-               // materialSpinnerGraph.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
-
-              //      @Override public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
-                //        new getDataAsync(pairNameRecieved.toUpperCase(),position + 1).execute();
-                //    }
-                //});
-
-                //draw graph
-                //new getDataAsync(pairNameRecieved.toUpperCase(), 1).execute();
-
-                priceVal.setText(obj.getPRICE() + " USD");//H--C
-
-                volumeDetailVal.setText("" + NumberFormat.getNumberInstance(Locale.US).format(obj.getMARKET_CAP_USD()) + " USD");//H--C
-
-                btcPriceVal.setText("" + String.format("%.10f", obj.getPRICE_BTC()) + " BTC");//H--C
-
-            }
-
-        }
-        Log.d("speedUP", "on Creater called");
-
+       pairNameRecieved =pairNameData;
+        //TransitionManager.callComplete(pairNameData);
     }
+
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        Log.d("speedUP", "on Resume called");
-
-
+        scs(findViewById(R.id.detailF));
     }
 
+    public void scs(View v){
 
-
-
-    public static void parseHistory(JSONObject object) throws JSONException {
-        Log.d("inGrap", "parse if triggered");
-        long utcTime = (object.getLong(timeMark));
-
-        float priceAt = Float.parseFloat(object.getString(priceMark));
-
-        CurrencyHist temp = new CurrencyHist(utcTime,priceAt);
-        HISTORICAL_DATA.add(temp);
-
-
+    ((TextView) v.findViewById(R.id.detailF).findViewById(R.id.priceVal))
+            .setText(pairNameRecieved);
     }
-
-    private class getDataAsync extends AsyncTask<Void , Integer, String> {
-
-        private String fsymAsync = null;//pairName
-        private  int timePeriod = 1;//amount of hours or days for API call
-       // ProgressDialog mProgressDialog;
-       // ProgressBar graphLoaderA = (ProgressBar) findViewById(R.id.graphLoader);
-
-
-        public getDataAsync(String pairName, int period) {
-            super();
-            fsymAsync = pairName;
-            timePeriod = period;
-        }
-
-        HttpURLConnection urlConnection = null;
-        BufferedReader reader = null;
-        String resultJson = "";
-
-
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            Log.d("speedUP", "Async task called");
-
-
-
-            HISTORICAL_DATA.clear(); //clear previous data for the new graph
-
-            //from requests for the API
-           if(timePeriod ==1 ){
-               limitPeriod = "30";
-               BASE_URL = "https://min-api.cryptocompare.com/data/histoday?fsym=" + fsymAsync + "&tsym=" + tsym
-                       + "&limit="+ limitPeriod +"&aggregate="+ aggregate + "&e=" + market;
-
-           } else if(timePeriod == 2 ){
-                limitPeriod = "7";
-               BASE_URL = "https://min-api.cryptocompare.com/data/histoday?fsym=" + fsymAsync + "&tsym=" + tsym
-                       + "&limit="+ limitPeriod +"&aggregate="+ aggregate + "&e=" + market;
-
-           }else if(timePeriod == 3){
-               limitPeriod = "24";
-              BASE_URL =  "https://min-api.cryptocompare.com/data/histohour?fsym=" + fsymAsync + "&tsym=" + tsym
-                      + "&limit="+ limitPeriod +"&aggregate="+ aggregate + "&e=" + market;
-            }
-
-        }
-
-
-        @Override
-        protected String doInBackground(Void... params) {
-
-            try {
-
-
-                URL url = new URL(BASE_URL);
-
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.connect();
-
-                InputStream inputStream = urlConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
-
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line);
-                }
-
-                resultJson = buffer.toString();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-
-
-
-
-            return resultJson;
-
-        }
-
-        //@RequiresApi(api = Build.VERSION_CODES.N)
-        @Override
-        protected void onPostExecute(String strJson) {
-            super.onPostExecute(strJson);
-            String rspn = null;//server response Success/Error
-            try {
-
-                JSONObject histObj = new JSONObject(resultJson);
-
-                rspn = histObj.getString(GET_REPSONSE);
-                Log.d("ifGotten" , rspn);
-                JSONArray jsonArr = histObj.getJSONArray(ARRAY_TAG);
-
-                int jsonLinesNum = Integer.parseInt(limitPeriod);
-
-                for (int i = 0; i < jsonLinesNum + 1; i++) {
-                    parseHistory(jsonArr.getJSONObject(i)); //parsing data into CurrencyHist type and putting it into ArrayList
-                }
-               // initializeLineGraphView(graphAsync,timePeriod,true);
-            } catch (final JSONException e) {
-               // initializeLineGraphView(graphAsync,timePeriod,false);//initialize graph error
-            }
-
-            //graphAsync.setVisibility(View.VISIBLE);
-            //materialSpinnerGraph.setVisibility(View.VISIBLE);
-
-        }
+    @Override
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_f, menu);
+        // Associate searchable configuration with the SearchView
+        return true;
     }
-
-
-
     @Override
     protected void onStart() {
-
         super.onStart();
-
-
         if(isFirstOpen) {                                                                          //if activity is first created
 
             isFirstOpen = false;
@@ -347,7 +82,7 @@ public class DetailActivity extends FragmentActivity {
     protected void onPause() {
         super.onPause();
 
-        HISTORICAL_DATA.clear();
+      //  HISTORICAL_DATA.clear();
         //graphAsync.setVisibility(View.GONE);
     }
 }
