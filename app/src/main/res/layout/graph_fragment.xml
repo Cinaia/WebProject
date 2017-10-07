@@ -37,4 +37,11 @@
         android:background="?attr/colorControlHighlight"
         android:visibility="visible"></com.jjoe64.graphview.GraphView>
 
+    <TextView
+        android:id="@+id/textFieldTmp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:visibility="invisible" />
+
 </LinearLayout>

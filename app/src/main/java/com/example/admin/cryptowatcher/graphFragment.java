@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.jaredrummler.materialspinner.MaterialSpinner;
 import com.jjoe64.graphview.DefaultLabelFormatter;
@@ -70,6 +71,7 @@ public class graphFragment extends Fragment {
         return view;
     }
 
+
    /* @Override
     public void sendData(String data) {
         if(data != null)
@@ -122,7 +124,6 @@ public class graphFragment extends Fragment {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            Log.d("speedUP", "Async task called");
             graphF = (GraphView)getView().findViewById(R.id.graphF);
 
 

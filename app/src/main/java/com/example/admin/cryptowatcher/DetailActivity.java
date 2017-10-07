@@ -50,13 +50,19 @@ public class DetailActivity extends SwipeBackActivity  {
     @Override
     protected void onResume() {
         super.onResume();
-        scs(findViewById(R.id.detailF));
+        passDataToDetailFragment(findViewById(R.id.detailF));
+        passDataToGraphFragment(findViewById(R.id.graphicF));
     }
 
-    public void scs(View v){
+    public void passDataToDetailFragment(View v){
 
     ((TextView) v.findViewById(R.id.detailF).findViewById(R.id.priceVal))
             .setText(pairNameRecieved);
+    }
+    public void passDataToGraphFragment(View v){
+
+        ((TextView) v.findViewById(R.id.graphicF).findViewById(R.id.textFieldTmp))
+                .setText(pairNameRecieved);
     }
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {

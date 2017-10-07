@@ -38,7 +38,7 @@ import static org.json.JSONObject.NULL;
 
 public class MainActivity extends Activity {
 
-    public static final int LIMIT = 12;
+    public static final int LIMIT = 15;
     public static final String CURRENCY = "USD";
     public static final String API_URL = "https://api.coinmarketcap.com/v1/ticker/?limit=" + LIMIT;
 
@@ -115,6 +115,7 @@ public class MainActivity extends Activity {
                     buyPrice,symbol,btcPrice,marketCap,weekChange,utcTime);//String name,float hourChange, float dayChange, float dayVolume, float currentPrice,
            // String shortName,float btcPrice, long marketCap , float weekChange, String utcTime
 
+            Log.d("JsonP", pair.getPAIR_NAME());
             API_COLLECTION.add(pair);
 
         }catch (final JSONException e){
@@ -164,11 +165,20 @@ public class MainActivity extends Activity {
                 reader = new BufferedReader(new InputStreamReader(inputStream));
 
                 String line;
+                int cnt = 0; //iterations counter for a single loop
+                int arrIndex = 0;// +1 every 16 cnt
+                String array[] = null;//array to parse
+                String tempor = null;
+
                 while ((line = reader.readLine()) != null) {
-                    buffer.append(line);
+
+                     Log.d("subP",line);
+
+                     buffer.append(line);
+
                 }
 
-                resultJson = buffer.toString();
+              resultJson = buffer.toString();
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -184,7 +194,7 @@ public class MainActivity extends Activity {
 
             } catch (final JSONException e) {
 
-               // statusField.setText("Connection error!");
+                // statusField.setText("Connection error!");
 
             }
             Log.d("eredd", resultJson);
@@ -197,11 +207,11 @@ public class MainActivity extends Activity {
            // Log.d("eredd", strJson);
             statusField.setText("Done!");
 
-                Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+              Intent intent = new Intent(MainActivity.this, HomeActivity.class);
 
-                startActivity(intent);
+               startActivity(intent);
 
-            finish();
+
         }
     }
 
