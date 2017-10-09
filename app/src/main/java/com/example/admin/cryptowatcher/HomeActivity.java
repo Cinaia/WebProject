@@ -94,6 +94,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 new AsyncTaskRunner(false).execute();
+                listAdapter.notifyDataSetChanged();
             }
         });
 
@@ -216,20 +217,7 @@ public class HomeActivity extends AppCompatActivity {
     //consider toast message instead of alertDialog!!
     @Override
     public void onBackPressed() {
-        new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
-                .setIcon(R.mipmap.logo)
-                .setTitle("Выход")//H--C
-                .setMessage("Покинуть приложение?")//H--C
-                .setPositiveButton("Да", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                        System.exit(0);
-                    }
-
-                })
-                .setNegativeButton("Нет", null)//H--C
-                .show();
+        Log.d("Back pressed","bacccc");
     }
 
     @Override

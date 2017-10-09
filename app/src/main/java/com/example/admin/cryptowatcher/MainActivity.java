@@ -38,7 +38,7 @@ import static org.json.JSONObject.NULL;
 
 public class MainActivity extends Activity {
 
-    public static final int LIMIT = 15;
+    public static final int LIMIT = 55;
     public static final String CURRENCY = "USD";
     public static final String API_URL = "https://api.coinmarketcap.com/v1/ticker/?limit=" + LIMIT;
 
