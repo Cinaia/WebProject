@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jaredrummler.materialspinner.MaterialSpinner;
 import com.jjoe64.graphview.DefaultLabelFormatter;
@@ -52,45 +53,41 @@ public class graphFragment extends Fragment {
     public static final String GET_REPSONSE = "Response";
     private static final String timeMark = "time";//json tag for utc time
     private static final String priceMark = "close";//json tag for price
-
+    String mParam1;
     private String pairName;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if (getArguments() != null) {
+           mParam1 = getArguments().getString("params");
+        }
         View view = inflater.inflate(R.layout.graph_fragment,  container, false);
 
-      //  String strtext=getArguments().getString("dataString");
-       // Log.d("transitString", strtext + "graphFrag");
-
-
-        pairName = "BTC";
+        pairName = mParam1;
 
         HISTORICAL_DATA = new ArrayList<>();
-       // new getDataAsync("BTC", 1).execute();
 
         return view;
     }
 
 
-   /* @Override
-    public void sendData(String data) {
-        if(data != null)
-            this.pairName = data;
-    }*/
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.d("tranitString",pairName);
+
         materialSpinnerGraph = (MaterialSpinner)getView().findViewById(R.id.materialSpinnerGraph1);
-        materialSpinnerGraph.setItems("Месячный график", "Недельный график", "Дневной график");
+        materialSpinnerGraph.setItems("Месячный график", "Недельный график", "Дневной график");//H--C
         materialSpinnerGraph.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
 
             @Override public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
-                new getDataAsync("BTC",position + 1).execute();
-                Log.d("fragSpin","called onItemSelected");
+                new getDataAsync(pairName,position + 1).execute();
+                Log.d("transitString",pairName + " - spin");
             }
         });
-        new getDataAsync("BTC", 1).execute();
+        Toast toast = Toast.makeText(getView().getContext(),
+                mParam1, Toast.LENGTH_SHORT);
+        toast.show();
+        new getDataAsync(pairName, 1).execute();
     }
 
 
@@ -204,14 +201,10 @@ public class graphFragment extends Fragment {
                     parseHistory(jsonArr.getJSONObject(i)); //parsing data into CurrencyHist type and putting it into ArrayList
                 }
                 initializeLineGraphView(graphF,timePeriod,true);
-             //   Log.d("FragVis1", graphF.isActivated() + "");
+
             } catch (final JSONException e) {
                 // initializeLineGraphView(graphF,timePeriod,false);//initialize graph error
             }
-
-            //graphAsync.setVisibility(View.VISIBLE);
-            //materialSpinnerGraph.setVisibility(View.VISIBLE);
-
         }
     }
 
@@ -261,7 +254,7 @@ public class graphFragment extends Fragment {
                 series.setDataPointsRadius(6);
                 series.setThickness(3);
                 series.setColor(Color.parseColor("#FF99cc00"));//H--C
-                series.setTitle(fsym + "/USD");//H--C
+                series.setTitle(pairName + "/USD");//H--C
 
                 graph1.getLegendRenderer().setBackgroundColor(Color.parseColor("#3C3D44"));//H--C
                 graph1.getLegendRenderer().setTextSize(20f);

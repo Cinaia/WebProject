@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
@@ -24,10 +25,11 @@ import java.util.ArrayList;
 public class DetailActivity extends SwipeBackActivity  {
     //SwipeBackActivity
     boolean isFirstOpen = true;
+   // private static FragmentManager fragmentManager;
  public interface DataPass {
       public void sendData(String data);
     }
-
+    //private graphFragment graphs;
     public static final String TAG = "my_deta";
 
     public String BASE_URL = null;
@@ -39,31 +41,47 @@ public class DetailActivity extends SwipeBackActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail_info);
 
-
         Intent intent = getIntent();
         String pairNameData = intent.getStringExtra("pairName");
-       pairNameRecieved =pairNameData;
+        pairNameRecieved =pairNameData;
+        Bundle bundle = new Bundle();
+        bundle.putString("params", pairNameRecieved);
+
+        graphFragment youFragment = new graphFragment();
+        youFragment.setArguments(bundle);
+
+        Bundle bundle1 = new Bundle();
+        bundle1.putString("params1",pairNameRecieved);
+        detailFragment youFragment1 = new detailFragment();
+
+        youFragment.setArguments(bundle);
+        youFragment1.setArguments(bundle1);
+
+        android.app.FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction()          // получаем экземпляр FragmentTransaction
+                .add(R.id.fragmentContainer,youFragment1)
+                .add(R.id.graphContainer, youFragment)
+                .addToBackStack("myStack")
+                .commit();
+
+
+
+// set MyFragment Arguments
+
+
         //TransitionManager.callComplete(pairNameData);
+
     }
 
 
     @Override
     protected void onResume() {
         super.onResume();
-        passDataToDetailFragment(findViewById(R.id.detailF));
-        passDataToGraphFragment(findViewById(R.id.graphicF));
+      //  passDataToDetailFragment(findViewById(R.id.detailF));
+       // passDataToGraphFragment(findViewById(R.id.graphicF));
     }
 
-    public void passDataToDetailFragment(View v){
 
-    ((TextView) v.findViewById(R.id.detailF).findViewById(R.id.priceVal))
-            .setText(pairNameRecieved);
-    }
-    public void passDataToGraphFragment(View v){
-
-        ((TextView) v.findViewById(R.id.graphicF).findViewById(R.id.textFieldTmp))
-                .setText(pairNameRecieved);
-    }
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.menu_f, menu);

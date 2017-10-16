@@ -23,7 +23,7 @@ import java.util.Locale;
  * Created by admin on 28.09.17.
  */
 
-public class detailFragment extends Fragment implements DetailActivity.DataPass {
+public class detailFragment extends Fragment  {
 
 
     TextView hourDetailVal;
@@ -37,29 +37,25 @@ public class detailFragment extends Fragment implements DetailActivity.DataPass 
     ImageView graphErrorImg;
 
     protected String pairNameData;
-    private String fsym = "BTC";
+    private String fsym = null;
     Context ctx;
     //DataPass mDataPasser;
+    private String mParam1;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.detail_fragment,  container, false);
-
-       // Log.d("transitLOL2", "" + priceVal.getText());
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString("params1");
+        }
+        Log.d("transitFragQ", "2 -- " + mParam1);
+        fsym = mParam1;
          setHasOptionsMenu(true);
         return view;
     }
 
 
-   @Override
-   public void onAttach(Context a) {
-       super.onAttach(a);
 
-     //  mDataPasser = (DataPass) a;
-     //  Log.d("transitLOL3", "" + priceVal.getText());
-       Log.d("transitFragN", a + "");
-       Log.d("transitFragN", pairNameData + "");
-   }
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -74,25 +70,9 @@ public class detailFragment extends Fragment implements DetailActivity.DataPass 
         pairNameText = (TextView)getView().findViewById(R.id.pairNameText);
         priceVal = (TextView)getView().findViewById(R.id.priceVal);
 
-       // Log.d("tranitString",pairNameData);
-
-        Log.d("transitFragQ", "" + priceVal.getText());
-
-
-    }
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_f, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-        Log.d("transitFragQN", "" + priceVal.getText());
         for (Currencies obj: MainActivity.API_COLLECTION) { //passing through data array and finding our needed currency pair
-            if (obj.getPAIR_NAME().equals(priceVal.getText())) {
-                Log.d("speedUP", "my index: " + MainActivity.API_COLLECTION.indexOf(obj.getPAIR_NAME()));
+            if (obj.getABBR().equals(fsym)) {
 
-                fsym = obj.getABBR().toUpperCase();
-
-                String pairNameRecieved = fsym; //set the pair symbol name
 
                 pairNameText.setText(obj.getPAIR_NAME().toUpperCase());//API loves Upper-case
 
@@ -128,10 +108,15 @@ public class detailFragment extends Fragment implements DetailActivity.DataPass 
             }
         }
     }
-
-
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
-    public void sendData(String data) {
-        Log.d("fragmentTrans2", data);
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_f, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+
+
     }
+
+
+
 }

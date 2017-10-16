@@ -76,7 +76,7 @@ public class HomeActivity extends AppCompatActivity {
                 animation1.setBackgroundColor(Color.parseColor("#fafafa"));
 
                 view.startAnimation(animation1);
-                String pairName = MainActivity.API_COLLECTION.get(position).getPAIR_NAME();
+                String pairName = MainActivity.API_COLLECTION.get(position).getABBR();
                 Intent detailScreen = new Intent(HomeActivity.this, DetailActivity.class);
                 detailScreen.putExtra("pairName", pairName);
                 Log.d("transitString",pairName + "1");
@@ -168,6 +168,14 @@ public class HomeActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+
+            return resultJson;
+        }
+
+
+        @Override
+        protected void onPostExecute(String result) {
             try {                                                                                  //parsing API request result
 
                 JSONArray jsonArr = new JSONArray(resultJson);
@@ -182,14 +190,6 @@ public class HomeActivity extends AppCompatActivity {
                 Log.d("Fuck","Json exceptipon catched");
 
             }
-
-            return resultJson;
-        }
-
-
-        @Override
-        protected void onPostExecute(String result) {
-
 
             Log.d("Fuck","onPostExecute is called from AsyncTask");
             if(showProgressDialog) {
