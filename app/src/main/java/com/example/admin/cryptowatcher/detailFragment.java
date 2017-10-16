@@ -70,7 +70,7 @@ public class detailFragment extends Fragment  {
         pairNameText = (TextView)getView().findViewById(R.id.pairNameText);
         priceVal = (TextView)getView().findViewById(R.id.priceVal);
 
-        for (Currencies obj: MainActivity.API_COLLECTION) { //passing through data array and finding our needed currency pair
+        for (Currencies obj: HomeActivity.API_COLLECTION) { //passing through data array and finding our needed currency pair
             if (obj.getABBR().equals(fsym)) {
 
 

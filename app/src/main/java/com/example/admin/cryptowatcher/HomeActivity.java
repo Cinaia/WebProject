@@ -35,11 +35,27 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.admin.cryptowatcher.MainActivity.PRICE;
-import static com.example.admin.cryptowatcher.R.id.textView1;
+
+
 
 public class HomeActivity extends AppCompatActivity {
 
+    private static final int LIMIT = 55;
+    private static final String CURRENCY = "USD";
+    private static final String API_URL = "https://api.coinmarketcap.com/v1/ticker/?limit=" + LIMIT;
+    private static final String ID = "id";
+    private static final String NAME = "name";
+    private static final String PRICE_BTC = "price_btc";
+    private static final String MARKET_CAP_USD = "market_cap_usd";
+    private static final String ONE_HOUR_SHIFT = "percent_change_1h";
+    private static final String TWENTYFOUR_HOUR_SHIFT = "percent_change_24h";
+    private static final String WEEK_CHANGE = "percent_change_7d";
+    private static final String DAY_VOLUME = "24h_volume_usd";
+    private static final String PRICE = "price_usd";
+    private static final String SYMBOL = "symbol";
+    private static final String UTC_TIME = "last_updated";
+
+   public static ArrayList<Currencies> API_COLLECTION; //List for parsed data from API
     listAdapter listAdapter;
 
     private static final String TAG = "my_tag_home";                                               //tag for logs
@@ -53,17 +69,11 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_screen);
 
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-      //  setSupportActionBar(toolbar);
-        Log.d("Fuck","onCreate is called");
-      //  getSupportActionBar().setDisplayShowTitleEnabled(true);
-      //  toolbar.setTitle("Текущий курс");//H--C
-
-        listAdapter = new listAdapter(this, MainActivity.API_COLLECTION);
-
+        API_COLLECTION = new ArrayList<>();
 
         final ListView lvMain = (ListView) findViewById(R.id.homeList);
-
+        new AsyncTaskRunner(true).execute();
+        listAdapter = new listAdapter(this, API_COLLECTION);
         lvMain.setAdapter(listAdapter);
 
         lvMain.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -76,7 +86,7 @@ public class HomeActivity extends AppCompatActivity {
                 animation1.setBackgroundColor(Color.parseColor("#fafafa"));
 
                 view.startAnimation(animation1);
-                String pairName = MainActivity.API_COLLECTION.get(position).getABBR();
+                String pairName = API_COLLECTION.get(position).getABBR();
                 Intent detailScreen = new Intent(HomeActivity.this, DetailActivity.class);
                 detailScreen.putExtra("pairName", pairName);
                 Log.d("transitString",pairName + "1");
@@ -95,14 +105,54 @@ public class HomeActivity extends AppCompatActivity {
             public void onRefresh() {
                 new AsyncTaskRunner(false).execute();
                 listAdapter.notifyDataSetChanged();
+
+
             }
         });
 
 
+
     }
 
-     void passArg(String pairName) {
+     private String checkIfNull(String value){
+         if(value == "null"){
+             return "0";
+         }else{ return value;}
+
      }
+     private void parseToList(JSONObject obj){
+
+        try {
+
+
+            float oneHourShift = Float.parseFloat(checkIfNull(obj.getString(ONE_HOUR_SHIFT)));
+            float twentyFourHourShift = Float.parseFloat(checkIfNull(obj.getString(TWENTYFOUR_HOUR_SHIFT)));
+            float dayVolume = Float.parseFloat(checkIfNull(obj.getString(DAY_VOLUME)));
+            float buyPrice = Float.parseFloat(checkIfNull(obj.getString(PRICE)));
+            double btcPrice = Double.parseDouble(obj.getString(PRICE_BTC));
+            float weekChange = Float.parseFloat(checkIfNull(obj.getString(WEEK_CHANGE)));
+            long marketCap = (obj.getLong(MARKET_CAP_USD));
+            long utcTime = (obj.getLong(UTC_TIME));
+            String symbol = obj.getString(SYMBOL);
+            String pairName = obj.getString(ID);
+
+
+
+
+            Currencies pair = new Currencies(pairName,oneHourShift,twentyFourHourShift,dayVolume,
+                    buyPrice,symbol,btcPrice,marketCap,weekChange,utcTime);//String name,float hourChange, float dayChange, float dayVolume, float currentPrice,
+            // String shortName,float btcPrice, long marketCap , float weekChange, String utcTime
+
+            Log.d("JsonP", pair.getPAIR_NAME());
+            API_COLLECTION.add(pair);
+
+        }catch (final JSONException e){
+            Log.d("eredd", e.toString());
+        }
+
+
+    }
+
 
     private class AsyncTaskRunner extends AsyncTask<Void, Integer, String> {
 
@@ -119,6 +169,7 @@ public class HomeActivity extends AppCompatActivity {
 
         public AsyncTaskRunner(boolean showLoading) {
             super();
+
             showProgressDialog = showLoading;
         }
 
@@ -126,9 +177,7 @@ public class HomeActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
 
-            MainActivity.API_COLLECTION.clear();
-
-
+            API_COLLECTION.clear();
             if(showProgressDialog) {
                 mProgressDialog = new ProgressDialog(
                         HomeActivity.this, R.style.Theme_AppCompat_DayNight_Dialog);                    //set style for progressDialog
@@ -147,7 +196,7 @@ public class HomeActivity extends AppCompatActivity {
 
             try {
 
-                URL url = new URL(MainActivity.API_URL);//URL address for API
+                URL url = new URL(API_URL);//URL address for API
 
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
@@ -180,8 +229,8 @@ public class HomeActivity extends AppCompatActivity {
 
                 JSONArray jsonArr = new JSONArray(resultJson);
 
-                for(int i = 0; i < MainActivity.LIMIT; i++){
-                    MainActivity.parseToList(jsonArr.getJSONObject(i));
+                for(int i = 0; i < LIMIT; i++){
+                    parseToList(jsonArr.getJSONObject(i));
                     Log.d("Fuck","parseToList is called from AsyncTask");
                 }
 
