@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
@@ -54,7 +55,7 @@ public class HomeActivity extends AppCompatActivity {
     private static final String PRICE = "price_usd";
     private static final String SYMBOL = "symbol";
     private static final String UTC_TIME = "last_updated";
-
+    private Handler handler = new Handler();
    public static ArrayList<Currencies> API_COLLECTION; //List for parsed data from API
     listAdapter listAdapter;
 
@@ -97,6 +98,11 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+
+
+
+
+
         swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
         swipeContainer.setDistanceToTriggerSync(200);
 
@@ -110,9 +116,20 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-
+        handler.postDelayed(runnable, 50000);
 
     }
+
+
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+      /* do what you need to do */
+            new AsyncTaskRunner(true).execute();
+      /* and here comes the "trick" */
+            handler.postDelayed(this, 50000);
+        }
+    };
 
      private String checkIfNull(String value){
          if(value == "null"){

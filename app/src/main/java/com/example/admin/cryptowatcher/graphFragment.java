@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,7 +48,7 @@ public class graphFragment extends Fragment {
     public String tsym = "USD";//in this value
     public String limitPeriod = "30";//period of time to gather data
     public String aggregate = "1";// interval
-    public String market = "CCCAGG";// take values from
+    public String market = "CCCAGG";// "CCCAGG";// take values from
     public static String fsym = null;//show this currency
     public static final String ARRAY_TAG = "Data";
     public static final String GET_REPSONSE = "Response";
@@ -174,10 +175,6 @@ public class graphFragment extends Fragment {
                 e.printStackTrace();
             }
 
-
-
-
-
             return resultJson;
 
         }
@@ -187,23 +184,30 @@ public class graphFragment extends Fragment {
         protected void onPostExecute(String strJson) {
             super.onPostExecute(strJson);
             String rspn = null;//server response Success/Error
+
             try {
 
                 JSONObject histObj = new JSONObject(resultJson);
 
-                rspn = histObj.getString(GET_REPSONSE);
-                Log.d("ifGotten" , rspn);
-                JSONArray jsonArr = histObj.getJSONArray(ARRAY_TAG);
+                //rspn = histObj.getString(GET_REPSONSE);
+                Log.d("TestP" , histObj.getString("Response"));
+                if(histObj.getString("Response") == "Error"){
+                    initializeLineGraphView(graphF,timePeriod,false);
+                }else {
+                    JSONArray jsonArr = histObj.getJSONArray(ARRAY_TAG);
 
-                int jsonLinesNum = Integer.parseInt(limitPeriod);
+                    int jsonLinesNum = Integer.parseInt(limitPeriod);
 
-                for (int i = 0; i < jsonLinesNum + 1; i++) {
-                    parseHistory(jsonArr.getJSONObject(i)); //parsing data into CurrencyHist type and putting it into ArrayList
+
+                    for (int i = 0; i < jsonLinesNum + 1; i++) {
+                        parseHistory(jsonArr.getJSONObject(i)); //parsing data into CurrencyHist type and putting it into ArrayList
+                    }
+                    initializeLineGraphView(graphF, timePeriod, true);
                 }
-                initializeLineGraphView(graphF,timePeriod,true);
 
             } catch (final JSONException e) {
-                // initializeLineGraphView(graphF,timePeriod,false);//initialize graph error
+
+                initializeLineGraphView(graphF,timePeriod,false);//initialize graph error
             }
         }
     }
@@ -348,10 +352,15 @@ public class graphFragment extends Fragment {
 
         }
         else{
-            //  graphAsync.setVisibility(View.INVISIBLE);
-          //  graphErrorImg.setVisibility(View.VISIBLE);
-           // graphErrorText.setVisibility(View.VISIBLE);
-            //materialSpinnerGraph.setVisibility(View.INVISIBLE);
+              Log.d("TestP" , "False Graph plotter called");
+              graph1.setVisibility(View.INVISIBLE);
+
+            //ImageView graphErrorImg = (ImageView)getView().findViewById(R.id.graphErrorImg);
+                //graphErrorImg.setVisibility(View.VISIBLE);
+              TextView graphErrorText = (TextView)getView().findViewById(R.id.graphErrorText);
+              graphErrorText.setVisibility(View.VISIBLE);
+              graphErrorText.setText("График для валютной пары " + pairName  + "/" + tsym  + " недоступен для биржи " + market);
+           // materialSpinnerGraph.setVisibility(View.INVISIBLE);
         }
 
     }

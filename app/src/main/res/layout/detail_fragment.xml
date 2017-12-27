@@ -15,47 +15,45 @@
         android:id="@+id/dayDetailVal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="47dp"
         android:text="45.3554"
         android:textColor="@android:color/holo_green_light"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/guideline2"
-        app:layout_constraintHorizontal_bias="0.615"
+        app:layout_constraintRight_toRightOf="@+id/dayDetailText"
         app:layout_constraintLeft_toLeftOf="@+id/dayDetailText"
-        app:layout_constraintRight_toRightOf="@+id/dayDetailText" />
+        android:layout_marginTop="13dp"
+        app:layout_constraintTop_toBottomOf="@+id/dayDetailText" />
 
     <TextView
         android:id="@+id/weekDetailText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_column="1"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="44dp"
         android:layout_row="2"
         android:text="За неделю"
         android:textColor="@android:color/background_light"
         android:textSize="18sp"
         app:layout_constraintLeft_toRightOf="@+id/dayDetailText"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline" />
+        app:layout_constraintTop_toTopOf="@+id/dayDetailText"
+        android:layout_marginTop="0dp"
+        app:layout_constraintHorizontal_bias="0.619" />
 
     <TextView
         android:id="@+id/dayDetailText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="32dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="0dp"
         android:text="За день"
         android:textColor="@android:color/background_light"
         android:textSize="18sp"
-        app:layout_constraintLeft_toRightOf="@+id/hourDetailText"
-        app:layout_constraintRight_toLeftOf="@+id/weekDetailText"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/dayDetailVal"
-        app:layout_constraintVertical_bias="0.52" />
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="@+id/pairNameText"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="@+id/pairNameText"
+        android:layout_marginTop="23dp"
+        app:layout_constraintTop_toBottomOf="@+id/pairNameText"
+        app:layout_constraintHorizontal_bias="0.502" />
 
     <TextView
         android:id="@+id/btcPriceText"
@@ -73,22 +71,22 @@
         app:layout_constraintLeft_toLeftOf="@+id/volumeDetailText"
         app:layout_constraintRight_toLeftOf="@+id/btcPriceVal"
         app:layout_constraintTop_toBottomOf="@+id/volumeDetailText"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="32dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
-        app:layout_constraintVertical_bias="0.146" />
+        app:layout_constraintVertical_bias="0.156" />
 
     <TextView
         android:id="@+id/weekDetailVal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="47dp"
         android:text="44.314"
         android:textColor="@android:color/holo_green_light"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/guideline2"
-        app:layout_constraintHorizontal_bias="0.565"
+        app:layout_constraintRight_toRightOf="@+id/weekDetailText"
         app:layout_constraintLeft_toLeftOf="@+id/weekDetailText"
-        app:layout_constraintRight_toRightOf="@+id/weekDetailText" />
+        app:layout_constraintHorizontal_bias="0.553"
+        android:layout_marginTop="13dp"
+        app:layout_constraintTop_toBottomOf="@+id/weekDetailText" />
 
     <TextView
         android:id="@+id/volumeDetailText"
@@ -113,17 +111,17 @@
         android:id="@+id/hourDetailText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="44dp"
         android:text="За час"
         android:textColor="@android:color/background_light"
         android:textSize="18sp"
-        app:layout_constraintHorizontal_bias="0.51"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
-        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/dayDetailText"
-        app:layout_constraintTop_toTopOf="@+id/guideline" />
+        android:layout_marginRight="8dp"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/dayDetailText"
+        android:layout_marginTop="0dp"
+        app:layout_constraintHorizontal_bias="0.491" />
 
     <TextView
         android:id="@+id/volumeDetailVal"
@@ -151,22 +149,21 @@
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintRight_toRightOf="@+id/volumeDetailVal"
         app:layout_constraintTop_toBottomOf="@+id/volumeDetailVal"
-        app:layout_constraintVertical_bias="0.0"
-        android:layout_marginRight="0dp" />
+        app:layout_constraintVertical_bias="0.0" />
 
 
     <TextView
         android:id="@+id/hourDetailVal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="47dp"
         android:text="43.5442"
         android:textColor="@android:color/holo_green_light"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/guideline2"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintRight_toRightOf="@+id/hourDetailText"
         app:layout_constraintLeft_toLeftOf="@+id/hourDetailText"
-        app:layout_constraintRight_toRightOf="@+id/hourDetailText" />
+        app:layout_constraintHorizontal_bias="0.0"
+        android:layout_marginTop="13dp"
+        app:layout_constraintTop_toBottomOf="@+id/hourDetailText" />
 
     <TextView
         android:id="@+id/pairNameText"
@@ -213,21 +210,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="2dp" />
+        app:layout_constraintGuide_begin="2dp"
+        tools:layout_editor_absoluteY="2dp"
+        tools:layout_editor_absoluteX="0dp" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="141dp" />
+        app:layout_constraintGuide_begin="141dp"
+        tools:layout_editor_absoluteY="140dp"
+        tools:layout_editor_absoluteX="0dp" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="260dp" />
+        app:layout_constraintGuide_begin="260dp"
+        tools:layout_editor_absoluteY="260dp"
+        tools:layout_editor_absoluteX="0dp" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline4"
@@ -236,5 +239,5 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_begin="640dp"
         tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="665dp" />
+        tools:layout_editor_absoluteY="640dp" />
 </android.support.constraint.ConstraintLayout>

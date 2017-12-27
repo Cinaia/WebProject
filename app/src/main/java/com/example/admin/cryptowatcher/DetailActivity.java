@@ -4,14 +4,17 @@ package com.example.admin.cryptowatcher;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.FragmentManager;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.liuguangqiang.swipeback.SwipeBackActivity;
+import com.liuguangqiang.swipeback.SwipeBackLayout;
 
 import java.util.ArrayList;
 
@@ -81,6 +84,13 @@ public class DetailActivity extends SwipeBackActivity  {
        // passDataToGraphFragment(findViewById(R.id.graphicF));
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(DetailActivity.this, HomeActivity.class);
+
+        startActivity(intent);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
