@@ -1,7 +1,7 @@
 package com.example.admin.cryptowatcher;
 
 /**
- * Created by Alex on 12.09.2017.
+ * Класс для описания точек на графике
  */
 
 public class CurrencyHist {

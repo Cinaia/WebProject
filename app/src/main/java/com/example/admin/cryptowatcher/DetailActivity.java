@@ -21,24 +21,20 @@ import java.util.ArrayList;
 
 
 /**
- * Created by Alex on 11.07.2017.
- * H--C means that smth needs to get hardcoded!!!
+ * Класс отвечает за управление фрагментами (detailFragment , graphFragment)
  */
 
 public class DetailActivity extends SwipeBackActivity  {
     //SwipeBackActivity
     boolean isFirstOpen = true;
    // private static FragmentManager fragmentManager;
- public interface DataPass {
-      public void sendData(String data);
-    }
-    //private graphFragment graphs;
+
     public static final String TAG = "my_deta";
 
     public String BASE_URL = null;
 
     private String pairNameRecieved = null;
-    DataPass dp;
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,12 +43,15 @@ public class DetailActivity extends SwipeBackActivity  {
         Intent intent = getIntent();
         String pairNameData = intent.getStringExtra("pairName");
         pairNameRecieved =pairNameData;
+
+        //Формируем данные для передачи во фрагменты
         Bundle bundle = new Bundle();
         bundle.putString("params", pairNameRecieved);
 
         graphFragment youFragment = new graphFragment();
         youFragment.setArguments(bundle);
 
+        //Формируем данные для передачи во фрагменты
         Bundle bundle1 = new Bundle();
         bundle1.putString("params1",pairNameRecieved);
         detailFragment youFragment1 = new detailFragment();
@@ -61,28 +60,19 @@ public class DetailActivity extends SwipeBackActivity  {
         youFragment1.setArguments(bundle1);
 
         android.app.FragmentManager fragmentManager = getFragmentManager();
+
         fragmentManager.beginTransaction()          // получаем экземпляр FragmentTransaction
                 .add(R.id.fragmentContainer,youFragment1)
                 .add(R.id.graphContainer, youFragment)
                 .addToBackStack("myStack")
                 .commit();
-
-
-
-// set MyFragment Arguments
-
-
-        //TransitionManager.callComplete(pairNameData);
-
     }
 
 
     @Override
     protected void onResume() {
         super.onResume();
-      //  passDataToDetailFragment(findViewById(R.id.detailF));
-       // passDataToGraphFragment(findViewById(R.id.graphicF));
-    }
+  }
 
     @Override
     public void onBackPressed() {
@@ -95,16 +85,15 @@ public class DetailActivity extends SwipeBackActivity  {
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.menu_f, menu);
-        // Associate searchable configuration with the SearchView
+
         return true;
     }
     @Override
     protected void onStart() {
         super.onStart();
-        if(isFirstOpen) {                                                                          //if activity is first created
-
+        if(isFirstOpen) {
             isFirstOpen = false;
-        } else {                                                                                   //if activity called again , update rate values
+        } else {
                 Intent intent = new Intent(DetailActivity.this, HomeActivity.class);
                 startActivity(intent);
                 finish();
@@ -115,9 +104,6 @@ public class DetailActivity extends SwipeBackActivity  {
     @Override
     protected void onPause() {
         super.onPause();
-
-      //  HISTORICAL_DATA.clear();
-        //graphAsync.setVisibility(View.GONE);
     }
 }
 

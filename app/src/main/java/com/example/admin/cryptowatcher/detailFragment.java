@@ -19,9 +19,6 @@ import android.widget.TextView;
 
 import java.util.Locale;
 
-/**
- * Created by admin on 28.09.17.
- */
 
 public class detailFragment extends Fragment  {
 
@@ -34,23 +31,21 @@ public class detailFragment extends Fragment  {
     TextView pairNameText;
     TextView priceVal;
     TextView graphErrorText;
-    ImageView graphErrorImg;
 
     protected String pairNameData;
     private String fsym = null;
-    Context ctx;
-    //DataPass mDataPasser;
+
     private String mParam1;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        //Получам данные из detailActivity
         View view = inflater.inflate(R.layout.detail_fragment,  container, false);
         if (getArguments() != null) {
             mParam1 = getArguments().getString("params1");
         }
-        Log.d("transitFragQ", "2 -- " + mParam1);
         fsym = mParam1;
-         setHasOptionsMenu(true);
+        setHasOptionsMenu(true);
         return view;
     }
 
@@ -61,6 +56,7 @@ public class detailFragment extends Fragment  {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setHasOptionsMenu(true);
+        //Отображаем данные в интерфейсе
         graphErrorText =  (TextView)getView().findViewById(R.id.graphErrorText);
         hourDetailVal = (TextView)getView().findViewById(R.id.hourDetailVal);
         dayDetailVal = (TextView)getView().findViewById(R.id.dayDetailVal);
@@ -69,42 +65,42 @@ public class detailFragment extends Fragment  {
         btcPriceVal = (TextView)getView().findViewById(R.id.btcPriceVal);
         pairNameText = (TextView)getView().findViewById(R.id.pairNameText);
         priceVal = (TextView)getView().findViewById(R.id.priceVal);
-
-        for (Currencies obj: HomeActivity.API_COLLECTION) { //passing through data array and finding our needed currency pair
+        //Красим значения в зависимости от знака (красный if > 0 или зеленый if < 0)
+        for (Currencies obj: HomeActivity.API_COLLECTION) {
             if (obj.getABBR().equals(fsym)) {
 
 
-                pairNameText.setText(obj.getPAIR_NAME().toUpperCase());//API loves Upper-case
+                pairNameText.setText(obj.getPAIR_NAME().toUpperCase());
 
                 if (obj.getHOUR_CHANGE() > 0) {
                     hourDetailVal.setText("+" + obj.getHOUR_CHANGE() + "%");
-                    hourDetailVal.setTextColor(Color.parseColor("#FF99cc00"));//H--C
+                    hourDetailVal.setTextColor(Color.parseColor("#FF99cc00"));
                 } else {
                     hourDetailVal.setText("" + obj.getHOUR_CHANGE() + "%");
-                    hourDetailVal.setTextColor(Color.parseColor("#FFFF4444"));//H--C
+                    hourDetailVal.setTextColor(Color.parseColor("#FFFF4444"));
                 }
 
                 if (obj.getDAY_CHANGE() > 0) {
                     dayDetailVal.setText("+" + obj.getDAY_CHANGE() + "%");
-                    dayDetailVal.setTextColor(Color.parseColor("#FF99cc00"));//H--C
+                    dayDetailVal.setTextColor(Color.parseColor("#FF99cc00"));
                 } else {
                     dayDetailVal.setText("" + obj.getDAY_CHANGE() + "%");
-                    dayDetailVal.setTextColor(Color.parseColor("#FFFF4444"));//H--C
+                    dayDetailVal.setTextColor(Color.parseColor("#FFFF4444"));
                 }
 
                 if (obj.getWEEK_CHANGE() > 0) {
                     weekDetailVal.setText("+" + obj.getWEEK_CHANGE() + "%");
-                    weekDetailVal.setTextColor(Color.parseColor("#FF99cc00"));//H--C
+                    weekDetailVal.setTextColor(Color.parseColor("#FF99cc00"));
                 } else {
                     weekDetailVal.setText("" + obj.getWEEK_CHANGE() + "%");
-                    weekDetailVal.setTextColor(Color.parseColor("#FFFF4444"));//H--C
+                    weekDetailVal.setTextColor(Color.parseColor("#FFFF4444"));
                 }
 
-                priceVal.setText(obj.getPRICE() + " USD");//H--C
+                priceVal.setText(obj.getPRICE() + " USD");
 
-                volumeDetailVal.setText("" + NumberFormat.getNumberInstance(Locale.US).format(obj.getMARKET_CAP_USD()) + " USD");//H--C
+                volumeDetailVal.setText("" + obj.getMARKET_CAP_USD() + " USD");
 
-                btcPriceVal.setText("" + String.format("%.10f", obj.getPRICE_BTC()) + " BTC");//H--C
+                btcPriceVal.setText("" + String.format("%.10f", obj.getPRICE_BTC()) + " BTC");
             }
         }
     }

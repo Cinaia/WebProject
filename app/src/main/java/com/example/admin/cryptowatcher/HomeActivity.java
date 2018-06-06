@@ -33,15 +33,20 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
 
-
+/*
+* Данный класс отвечает за логику основного экрана со списком валют и их значений
+* Формируется запрос к API coinmarketcap.com , после чего парсим значения и формируем
+* ListView с этими данными.
+* */
 
 public class HomeActivity extends AppCompatActivity {
 
-    private static final int LIMIT = 55;
+    private static final int LIMIT = 30;
     private static final String CURRENCY = "USD";
     private static final String API_URL = "https://api.coinmarketcap.com/v1/ticker/?limit=" + LIMIT;
     private static final String ID = "id";
@@ -56,27 +61,34 @@ public class HomeActivity extends AppCompatActivity {
     private static final String SYMBOL = "symbol";
     private static final String UTC_TIME = "last_updated";
     private Handler handler = new Handler();
-   public static ArrayList<Currencies> API_COLLECTION; //List for parsed data from API
+
+   public static ArrayList<Currencies> API_COLLECTION; //Список объектов типа Currencies
+
     listAdapter listAdapter;
 
-    private static final String TAG = "my_tag_home";                                               //tag for logs
+    private static final String TAG = "my_tag_home";
     private SwipeRefreshLayout swipeContainer;
 
     boolean isFirstOpen = true;
-    //checks if activity is opened of the first time
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_screen);
 
+        //Основной массив с данными.
         API_COLLECTION = new ArrayList<>();
 
         final ListView lvMain = (ListView) findViewById(R.id.homeList);
+
         new AsyncTaskRunner(true).execute();
+
+        //Формируем ListView из списка API_COLLECTION и пушим во view
         listAdapter = new listAdapter(this, API_COLLECTION);
         lvMain.setAdapter(listAdapter);
 
+        //Обработка нажатия на валютную пару
         lvMain.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -87,7 +99,9 @@ public class HomeActivity extends AppCompatActivity {
                 animation1.setBackgroundColor(Color.parseColor("#fafafa"));
 
                 view.startAnimation(animation1);
+
                 String pairName = API_COLLECTION.get(position).getABBR();
+                //Переходим на DetailActivity
                 Intent detailScreen = new Intent(HomeActivity.this, DetailActivity.class);
                 detailScreen.putExtra("pairName", pairName);
                 Log.d("transitString",pairName + "1");
@@ -98,11 +112,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-
-
-
-
-
+        //Обновление свайпом вниз
         swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
         swipeContainer.setDistanceToTriggerSync(200);
 
@@ -111,37 +121,35 @@ public class HomeActivity extends AppCompatActivity {
             public void onRefresh() {
                 new AsyncTaskRunner(false).execute();
                 listAdapter.notifyDataSetChanged();
-
-
             }
         });
-
+        //Таймер на автоматическое обновление
         handler.postDelayed(runnable, 50000);
 
     }
 
-
+    //Метод автоматического обновления
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
-      /* do what you need to do */
+
             new AsyncTaskRunner(true).execute();
-      /* and here comes the "trick" */
+
             handler.postDelayed(this, 50000);
         }
     };
 
+    //проверка значений API на null
      private String checkIfNull(String value){
          if(value == "null"){
              return "0";
          }else{ return value;}
 
      }
+     //Парсим ответ с API . Значения помещаем в API_COLLECTION
      private void parseToList(JSONObject obj){
 
         try {
-
-
             float oneHourShift = Float.parseFloat(checkIfNull(obj.getString(ONE_HOUR_SHIFT)));
             float twentyFourHourShift = Float.parseFloat(checkIfNull(obj.getString(TWENTYFOUR_HOUR_SHIFT)));
             float dayVolume = Float.parseFloat(checkIfNull(obj.getString(DAY_VOLUME)));
@@ -154,8 +162,6 @@ public class HomeActivity extends AppCompatActivity {
             String pairName = obj.getString(ID);
 
 
-
-
             Currencies pair = new Currencies(pairName,oneHourShift,twentyFourHourShift,dayVolume,
                     buyPrice,symbol,btcPrice,marketCap,weekChange,utcTime);//String name,float hourChange, float dayChange, float dayVolume, float currentPrice,
             // String shortName,float btcPrice, long marketCap , float weekChange, String utcTime
@@ -166,18 +172,13 @@ public class HomeActivity extends AppCompatActivity {
         }catch (final JSONException e){
             Log.d("eredd", e.toString());
         }
-
-
     }
 
-
+    //Загрузка информации с API в отдельном потоке
     private class AsyncTaskRunner extends AsyncTask<Void, Integer, String> {
 
 
-        ProgressDialog mProgressDialog;     //progress dialog init for updating rates'values
-
-
-        //*******Url init block********
+        ProgressDialog mProgressDialog;
 
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
@@ -190,30 +191,29 @@ public class HomeActivity extends AppCompatActivity {
             showProgressDialog = showLoading;
         }
 
-
         @Override
         protected void onPreExecute() {
-
+            //Очищаем предыдущие данные
             API_COLLECTION.clear();
+            //Показываем Loader
             if(showProgressDialog) {
                 mProgressDialog = new ProgressDialog(
-                        HomeActivity.this, R.style.Theme_AppCompat_DayNight_Dialog);                    //set style for progressDialog
-                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);                        //set spinner
-                mProgressDialog.setMessage("Загружаю. Подождите...");//H--C
+                        HomeActivity.this, R.style.Theme_AppCompat_DayNight_Dialog);
+                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                mProgressDialog.setMessage("Загружаю. Подождите...");
 
 
                 mProgressDialog.show();
             }
 
-
         }
 
         @Override
         protected String doInBackground(Void... params) {
-
+            //Обращаемся к API в бэкграунд потоке
             try {
 
-                URL url = new URL(API_URL);//URL address for API
+                URL url = new URL(API_URL);
 
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
@@ -242,22 +242,21 @@ public class HomeActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            try {                                                                                  //parsing API request result
+            //Парсим данные и обновляем ListView
+            try {
 
                 JSONArray jsonArr = new JSONArray(resultJson);
 
                 for(int i = 0; i < LIMIT; i++){
                     parseToList(jsonArr.getJSONObject(i));
-                    Log.d("Fuck","parseToList is called from AsyncTask");
+
                 }
 
-            } catch (final JSONException e){
-
-                Log.d("Fuck","Json exceptipon catched");
-
+            }
+            catch (final JSONException e){
+                Log.d(TAG, "ERROR -" + e);
             }
 
-            Log.d("Fuck","onPostExecute is called from AsyncTask");
             if(showProgressDialog) {
                 SystemClock.sleep(500);
                 mProgressDialog.dismiss();
@@ -279,8 +278,6 @@ public class HomeActivity extends AppCompatActivity {
     }
 
 
-    //on back button pressed
-    //consider toast message instead of alertDialog!!
     @Override
     public void onBackPressed() {
         Log.d("Back pressed","bacccc");
@@ -292,21 +289,18 @@ public class HomeActivity extends AppCompatActivity {
 
             new AsyncTaskRunner(true).execute();
             //listAdapter.notifyDataSetChanged();
-        Log.d("Fuck","onResume is called ");
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d("speedUP", "on Pause Home called");
-        Log.d(TAG, "HomeActivity: onPause()" + isFirstOpen);
-    }
+      }
 
     @Override
     protected void onStop() {
         super.onStop();
 
-        Log.d(TAG, "HomeActivity: onStop()" + isFirstOpen);
     }
     public void onDestroy() {
         super.onDestroy();

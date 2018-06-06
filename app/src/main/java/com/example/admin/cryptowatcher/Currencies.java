@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Created by Alex on 01.07.2017.
+ * Класс для описания объекта API ( Валютной пары)
  */
 
 public class Currencies  {

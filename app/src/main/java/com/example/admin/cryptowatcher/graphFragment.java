@@ -34,7 +34,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
- * Created by admin on 28.09.17.
+ * Класс для отрисвки графиков. Данные для графиков
+ * берутся с cryptocompare.com
  */
 
 public class graphFragment extends Fragment {
@@ -45,15 +46,15 @@ public class graphFragment extends Fragment {
 
     public String BASE_URL = null;
 
-    public String tsym = "USD";//in this value
-    public String limitPeriod = "30";//period of time to gather data
-    public String aggregate = "1";// interval
-    public String market = "CCCAGG";// "CCCAGG";// take values from
-    public static String fsym = null;//show this currency
+    public String tsym = "USD";
+    public String limitPeriod = "30";
+    public String aggregate = "1";
+    public String market = "CCCAGG";
+    public static String fsym = null;
     public static final String ARRAY_TAG = "Data";
     public static final String GET_REPSONSE = "Response";
-    private static final String timeMark = "time";//json tag for utc time
-    private static final String priceMark = "close";//json tag for price
+    private static final String timeMark = "time";
+    private static final String priceMark = "close";
     String mParam1;
     private String pairName;
     @Override
@@ -77,12 +78,12 @@ public class graphFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         materialSpinnerGraph = (MaterialSpinner)getView().findViewById(R.id.materialSpinnerGraph1);
-        materialSpinnerGraph.setItems("Месячный график", "Недельный график", "Дневной график");//H--C
+        materialSpinnerGraph.setItems("Месячный график", "Недельный график", "Дневной график");
         materialSpinnerGraph.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
 
             @Override public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
                 new getDataAsync(pairName,position + 1).execute();
-                Log.d("transitString",pairName + " - spin");
+
             }
         });
         Toast toast = Toast.makeText(getView().getContext(),
@@ -100,10 +101,9 @@ public class graphFragment extends Fragment {
 
     private class getDataAsync extends AsyncTask<Void , Integer, String> {
 
-        private String fsymAsync = null;//pairName
-        private  int timePeriod = 1;//amount of hours or days for API call
-        // ProgressDialog mProgressDialog;
-        // ProgressBar graphLoaderA = (ProgressBar) findViewById(R.id.graphLoader);
+        private String fsymAsync = null;
+        private  int timePeriod = 1;
+
 
 
         public getDataAsync(String pairName, int period) {
@@ -229,23 +229,17 @@ public class graphFragment extends Fragment {
 
     protected void initializeLineGraphView(GraphView graph1, int periodOfTime, boolean ifSuccess) {
         Log.d("speedUP", "initialize graph called");
-        //Log.d("FragVis2", graph1.isActivated() + "");
-
 
         if(ifSuccess) {
             try {
 
 
                 graph1.removeAllSeries();
-                //graph.refreshDrawableState();
-
                 final int pot = periodOfTime;
 
-                //this could be written better
+                //Подготавливаем данные для отображения на графике.
                 LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[]{
-
-                        new DataPoint(HISTORICAL_DATA.get(0).getUtcTime(), HISTORICAL_DATA.get(0).getCloseValue())//(int)HISTORICAL_DATA.get(0).getUtcTime()
-
+                        new DataPoint(HISTORICAL_DATA.get(0).getUtcTime(), HISTORICAL_DATA.get(0).getCloseValue())
                 });
                 for (int i = 1; i < HISTORICAL_DATA.size(); i++) {
 
@@ -254,18 +248,20 @@ public class graphFragment extends Fragment {
                     Log.d("inGrap", HISTORICAL_DATA.get(i).getCloseValue() + "");
                 }
 
+
+
                 series.setDrawDataPoints(true);
                 series.setDataPointsRadius(6);
                 series.setThickness(3);
-                series.setColor(Color.parseColor("#FF99cc00"));//H--C
-                series.setTitle(pairName + "/USD");//H--C
+                series.setColor(Color.parseColor("#FF99cc00"));
+                series.setTitle(pairName + "/USD");
 
-                graph1.getLegendRenderer().setBackgroundColor(Color.parseColor("#3C3D44"));//H--C
+                graph1.getLegendRenderer().setBackgroundColor(Color.parseColor("#3C3D44"));
                 graph1.getLegendRenderer().setTextSize(20f);
                 graph1.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
                 graph1.getLegendRenderer().setVisible(true);
 
-                //set graph's MIN and MAX values on both axis
+                //Устанавливаем минимальное и максимальное значнение для каждой оси
                 graph1.getViewport().setMinX((int) HISTORICAL_DATA.get(0).getUtcTime());
                 Log.d("GraphX", ((int) HISTORICAL_DATA.get(0).getUtcTime()) + "");
                 graph1.getViewport().setMaxX((int) HISTORICAL_DATA.get(HISTORICAL_DATA.size() - 1).getUtcTime());
@@ -284,16 +280,14 @@ public class graphFragment extends Fragment {
 
                 graph1.getGridLabelRenderer().setHorizontalLabelsAngle(50);
 
-                graph1.getGridLabelRenderer().setHorizontalLabelsColor(Color.parseColor("#FFFFFF"));//H--C
+                graph1.getGridLabelRenderer().setHorizontalLabelsColor(Color.parseColor("#FFFFFF"));
                 graph1.getGridLabelRenderer().setTextSize(20.3f);
-                //   graph.getGridLabelRenderer().setHighlightZeroLines(true);
-                // graph.getViewport().setBackgroundColor(Color.parseColor("#44454A"));//H--C
 
-                graph1.getGridLabelRenderer().setGridColor(Color.parseColor("#505665"));//H--C
+
+                graph1.getGridLabelRenderer().setGridColor(Color.parseColor("#505665"));
                 graph1.getGridLabelRenderer().setLabelsSpace(10);
-                // graph.getViewport().setDrawBorder(true);
 
-                //graph.setHorizontalScrollBarEnabled(true);
+
 
                 graph1.addSeries(series);
 
@@ -338,16 +332,10 @@ public class graphFragment extends Fragment {
                     }
 
                 });
-                // graphAsync.setVisibility(View.VISIBLE);
-               // materialSpinnerGraph.setVisibility(View.VISIBLE);
 
             } catch (IndexOutOfBoundsException e) {
-                // graphAsync.setVisibility(View.INVISIBLE);
-               // graphErrorImg.setVisibility(View.VISIBLE);
-              //  graphErrorText.setVisibility(View.VISIBLE);
-                //materialSpinnerGraph.setVisibility(View.INVISIBLE);
 
-                Log.d("inGrap", "catch if triggered");
+                Log.d("inGrap", "catch if triggered - " + e);
             }
 
         }
@@ -355,12 +343,10 @@ public class graphFragment extends Fragment {
               Log.d("TestP" , "False Graph plotter called");
               graph1.setVisibility(View.INVISIBLE);
 
-            //ImageView graphErrorImg = (ImageView)getView().findViewById(R.id.graphErrorImg);
-                //graphErrorImg.setVisibility(View.VISIBLE);
               TextView graphErrorText = (TextView)getView().findViewById(R.id.graphErrorText);
               graphErrorText.setVisibility(View.VISIBLE);
               graphErrorText.setText("График для валютной пары " + pairName  + "/" + tsym  + " недоступен для биржи " + market);
-           // materialSpinnerGraph.setVisibility(View.INVISIBLE);
+
         }
 
     }

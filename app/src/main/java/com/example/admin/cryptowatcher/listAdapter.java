@@ -12,7 +12,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 /**
- * Created by Alex on 01.09.2017.
+ * Адаптер для ListView
  */
 
 public class listAdapter extends BaseAdapter {
